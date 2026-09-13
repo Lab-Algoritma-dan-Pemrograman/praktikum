@@ -199,9 +199,9 @@
 					class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white appearance-none cursor-pointer"
 				>
 					<option value="">Semua Peran (Roles)</option>
-					<option value="superadmin">Superadmin (superadmin)</option>
-					<option value="admin">Asisten / Admin (admin)</option>
-					<option value="user">Mahasiswa (user)</option>
+					<option value="koordinator">Koordinator</option>
+					<option value="asisten">Asisten</option>
+					<option value="mahasiswa">Mahasiswa</option>
 					<option value="guest">Tamu (guest)</option>
 					<option value="system">Sistem (system)</option>
 				</select>
@@ -294,15 +294,15 @@
 							</td>
 							<!-- Role badge -->
 							<td class="px-6 py-3.5">
-								{#if log.role === 'superadmin'}
+								{#if log.role === 'koordinator'}
 								<span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-violet-50 text-violet-700 border border-violet-200/50">
 									Superadmin
 								</span>
-							{:else if log.role === 'admin'}
+							{:else if log.role === 'asisten'}
 									<span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-primary/10 text-[#8A1538] border border-rose-100/50">
 										Asisten
 									</span>
-								{:else if log.role === 'user'}
+								{:else if log.role === 'mahasiswa'}
 									<span class="px-2 py-0.5 rounded-md text-[9px] font-extrabold uppercase bg-slate-100 text-slate-600 border border-slate-200/50">
 										Praktikan
 									</span>

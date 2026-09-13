@@ -59,9 +59,9 @@ func (uc *AuditLogUsecase) GetLogs(search string, role string, action string, pa
 	if limit <= 0 {
 		limit = 20
 	}
-	hideSuperadmin := viewerRole != string(entity.RoleSuperAdmin)
+	hideSuperadmin := viewerRole != string(entity.RoleKoordinator)
 	// Non-superadmin yang memfilter role=superadmin harus dapat hasil kosong, bukan bocor.
-	if hideSuperadmin && role == string(entity.RoleSuperAdmin) {
+	if hideSuperadmin && role == string(entity.RoleKoordinator) {
 		return []entity.AuditLog{}, 0, nil
 	}
 	return uc.repo.FindAll(search, role, action, page, limit, hideSuperadmin)

@@ -120,7 +120,7 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 
 	// ---- Praktikum (role user) ----
 	prak := api.Group("/praktikum")
-	prak.Use(authmw, middleware.RequireRole(string(entity.RoleUser)))
+	prak.Use(authmw, middleware.RequireRole(string(entity.RoleMahasiswa)))
 	{
 		prak.GET("/dashboard", h.Praktikum.Dashboard)
 		prak.GET("/sesi", h.Praktikum.ListSesi)
@@ -134,7 +134,7 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 
 	// ---- Admin (role admin + superadmin) ----
 	admin := api.Group("/admin")
-	admin.Use(authmw, middleware.RequireRole(string(entity.RoleAdmin), string(entity.RoleSuperAdmin)))
+	admin.Use(authmw, middleware.RequireRole(string(entity.RoleAsisten), string(entity.RoleKoordinator)))
 	{
 		admin.GET("/dashboard", h.Dashboard.Statistik)
 
@@ -232,7 +232,7 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 
 	// ---- Superadmin (role superadmin only, hidden ninja) ----
 	superadmin := api.Group("/superadmin")
-	superadmin.Use(authmw, middleware.RequireRole(string(entity.RoleSuperAdmin)))
+	superadmin.Use(authmw, middleware.RequireRole(string(entity.RoleKoordinator)))
 	{
 		superadmin.GET("/permissions", h.Konfigurasi.GetRolePermissions)
 		superadmin.PUT("/permissions", h.Konfigurasi.SetRolePermissions)

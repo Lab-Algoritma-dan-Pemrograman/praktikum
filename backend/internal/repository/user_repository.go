@@ -120,7 +120,7 @@ func (r *userRepository) List(role string, kelasID *int, shift *int) ([]entity.U
 
 func (r *userRepository) ListAsisten() ([]entity.User, error) {
 	var users []entity.User
-	err := r.db.Where("role = ?", entity.RoleAdmin).Order("nama asc").Find(&users).Error
+	err := r.db.Where("role = ?", entity.RoleAsisten).Order("nama asc").Find(&users).Error
 	return users, err
 }
 
@@ -133,7 +133,7 @@ func (r *userRepository) CountByRole(role entity.RoleType) (int64, error) {
 func (r *userRepository) CountRegistered(registered bool) (int64, error) {
 	var n int64
 	err := r.db.Model(&entity.User{}).
-		Where("role = ? AND is_registered = ?", entity.RoleUser, registered).
+		Where("role = ? AND is_registered = ?", entity.RoleMahasiswa, registered).
 		Count(&n).Error
 	return n, err
 }
@@ -143,7 +143,7 @@ func (r *userRepository) CountPerKelasShift() ([]KelasShiftCount, error) {
 	err := r.db.Model(&entity.User{}).
 		Select("users.kelas_id, kelas.nama_kelas, users.shift, COUNT(*) as jumlah").
 		Joins("LEFT JOIN kelas ON kelas.id = users.kelas_id").
-		Where("users.role = ?", entity.RoleUser).
+		Where("users.role = ?", entity.RoleMahasiswa).
 		Group("users.kelas_id, kelas.nama_kelas, users.shift").
 		Order("users.kelas_id, users.shift").
 		Scan(&out).Error

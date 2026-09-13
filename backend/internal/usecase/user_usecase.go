@@ -19,12 +19,12 @@ func NewUserUsecase(u repository.UserRepository, k repository.KelasRepository) *
 }
 
 func (uc *UserUsecase) ListMahasiswa(kelasID, shift *int) ([]entity.User, error) {
-	return uc.users.List(string(entity.RoleUser), kelasID, shift)
+	return uc.users.List(string(entity.RoleMahasiswa), kelasID, shift)
 }
 
 func (uc *UserUsecase) CreateMahasiswa(req dto.UserRequest) (*entity.User, error) {
 	u := &entity.User{
-		Role:         entity.RoleUser,
+		Role:         entity.RoleMahasiswa,
 		NIM:          req.NIM,
 		Nama:         req.Nama,
 		KelasID:      req.KelasID,
@@ -48,7 +48,7 @@ func (uc *UserUsecase) BulkUpsertMahasiswa(req dto.UserBulkRequest) (*dto.BulkRe
 	var entities []entity.User
 	for _, r := range req.Users {
 		entities = append(entities, entity.User{
-			Role:         entity.RoleUser,
+			Role:         entity.RoleMahasiswa,
 			NIM:          r.NIM,
 			Nama:         r.Nama,
 			KelasID:      r.KelasID,
@@ -102,10 +102,10 @@ func (uc *UserUsecase) Delete(id, actorID int, actorRole string) error {
 	if id == actorID {
 		return errors.Join(ErrForbidden, errors.New("tidak bisa menghapus akun sendiri"))
 	}
-	if target.Role == entity.RoleSuperAdmin {
+	if target.Role == entity.RoleKoordinator {
 		return errors.Join(ErrForbidden, errors.New("akun superadmin tidak bisa dihapus"))
 	}
-	if target.Role == entity.RoleAdmin && actorRole != string(entity.RoleSuperAdmin) {
+	if target.Role == entity.RoleAsisten && actorRole != string(entity.RoleKoordinator) {
 		return errors.Join(ErrForbidden, errors.New("hanya superadmin yang boleh menghapus akun asisten"))
 	}
 	return mapDeleteErr(uc.users.Delete(id))
@@ -128,7 +128,7 @@ func (uc *UserUsecase) ListAsisten() ([]entity.User, error) { return uc.users.Li
 
 func (uc *UserUsecase) CreateAsisten(req dto.AsistenRequest) (*entity.User, error) {
 	u := &entity.User{
-		Role:       entity.RoleAdmin,
+		Role:       entity.RoleAsisten,
 		NIM:        req.NIM,
 		Nama:       req.Nama,
 		NomorHP:    req.NomorHP,

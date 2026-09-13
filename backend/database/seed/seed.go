@@ -54,7 +54,7 @@ func seedAdmin(db *gorm.DB) {
 	hp := "081234567890"
 	medsos := "https://linkedin.com/in/asisten-lab"
 	admin := entity.User{
-		Role:         entity.RoleAdmin,
+		Role:         entity.RoleAsisten,
 		NIM:          "admin",
 		Nama:         "Asisten Lab Utama",
 		PasswordHash: &h,
@@ -80,11 +80,11 @@ func seedMahasiswa(db *gorm.DB) {
 	shift2 := 2
 	registered, _ := hash.Password("mahasiswa123")
 	mhs := []entity.User{
-		{Role: entity.RoleUser, NIM: "2021001", Nama: "Budi Santoso", KelasID: &kelasA.ID, Shift: &shift1, IsRegistered: true, PasswordHash: &registered},
-		{Role: entity.RoleUser, NIM: "2021002", Nama: "Siti Aminah", KelasID: &kelasA.ID, Shift: &shift1, IsRegistered: false},
-		{Role: entity.RoleUser, NIM: "2021003", Nama: "Andi Wijaya", KelasID: &kelasA.ID, Shift: &shift1, IsRegistered: false},
-		{Role: entity.RoleUser, NIM: "2021004", Nama: "Dewi Lestari", KelasID: &kelasB.ID, Shift: &shift2, IsRegistered: false},
-		{Role: entity.RoleUser, NIM: "2021005", Nama: "Eko Pratama", KelasID: &kelasB.ID, Shift: &shift2, IsRegistered: false},
+		{Role: entity.RoleMahasiswa, NIM: "2021001", Nama: "Budi Santoso", KelasID: &kelasA.ID, Shift: &shift1, IsRegistered: true, PasswordHash: &registered},
+		{Role: entity.RoleMahasiswa, NIM: "2021002", Nama: "Siti Aminah", KelasID: &kelasA.ID, Shift: &shift1, IsRegistered: false},
+		{Role: entity.RoleMahasiswa, NIM: "2021003", Nama: "Andi Wijaya", KelasID: &kelasA.ID, Shift: &shift1, IsRegistered: false},
+		{Role: entity.RoleMahasiswa, NIM: "2021004", Nama: "Dewi Lestari", KelasID: &kelasB.ID, Shift: &shift2, IsRegistered: false},
+		{Role: entity.RoleMahasiswa, NIM: "2021005", Nama: "Eko Pratama", KelasID: &kelasB.ID, Shift: &shift2, IsRegistered: false},
 	}
 	for _, m := range mhs {
 		var existing entity.User

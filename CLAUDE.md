@@ -19,9 +19,9 @@ All `make` targets run from the repo root (backend lives in `./backend`).
 - `make mock` — regenerate mockery mocks into `internal/repository/mocks`
 - `make tidy` — `go mod tidy`
 - `make fe-install` / `make fe-dev` / `make fe-build` — frontend (`:5173`)
-- Frontend checks: `cd frontend && npm run check` (svelte-check), `npm run test:unit` (vitest), `npm run test:e2e` (playwright)
+- Frontend checks: `cd frontend && bun run check` (svelte-check), `bun run test:unit` (vitest), `bun run test:e2e` (playwright)
 
-CI (`.github/workflows/ci.yml`) runs `go build ./... && go test ./...` for backend, and `npm ci && npm run check && npm run build` for frontend. Match these before pushing.
+Frontend memakai **Bun**, bukan npm (`bun install`, `bun run …`). Repo ini belum punya workflow CI; jalankan `go build ./... && go test ./...` untuk backend dan `bun run check && bun run build` untuk frontend sebelum push.
 
 `make migrate-sync` / `make migrate-fresh` run the Node scripts in `updateAndPRDERD/migration/` — **`migrate-fresh` is destructive** (wipes Supabase except admin `202411106` and re-imports from Firebase). Do not run without explicit user intent.
 

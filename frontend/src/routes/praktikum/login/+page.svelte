@@ -12,7 +12,7 @@
 	let loading = $state(false);
 
 	function redirectByRole(role: string) {
-		goto(role === 'admin' || role === 'superadmin' ? '/praktikum/admin' : '/praktikum/dashboard');
+		goto(role === 'asisten' || role === 'koordinator' ? '/praktikum/admin' : '/praktikum/dashboard');
 	}
 
 	async function doLogin() {

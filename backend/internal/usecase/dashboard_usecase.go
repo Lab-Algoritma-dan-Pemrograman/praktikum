@@ -18,11 +18,11 @@ func NewDashboardUsecase(u repository.UserRepository, a repository.AktivasiRepos
 
 // Statistik menyusun ringkasan dashboard admin.
 func (uc *DashboardUsecase) Statistik() (*dto.StatistikResponse, error) {
-	totalMhs, err := uc.users.CountByRole(entity.RoleUser)
+	totalMhs, err := uc.users.CountByRole(entity.RoleMahasiswa)
 	if err != nil {
 		return nil, err
 	}
-	totalAsisten, err := uc.users.CountByRole(entity.RoleAdmin)
+	totalAsisten, err := uc.users.CountByRole(entity.RoleAsisten)
 	if err != nil {
 		return nil, err
 	}

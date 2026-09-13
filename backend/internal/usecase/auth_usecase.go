@@ -71,7 +71,7 @@ func (uc *AuthUsecase) Login(req dto.LoginRequest) (*dto.AuthResponse, error) {
 		return nil, err
 	}
 	// Mahasiswa roster yang belum register dianggap akun tidak ada (jangan bocorkan "belum aktivasi")
-	if u.Role == entity.RoleUser && !u.IsRegistered {
+	if u.Role == entity.RoleMahasiswa && !u.IsRegistered {
 		return nil, ErrNotFound
 	}
 	if u.PasswordHash != nil && hash.Verify(*u.PasswordHash, req.Password) {

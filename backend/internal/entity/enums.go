@@ -5,9 +5,9 @@ package entity
 type RoleType string
 
 const (
-	RoleUser       RoleType = "user"
-	RoleAdmin      RoleType = "admin"
-	RoleSuperAdmin RoleType = "superadmin"
+	RoleMahasiswa   RoleType = "mahasiswa"
+	RoleAsisten     RoleType = "asisten"
+	RoleKoordinator RoleType = "koordinator"
 )
 
 // AllowedEmailDomains: domain populer yang diizinkan untuk register.

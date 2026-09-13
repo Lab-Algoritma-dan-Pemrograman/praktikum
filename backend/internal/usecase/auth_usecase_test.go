@@ -35,7 +35,7 @@ func rosterUser() *entity.User {
 		ID:       1,
 		NIM:      "123456",
 		Nama:     "Budi",
-		Role:     entity.RoleUser,
+		Role:     entity.RoleMahasiswa,
 		KelasID:  &kelasID,
 		Email:    nil,
 	}
@@ -75,7 +75,7 @@ func TestCekNIM_TidakDiRoster(t *testing.T) {
 
 func TestCekNIM_SudahRegister(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
-	u := registeredUser(entity.RoleUser)
+	u := registeredUser(entity.RoleMahasiswa)
 	mockUserRepo.On("FindByNIM", "123456").Return(u, nil)
 
 	resp, err := uc.CekNIM("123456")
@@ -104,7 +104,7 @@ func TestCekNIM_RosterBelumKlaim(t *testing.T) {
 
 func TestLogin_Sukses_NIM(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
-	u := registeredUser(entity.RoleUser)
+	u := registeredUser(entity.RoleMahasiswa)
 	mockUserRepo.On("FindByNIM", "123456").Return(u, nil)
 	mockUserRepo.On("Update", mock.AnythingOfType("*entity.User")).Return(nil)
 
@@ -118,7 +118,7 @@ func TestLogin_Sukses_NIM(t *testing.T) {
 
 func TestLogin_Sukses_Email(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
-	u := registeredUser(entity.RoleUser)
+	u := registeredUser(entity.RoleMahasiswa)
 	email := "budi@gmail.com"
 	u.Email = &email
 	mockUserRepo.On("FindByEmail", "budi@gmail.com").Return(u, nil)
@@ -133,7 +133,7 @@ func TestLogin_Sukses_Email(t *testing.T) {
 
 func TestLogin_PasswordSalah(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
-	u := registeredUser(entity.RoleUser)
+	u := registeredUser(entity.RoleMahasiswa)
 	mockUserRepo.On("FindByNIM", "123456").Return(u, nil)
 
 	resp, err := uc.Login(dto.LoginRequest{Identifier: "123456", Password: "salah"})
@@ -169,7 +169,7 @@ func TestLogin_RosterBelumKlaim_Ditolak(t *testing.T) {
 // Admin tanpa IsRegistered tetap bisa login (guard cuma untuk role user).
 func TestLogin_AdminBelumRegisterFlag_TetapMasuk(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
-	u := registeredUser(entity.RoleAdmin)
+	u := registeredUser(entity.RoleAsisten)
 	u.IsRegistered = false
 	mockUserRepo.On("FindByNIM", "123456").Return(u, nil)
 	mockUserRepo.On("Update", mock.AnythingOfType("*entity.User")).Return(nil)
@@ -212,7 +212,7 @@ func TestRegister_NIMTidakDiRoster(t *testing.T) {
 
 func TestRegister_SudahDiklaim(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
-	mockUserRepo.On("FindByNIM", "123456").Return(registeredUser(entity.RoleUser), nil)
+	mockUserRepo.On("FindByNIM", "123456").Return(registeredUser(entity.RoleMahasiswa), nil)
 
 	resp, err := uc.Register(dto.RegisterRequest{NIM: "123456", Email: "budi@gmail.com", Password: "password123"})
 
@@ -238,7 +238,7 @@ func TestRegister_KelasBelumLengkap(t *testing.T) {
 func TestRegister_EmailSudahDipakai(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
 	mockUserRepo.On("FindByNIM", "123456").Return(rosterUser(), nil)
-	mockUserRepo.On("FindByEmail", "budi@gmail.com").Return(registeredUser(entity.RoleUser), nil)
+	mockUserRepo.On("FindByEmail", "budi@gmail.com").Return(registeredUser(entity.RoleMahasiswa), nil)
 
 	resp, err := uc.Register(dto.RegisterRequest{NIM: "123456", Email: "budi@gmail.com", Password: "password123"})
 
@@ -312,7 +312,7 @@ func TestForgotPassword_EmailTidakTerdaftar_TetapSukses(t *testing.T) {
 // Terdaftar tapi tanpa konfigurasi Supabase -> diam-diam no-op (tidak panic).
 func TestForgotPassword_TanpaSupabase_NoOp(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
-	mockUserRepo.On("FindByEmail", "budi@gmail.com").Return(registeredUser(entity.RoleUser), nil)
+	mockUserRepo.On("FindByEmail", "budi@gmail.com").Return(registeredUser(entity.RoleMahasiswa), nil)
 
 	err := uc.ForgotPassword("budi@gmail.com")
 
@@ -346,7 +346,7 @@ func TestRegister_Supabase_MenyimpanPasswordHashLokal(t *testing.T) {
 	mockUserRepo.On("ClaimRoster", 1, "supa-uid-xyz", mock.AnythingOfType("*string"),
 		mock.MatchedBy(func(ph string) bool { return ph != "" && hash.Verify(ph, "password123") }),
 	).Return(nil)
-	mockUserRepo.On("FindByID", 1).Return(registeredUser(entity.RoleUser), nil)
+	mockUserRepo.On("FindByID", 1).Return(registeredUser(entity.RoleMahasiswa), nil)
 	mockUserRepo.On("Update", mock.AnythingOfType("*entity.User")).Return(nil)
 
 	resp, err := uc.Register(dto.RegisterRequest{NIM: "123456", Email: "budi@gmail.com", Password: "password123"})

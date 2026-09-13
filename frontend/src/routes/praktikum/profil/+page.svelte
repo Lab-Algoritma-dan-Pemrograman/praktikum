@@ -4,7 +4,7 @@
 	import { user } from '$lib/stores/auth';
 	import { User, Lock, Camera, Save, AtSign, Phone, Link2 } from 'lucide-svelte';
 
-	let isAdmin = $derived($user?.role === 'admin');
+	let isAdmin = $derived($user?.role === 'asisten');
 	let nama = $state('');
 	let nomorHp = $state('');
 	let medsos = $state('');

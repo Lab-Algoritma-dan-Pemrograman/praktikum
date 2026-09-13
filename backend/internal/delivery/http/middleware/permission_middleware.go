@@ -10,12 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RequirePermission cek konfigurasi key=role_permissions JSON {"admin":{"users:write":true}}
+// RequirePermission cek konfigurasi key=role_permissions JSON {"asisten":{"users:write":true}}
 // superadmin selalu bypass. Lazy: baca dari DB tiap request (kecil, jarang ganti).
 func RequirePermission(konfRepo repository.KonfigurasiRepository, resource, action string) gin.HandlerFunc {
 	key := resource + ":" + action
 	return func(c *gin.Context) {
-		if Role(c) == "superadmin" {
+		if Role(c) == "koordinator" {
 			c.Next()
 			return
 		}

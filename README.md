@@ -6,7 +6,7 @@ eksekusi kode langsung, penilaian massal berbantuan LLM, dan dashboard admin.
 
 > Domain & komentar kode berbahasa Indonesia — pertahankan konvensi ini saat mengedit.
 
-- **Production**: https://lab-ap.vercel.app
+- **Production**: https://algohub.web.id
 - **API docs (Swagger UI)**: `<backend>/swagger/index.html`
 - **Spesifikasi lengkap**: [`updateAndPRDERD/PRD _AND_ERD.md`](updateAndPRDERD/PRD%20_AND_ERD.md)
 

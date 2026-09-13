@@ -7,7 +7,7 @@
 	import type { User, Kelas, AmpuanKelompok } from '$lib/types';
 
 	// Hapus akun asisten hanya untuk superadmin (backend juga menolak role lain).
-	let canDeleteAsisten = $derived($user?.role === 'superadmin');
+	let canDeleteAsisten = $derived($user?.role === 'koordinator');
 
 	let list = $state<User[]>([]);
 	let kelasList = $state<Kelas[]>([]);

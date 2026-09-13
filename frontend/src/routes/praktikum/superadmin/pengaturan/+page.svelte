@@ -28,7 +28,7 @@
 
 	function isEnabled(key: string): boolean {
 		// default true jika belum ada entry (fail-open sebelum toggle)
-		const row = perms['admin'];
+		const row = perms['asisten'];
 		if (!row) return true;
 		const v = row[key];
 		if (v === undefined) return true;
@@ -38,8 +38,8 @@
 	function toggle(key: string) {
 		const cur = isEnabled(key);
 		const next = { ...perms };
-		if (!next['admin']) next['admin'] = {};
-		next['admin'] = { ...next['admin'], [key]: !cur };
+		if (!next['asisten']) next['asisten'] = {};
+		next['asisten'] = { ...next['asisten'], [key]: !cur };
 		perms = next;
 	}
 

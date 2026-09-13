@@ -40,7 +40,7 @@
 		{ href: '/praktikum/admin/pengaturan', label: 'Pengaturan Lobby', icon: Settings }
 	];
 
-	let isAdmin = $derived($user?.role === 'admin' || $user?.role === 'superadmin');
+	let isAdmin = $derived($user?.role === 'asisten' || $user?.role === 'koordinator');
 	let links = $derived(isAdmin ? adminLinks : userLinks);
 
 	let open = $state(false);              // mobile off-canvas

@@ -29,36 +29,36 @@ func TestUserUsecase_Delete_Guards(t *testing.T) {
 		return NewUserUsecase(users, mocks.NewKelasRepository(t))
 	}
 
-	admin := &entity.User{ID: adminID, Role: entity.RoleAdmin, NIM: "202314020"}
-	super := &entity.User{ID: superID, Role: entity.RoleSuperAdmin, NIM: "superadmin_ap"}
-	mhs := &entity.User{ID: mhsID, Role: entity.RoleUser, NIM: "202411001"}
+	admin := &entity.User{ID: adminID, Role: entity.RoleAsisten, NIM: "202314020"}
+	super := &entity.User{ID: superID, Role: entity.RoleKoordinator, NIM: "superadmin_ap"}
+	mhs := &entity.User{ID: mhsID, Role: entity.RoleMahasiswa, NIM: "202411001"}
 
 	t.Run("admin tidak boleh hapus asisten lain", func(t *testing.T) {
 		uc := newUC(t, admin, false)
-		err := uc.Delete(adminID, 11, string(entity.RoleAdmin))
+		err := uc.Delete(adminID, 11, string(entity.RoleAsisten))
 		assert.True(t, errors.Is(err, ErrForbidden))
 	})
 
 	t.Run("superadmin boleh hapus asisten", func(t *testing.T) {
 		uc := newUC(t, admin, true)
-		assert.NoError(t, uc.Delete(adminID, superID, string(entity.RoleSuperAdmin)))
+		assert.NoError(t, uc.Delete(adminID, superID, string(entity.RoleKoordinator)))
 	})
 
 	t.Run("superadmin tidak bisa dihapus superadmin lain", func(t *testing.T) {
 		uc := newUC(t, super, false)
-		err := uc.Delete(superID, 2, string(entity.RoleSuperAdmin))
+		err := uc.Delete(superID, 2, string(entity.RoleKoordinator))
 		assert.True(t, errors.Is(err, ErrForbidden))
 	})
 
 	t.Run("tidak bisa hapus akun sendiri", func(t *testing.T) {
 		uc := newUC(t, admin, false)
-		err := uc.Delete(adminID, adminID, string(entity.RoleSuperAdmin))
+		err := uc.Delete(adminID, adminID, string(entity.RoleKoordinator))
 		assert.True(t, errors.Is(err, ErrForbidden))
 	})
 
 	t.Run("admin tetap boleh hapus mahasiswa", func(t *testing.T) {
 		uc := newUC(t, mhs, true)
-		assert.NoError(t, uc.Delete(mhsID, adminID, string(entity.RoleAdmin)))
+		assert.NoError(t, uc.Delete(mhsID, adminID, string(entity.RoleAsisten)))
 	})
 }
 
@@ -68,7 +68,7 @@ func TestAuditLogUsecase_GetLogs_HidesSuperadmin(t *testing.T) {
 		repo := mocks.NewAuditLogRepository(t)
 		repo.On("FindAll", "", "", "", 1, 20, true).Return([]entity.AuditLog{}, int64(0), nil).Once()
 		uc := NewAuditLogUsecase(repo, mocks.NewUserRepository(t))
-		_, _, err := uc.GetLogs("", "", "", 1, 20, string(entity.RoleAdmin))
+		_, _, err := uc.GetLogs("", "", "", 1, 20, string(entity.RoleAsisten))
 		assert.NoError(t, err)
 	})
 
@@ -76,7 +76,7 @@ func TestAuditLogUsecase_GetLogs_HidesSuperadmin(t *testing.T) {
 		repo := mocks.NewAuditLogRepository(t)
 		repo.On("FindAll", "", "", "", 1, 20, false).Return([]entity.AuditLog{}, int64(0), nil).Once()
 		uc := NewAuditLogUsecase(repo, mocks.NewUserRepository(t))
-		_, _, err := uc.GetLogs("", "", "", 1, 20, string(entity.RoleSuperAdmin))
+		_, _, err := uc.GetLogs("", "", "", 1, 20, string(entity.RoleKoordinator))
 		assert.NoError(t, err)
 	})
 
@@ -84,7 +84,7 @@ func TestAuditLogUsecase_GetLogs_HidesSuperadmin(t *testing.T) {
 		repo := mocks.NewAuditLogRepository(t)
 		repo.AssertNotCalled(t, "FindAll", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything)
 		uc := NewAuditLogUsecase(repo, mocks.NewUserRepository(t))
-		logs, total, err := uc.GetLogs("", string(entity.RoleSuperAdmin), "", 1, 20, string(entity.RoleAdmin))
+		logs, total, err := uc.GetLogs("", string(entity.RoleKoordinator), "", 1, 20, string(entity.RoleAsisten))
 		assert.NoError(t, err)
 		assert.Empty(t, logs)
 		assert.Zero(t, total)

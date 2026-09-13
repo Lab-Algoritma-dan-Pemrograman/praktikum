@@ -28,3 +28,9 @@ frontend/check_out.txt
 frontend/test-results/
 frontend/playwright-report/
 backups/
+
+# Script rekap nilai lokal (bukan bagian aplikasi)
+tools-rekap-nilai/
+
+# Bun-only: cegah npm lockfile liar
+package-lock.json

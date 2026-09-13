@@ -9,7 +9,7 @@
 
 	onMount(() => {
 		const u = get(user);
-		if (!u || (u.role !== 'admin' && u.role !== 'superadmin')) {
+		if (!u || (u.role !== 'asisten' && u.role !== 'koordinator')) {
 			goto('/praktikum/dashboard');
 			return;
 		}

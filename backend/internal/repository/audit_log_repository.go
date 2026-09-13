@@ -32,7 +32,7 @@ func (r *auditLogRepository) FindAll(search string, role string, action string, 
 	query := r.db.Model(&entity.AuditLog{})
 
 	if hideSuperadmin {
-		query = query.Where("role <> ?", string(entity.RoleSuperAdmin))
+		query = query.Where("role <> ?", string(entity.RoleKoordinator))
 	}
 
 	if search != "" {
