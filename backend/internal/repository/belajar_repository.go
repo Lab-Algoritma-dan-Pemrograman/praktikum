@@ -22,6 +22,11 @@ type BelajarRepository interface {
 	UpdateMateri(m *entity.Materi) error
 	DeleteMateri(id string) error
 
+	ListPencapaian() ([]entity.Pencapaian, error)
+	ListPencapaianTerbuka(userID int) ([]entity.PencapaianTerbuka, error)
+	BukaPencapaian(userID int, pencapaianID string) error
+	HitungMateriSelesai(userID int) (int64, error)
+
 	ListProgres(userID int) ([]entity.ProgresBelajar, error)
 	TandaiSelesai(p *entity.ProgresBelajar) error
 	FindProfil(userID int) (*entity.ProfilBelajar, error)
@@ -85,6 +90,32 @@ func (r *belajarRepository) UpdateMateri(m *entity.Materi) error { return r.db.S
 
 func (r *belajarRepository) DeleteMateri(id string) error {
 	return r.db.Delete(&entity.Materi{}, "id = ?", id).Error
+}
+
+func (r *belajarRepository) ListPencapaian() ([]entity.Pencapaian, error) {
+	var out []entity.Pencapaian
+	return out, r.db.Order("id asc").Find(&out).Error
+}
+
+func (r *belajarRepository) ListPencapaianTerbuka(userID int) ([]entity.PencapaianTerbuka, error) {
+	var out []entity.PencapaianTerbuka
+	return out, r.db.Where("user_id = ?", userID).Find(&out).Error
+}
+
+// BukaPencapaian idempoten: unique (user_id, pencapaian_id).
+func (r *belajarRepository) BukaPencapaian(userID int, pencapaianID string) error {
+	return r.db.Exec(`
+		insert into pencapaian_terbuka (user_id, pencapaian_id, dibuka_pada)
+		values (?, ?, now())
+		on conflict (user_id, pencapaian_id) do nothing
+	`, userID, pencapaianID).Error
+}
+
+func (r *belajarRepository) HitungMateriSelesai(userID int) (int64, error) {
+	var n int64
+	err := r.db.Model(&entity.ProgresBelajar{}).
+		Where("user_id = ? and selesai = true", userID).Count(&n).Error
+	return n, err
 }
 
 func (r *belajarRepository) ListProgres(userID int) ([]entity.ProgresBelajar, error) {

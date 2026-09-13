@@ -43,6 +43,7 @@ type Handlers struct {
 	Compile      *handler.CompileHandler
 	AuditLog     *handler.AuditLogHandler
 	Belajar      *handler.BelajarHandler
+	Game         *handler.GameHandler
 }
 
 // HealthCheck GET /api/health
@@ -125,6 +126,15 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		authed.GET("/belajar/materi/:id", h.Belajar.GetMateri)
 		authed.GET("/belajar/progres", h.Belajar.ProgresSaya)
 		authed.POST("/belajar/materi/:id/selesai", h.Belajar.SelesaikanMateri)
+		authed.GET("/belajar/pencapaian", h.Belajar.PencapaianSaya)
+
+		// Game bug-hunt. Soal dikirim tanpa kunci; jawaban dinilai server.
+		authed.GET("/game/konfigurasi", h.Game.Konfigurasi)
+		authed.GET("/game/status", h.Game.StatusMain)
+		authed.POST("/game/mulai", h.Game.MulaiMain)
+		authed.POST("/game/selesai", h.Game.SelesaiMain)
+		authed.GET("/game/peringkat", h.Game.Peringkat)
+		authed.POST("/game/detak", h.Game.Detak)
 	}
 
 	// ---- Praktikum (role user) ----
@@ -161,6 +171,14 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		admin.POST("/materi", h.Belajar.AdminCreateMateri)
 		admin.PUT("/materi/:id", h.Belajar.AdminUpdateMateri)
 		admin.DELETE("/materi/:id", h.Belajar.AdminDeleteMateri)
+
+		// Game & monitoring
+		admin.GET("/monitoring/sesi", h.Game.SesiAktif)
+		admin.GET("/game/soal", h.Game.AdminListSoal)
+		admin.POST("/game/soal", h.Game.AdminCreateSoal)
+		admin.PUT("/game/soal/:id", h.Game.AdminUpdateSoal)
+		admin.DELETE("/game/soal/:id", h.Game.AdminDeleteSoal)
+		admin.PUT("/game/konfigurasi", h.Game.AdminSimpanKonfigurasi)
 
 		// Kelas
 		admin.GET("/kelas", h.Kelas.List)

@@ -59,6 +59,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	aktivasiTxRepo := repository.NewAktivasiTxRepo(db)
 	auditLogRepo := repository.NewAuditLogRepository(db)
 	belajarRepo := repository.NewBelajarRepository(db)
+	gameRepo := repository.NewGameRepository(db)
 
 	// ---- Usecase ----
 	authUC := usecase.NewAuthUsecase(userRepo, kelasRepo, jm, cfg, hash.FbScryptConfig{
@@ -85,6 +86,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	aiGradingUC := usecase.NewAIGradingUsecase(jawabanRepo, penilaianUC, oc, konfRepo)
 	auditLogUC := usecase.NewAuditLogUsecase(auditLogRepo, userRepo)
 	belajarUC := usecase.NewBelajarUsecase(belajarRepo)
+	gameUC := usecase.NewGameUsecase(gameRepo, belajarRepo)
 
 	// ---- Handler ----
 	h := route.Handlers{
@@ -112,6 +114,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 		Compile:      handler.NewCompileHandler(cwasmCompiler),
 		AuditLog:     handler.NewAuditLogHandler(auditLogUC),
 		Belajar:      handler.NewBelajarHandler(belajarUC),
+		Game:         handler.NewGameHandler(gameUC),
 	}
 
 	r := route.Setup(cfg, jm, userRepo, konfRepo, h)

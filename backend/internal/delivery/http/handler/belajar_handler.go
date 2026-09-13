@@ -225,3 +225,21 @@ func (h *BelajarHandler) AdminDeleteMateri(c *gin.Context) {
 	}
 	response.OK(c, http.StatusOK, "Materi dihapus", nil)
 }
+
+// PencapaianSaya GET /api/belajar/pencapaian
+// @Summary Pencapaian Saya
+// @Description Semua pencapaian + yang sudah terbuka. Server mengevaluasi
+// @Description apakah ada yang baru terpenuhi, client tidak bisa menentukan.
+// @Tags Belajar
+// @Security bearerAuth
+// @Produce json
+// @Success 200 {object} response.Envelope{data=dto.PencapaianSayaResponse}
+// @Router /belajar/pencapaian [get]
+func (h *BelajarHandler) PencapaianSaya(c *gin.Context) {
+	res, err := h.uc.PencapaianSaya(middleware.UserID(c))
+	if err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Pencapaian", res)
+}

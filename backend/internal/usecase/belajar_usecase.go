@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"strconv"
 	"time"
 
 	"lab-ap/internal/dto"
@@ -157,4 +158,121 @@ func (uc *BelajarUsecase) SelesaikanMateri(userID int, materiID string) (*entity
 		return nil, err
 	}
 	return profil, nil
+}
+
+// PencapaianSaya mengembalikan semua pencapaian + yang sudah terbuka,
+// sekaligus MENGEVALUASI apakah ada yang baru terpenuhi.
+//
+// Evaluasi dilakukan di server: sebelumnya frontend yang memutuskan lalu
+// menulis sendiri ke DB, sehingga pencapaian bisa dibuka dengan memanggil
+// insert langsung. Sekarang client tidak bisa menentukan apa pun.
+func (uc *BelajarUsecase) PencapaianSaya(userID int) (*dto.PencapaianSayaResponse, error) {
+	semua, err := uc.repo.ListPencapaian()
+	if err != nil {
+		return nil, err
+	}
+	terbuka, err := uc.repo.ListPencapaianTerbuka(userID)
+	if err != nil {
+		return nil, err
+	}
+	sudah := make(map[string]bool, len(terbuka))
+	for _, t := range terbuka {
+		sudah[t.PencapaianID] = true
+	}
+
+	profil, err := uc.repo.FindProfil(userID)
+	if err != nil {
+		profil = &entity.ProfilBelajar{UserID: userID, LevelAngka: 1}
+	}
+	jumlahSelesai, _ := uc.repo.HitungMateriSelesai(userID)
+
+	// Level yang sudah tuntas: semua materi di level itu selesai.
+	levelTuntas := uc.levelTuntas(userID)
+
+	baru := []entity.Pencapaian{}
+	for _, p := range semua {
+		if sudah[p.ID] {
+			continue
+		}
+		if !uc.syaratTerpenuhi(p, profil, jumlahSelesai, levelTuntas) {
+			continue
+		}
+		if err := uc.repo.BukaPencapaian(userID, p.ID); err != nil {
+			continue
+		}
+		sudah[p.ID] = true
+		baru = append(baru, p)
+	}
+
+	ids := make([]string, 0, len(sudah))
+	for id := range sudah {
+		ids = append(ids, id)
+	}
+	return &dto.PencapaianSayaResponse{Semua: semua, TerbukaID: ids, BaruSaja: baru}, nil
+}
+
+// syaratTerpenuhi mengevaluasi satu pencapaian. syarat_nilai bertipe text
+// karena sumbernya campur angka ("1000") dan id level ("c-level-1").
+func (uc *BelajarUsecase) syaratTerpenuhi(
+	p entity.Pencapaian, profil *entity.ProfilBelajar,
+	jumlahSelesai int64, levelTuntas map[string]bool,
+) bool {
+	switch p.SyaratTipe {
+	case entity.SyaratLevelSelesai:
+		return levelTuntas[p.SyaratNilai]
+	case entity.SyaratXP:
+		n, err := strconv.Atoi(p.SyaratNilai)
+		return err == nil && profil.XP >= n
+	case entity.SyaratStreak:
+		n, err := strconv.Atoi(p.SyaratNilai)
+		return err == nil && profil.Streak >= n
+	case entity.SyaratJumlahMateri:
+		n, err := strconv.Atoi(p.SyaratNilai)
+		return err == nil && int(jumlahSelesai) >= n
+	default:
+		// SyaratSkorGame belum dievaluasi: butuh agregat riwayat game.
+		return false
+	}
+}
+
+// levelTuntas: level dianggap tuntas bila semua materinya sudah selesai.
+func (uc *BelajarUsecase) levelTuntas(userID int) map[string]bool {
+	out := map[string]bool{}
+	levels, err := uc.repo.ListLevel()
+	if err != nil {
+		return out
+	}
+	progres, err := uc.repo.ListProgres(userID)
+	if err != nil {
+		return out
+	}
+	selesai := map[string]bool{}
+	for _, p := range progres {
+		if p.Selesai {
+			selesai[p.MateriID] = true
+		}
+	}
+	for _, lv := range levels {
+		moduls, err := uc.repo.ListModul(lv.ID)
+		if err != nil || len(moduls) == 0 {
+			continue
+		}
+		total, tuntas := 0, 0
+		for _, m := range moduls {
+			materi, err := uc.repo.ListMateri(m.ID)
+			if err != nil {
+				continue
+			}
+			for _, mt := range materi {
+				total++
+				if selesai[mt.ID] {
+					tuntas++
+				}
+			}
+		}
+		if total > 0 && total == tuntas {
+			out[lv.ID] = true
+		}
+	}
+	return out
 }
