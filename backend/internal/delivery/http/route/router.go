@@ -42,6 +42,7 @@ type Handlers struct {
 	Run          *handler.RunHandler
 	Compile      *handler.CompileHandler
 	AuditLog     *handler.AuditLogHandler
+	Belajar      *handler.BelajarHandler
 }
 
 // HealthCheck GET /api/health
@@ -116,6 +117,14 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		authed.GET("/auth/me", h.Auth.Me)
 		authed.GET("/profile", h.Profile.Get)
 		authed.PUT("/profile", h.Profile.Update)
+
+		// Belajar (elearning). Materi di sini TANPA kunci jawaban.
+		authed.GET("/belajar/level", h.Belajar.ListLevel)
+		authed.GET("/belajar/modul", h.Belajar.ListModul)
+		authed.GET("/belajar/materi", h.Belajar.ListMateri)
+		authed.GET("/belajar/materi/:id", h.Belajar.GetMateri)
+		authed.GET("/belajar/progres", h.Belajar.ProgresSaya)
+		authed.POST("/belajar/materi/:id/selesai", h.Belajar.SelesaikanMateri)
 	}
 
 	// ---- Praktikum (role user) ----
@@ -145,6 +154,13 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		admin.PUT("/users/:id", h.User.UpdateMahasiswa)
 		admin.DELETE("/users/:id", h.User.Delete)
 		admin.POST("/users/:id/reset-password", h.User.ResetPassword)
+
+		// Materi (LENGKAP dengan kunci jawaban -- jangan dipakai frontend mahasiswa)
+		admin.GET("/materi", h.Belajar.AdminListMateri)
+		admin.GET("/materi/:id", h.Belajar.AdminGetMateri)
+		admin.POST("/materi", h.Belajar.AdminCreateMateri)
+		admin.PUT("/materi/:id", h.Belajar.AdminUpdateMateri)
+		admin.DELETE("/materi/:id", h.Belajar.AdminDeleteMateri)
 
 		// Kelas
 		admin.GET("/kelas", h.Kelas.List)

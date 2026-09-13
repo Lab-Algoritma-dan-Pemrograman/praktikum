@@ -58,6 +58,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	penilaianTxRepo := repository.NewPenilaianTxRepo(db)
 	aktivasiTxRepo := repository.NewAktivasiTxRepo(db)
 	auditLogRepo := repository.NewAuditLogRepository(db)
+	belajarRepo := repository.NewBelajarRepository(db)
 
 	// ---- Usecase ----
 	authUC := usecase.NewAuthUsecase(userRepo, kelasRepo, jm, cfg, hash.FbScryptConfig{
@@ -83,6 +84,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	rekapUC := usecase.NewRekapUsecase(rekapRepo, kelasRepo)
 	aiGradingUC := usecase.NewAIGradingUsecase(jawabanRepo, penilaianUC, oc, konfRepo)
 	auditLogUC := usecase.NewAuditLogUsecase(auditLogRepo, userRepo)
+	belajarUC := usecase.NewBelajarUsecase(belajarRepo)
 
 	// ---- Handler ----
 	h := route.Handlers{
@@ -109,6 +111,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 		Run:          handler.NewRunHandler(glotClient),
 		Compile:      handler.NewCompileHandler(cwasmCompiler),
 		AuditLog:     handler.NewAuditLogHandler(auditLogUC),
+		Belajar:      handler.NewBelajarHandler(belajarUC),
 	}
 
 	r := route.Setup(cfg, jm, userRepo, konfRepo, h)
