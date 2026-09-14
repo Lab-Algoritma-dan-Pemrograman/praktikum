@@ -127,6 +127,7 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		authed.GET("/belajar/progres", h.Belajar.ProgresSaya)
 		authed.POST("/belajar/materi/:id/selesai", h.Belajar.SelesaikanMateri)
 		authed.GET("/belajar/pencapaian", h.Belajar.PencapaianSaya)
+		authed.GET("/belajar/sesi", h.Belajar.SesiBelajar)
 
 		// Game bug-hunt. Soal dikirim tanpa kunci; jawaban dinilai server.
 		authed.GET("/game/konfigurasi", h.Game.Konfigurasi)
@@ -171,6 +172,15 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		admin.POST("/materi", h.Belajar.AdminCreateMateri)
 		admin.PUT("/materi/:id", h.Belajar.AdminUpdateMateri)
 		admin.DELETE("/materi/:id", h.Belajar.AdminDeleteMateri)
+
+		// Belajar: koreksi progres mahasiswa
+		admin.PUT("/belajar/kurikulum", h.Belajar.AdminSimpanKurikulum)
+		admin.DELETE("/belajar/kurikulum", h.Belajar.AdminKosongkanKurikulum)
+		admin.GET("/belajar/users", h.Belajar.AdminListUserBelajar)
+		admin.GET("/belajar/users/:id/progres", h.Belajar.AdminProgresUser)
+		admin.PUT("/belajar/users/:id/akses-level", h.Belajar.AdminSetAksesLevel)
+		admin.POST("/belajar/users/:id/reset", h.Belajar.AdminResetProgres)
+		admin.PUT("/belajar/users/:id/xp", h.Belajar.AdminSetXP)
 
 		// Game & monitoring
 		admin.GET("/monitoring/sesi", h.Game.SesiAktif)

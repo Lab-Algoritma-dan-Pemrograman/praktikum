@@ -44,8 +44,8 @@ type GameRepository interface {
 	CatatRiwayat(r *entity.GameRiwayat) error
 	HitungMainSejak(userID int, jenis string, sejak time.Time) (int64, error)
 
-	Peringkat(limit int, kelasID *int) ([]BarisPeringkat, error)
-	PeringkatUser(userID int, kelasID *int) (int, error)
+	Peringkat(limit int, kelasID *int, namaKelas string) ([]BarisPeringkat, error)
+	PeringkatUser(userID int, kelasID *int, namaKelas string) (int, error)
 
 	UpsertSesiAktif(userID int, aktivitas string) error
 	ListSesiAktif(dalamDetik int) ([]BarisSesiAktif, error)
@@ -109,7 +109,7 @@ func (r *gameRepository) HitungMainSejak(userID int, jenis string, sejak time.Ti
 }
 
 // Peringkat: hanya role mahasiswa, urut XP. Kelas ikut lewat join.
-func (r *gameRepository) Peringkat(limit int, kelasID *int) ([]BarisPeringkat, error) {
+func (r *gameRepository) Peringkat(limit int, kelasID *int, namaKelas string) ([]BarisPeringkat, error) {
 	var out []BarisPeringkat
 	q := r.db.Table("profil_belajar pb").
 		Select(`pb.user_id, u.nim, u.nama, coalesce(k.nama_kelas,'') as kelas,
@@ -121,12 +121,14 @@ func (r *gameRepository) Peringkat(limit int, kelasID *int) ([]BarisPeringkat, e
 		Limit(limit)
 	if kelasID != nil {
 		q = q.Where("u.kelas_id = ?", *kelasID)
+	} else if namaKelas != "" {
+		q = q.Where("k.nama_kelas = ?", namaKelas)
 	}
 	return out, q.Scan(&out).Error
 }
 
 // PeringkatUser mengembalikan posisi user (1 = teratas).
-func (r *gameRepository) PeringkatUser(userID int, kelasID *int) (int, error) {
+func (r *gameRepository) PeringkatUser(userID int, kelasID *int, namaKelas string) (int, error) {
 	var xp int
 	if err := r.db.Table("profil_belajar").Select("xp").
 		Where("user_id = ?", userID).Scan(&xp).Error; err != nil {
@@ -135,9 +137,12 @@ func (r *gameRepository) PeringkatUser(userID int, kelasID *int) (int, error) {
 	var n int64
 	q := r.db.Table("profil_belajar pb").
 		Joins("join users u on u.id = pb.user_id").
+		Joins("left join kelas k on k.id = u.kelas_id").
 		Where("u.role = ? and pb.xp > ?", "mahasiswa", xp)
 	if kelasID != nil {
 		q = q.Where("u.kelas_id = ?", *kelasID)
+	} else if namaKelas != "" {
+		q = q.Where("k.nama_kelas = ?", namaKelas)
 	}
 	if err := q.Count(&n).Error; err != nil {
 		return 0, err

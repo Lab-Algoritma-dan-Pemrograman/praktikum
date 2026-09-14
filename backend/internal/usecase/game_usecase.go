@@ -247,15 +247,15 @@ func (uc *GameUsecase) AdminDeleteSoal(id int) error {
 
 // ---- Peringkat ----
 
-func (uc *GameUsecase) Peringkat(limit int, kelasID *int) ([]repository.BarisPeringkat, error) {
+func (uc *GameUsecase) Peringkat(limit int, kelasID *int, namaKelas string) ([]repository.BarisPeringkat, error) {
 	if limit <= 0 || limit > 100 {
 		limit = 10
 	}
-	return uc.repo.Peringkat(limit, kelasID)
+	return uc.repo.Peringkat(limit, kelasID, namaKelas)
 }
 
-func (uc *GameUsecase) PeringkatSaya(userID int, kelasID *int) (int, error) {
-	return uc.repo.PeringkatUser(userID, kelasID)
+func (uc *GameUsecase) PeringkatSaya(userID int, kelasID *int, namaKelas string) (int, error) {
+	return uc.repo.PeringkatUser(userID, kelasID, namaKelas)
 }
 
 // ---- Monitoring ----

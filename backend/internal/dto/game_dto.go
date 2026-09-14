@@ -72,3 +72,72 @@ type PencapaianSayaResponse struct {
 	TerbukaID []string           `json:"terbuka_id"`
 	BaruSaja []entity.Pencapaian `json:"baru_saja"`
 }
+
+// ---- Admin belajar ----
+
+type ResetProgresRequest struct {
+	LevelID string `json:"level_id"`
+}
+
+type SetXPRequest struct {
+	XP int `json:"xp"`
+}
+
+// ---- Sesi belajar ----
+
+// SesiBelajarResponse: satu panggilan untuk menyiapkan sesi elearning.
+// Menggabungkan identitas (dari token) dengan profil belajar, supaya
+// frontend tidak perlu membaca tabel users sendiri.
+type SesiBelajarResponse struct {
+	UserID    int    `json:"user_id"`
+	NIM       string `json:"nim"`
+	Nama      string `json:"nama"`
+	Kelas     string `json:"kelas"`
+	Email     string `json:"email"`
+	FotoURL   string `json:"foto_url"`
+	Role      string `json:"role"`
+	XP        int    `json:"xp"`
+	Level     int    `json:"level"`
+	Streak    int    `json:"streak"`
+	AksesLevel interface{} `json:"akses_level"`
+	MateriSelesai []string `json:"materi_selesai"`
+}
+
+type SetAksesLevelRequest struct {
+	AksesLevel map[string]string `json:"akses_level"`
+}
+
+// ---- Simpan kurikulum penuh ----
+
+type MateriKurikulumRequest struct {
+	ID             string      `json:"id" binding:"required"`
+	Judul          string      `json:"judul"`
+	Penjelasan     string      `json:"penjelasan"`
+	ContohKode     string      `json:"contoh_kode"`
+	KodeAwal       string      `json:"kode_awal"`
+	Solusi         string      `json:"solusi"`
+	Petunjuk       string      `json:"petunjuk"`
+	Kuis           interface{} `json:"kuis"`
+	KasusUji       interface{} `json:"kasus_uji"`
+	AturanValidasi interface{} `json:"aturan_validasi"`
+	XPHadiah       int         `json:"xp_hadiah"`
+}
+
+type ModulKurikulumRequest struct {
+	ID     string                   `json:"id" binding:"required"`
+	Judul  string                   `json:"judul"`
+	Materi []MateriKurikulumRequest `json:"materi"`
+}
+
+type LevelKurikulumRequest struct {
+	ID        string                  `json:"id" binding:"required"`
+	Judul     string                  `json:"judul"`
+	Deskripsi string                  `json:"deskripsi"`
+	ModeAkses string                  `json:"mode_akses"`
+	Terkunci  bool                    `json:"terkunci"`
+	Modul     []ModulKurikulumRequest `json:"modul"`
+}
+
+type SimpanKurikulumRequest struct {
+	Level []LevelKurikulumRequest `json:"level" binding:"required"`
+}

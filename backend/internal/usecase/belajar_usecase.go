@@ -1,8 +1,11 @@
 package usecase
 
 import (
+	"encoding/json"
 	"strconv"
 	"time"
+
+	"gorm.io/datatypes"
 
 	"lab-ap/internal/dto"
 	"lab-ap/internal/entity"
@@ -275,4 +278,210 @@ func (uc *BelajarUsecase) levelTuntas(userID int) map[string]bool {
 		}
 	}
 	return out
+}
+
+// ResetProgres menghapus progres belajar seorang mahasiswa.
+// levelID kosong = seluruh level. XP dihitung ulang dari materi yang tersisa,
+// bukan dikurangi angka tetap, supaya tidak pernah meleset.
+func (uc *BelajarUsecase) ResetProgres(userID int, levelID string) error {
+	if levelID == "" {
+		if err := uc.repo.HapusSemuaProgres(userID); err != nil {
+			return err
+		}
+		if err := uc.repo.HapusPencapaianTerbuka(userID); err != nil {
+			return err
+		}
+	} else {
+		materiIDs, err := uc.materiDiLevel(levelID)
+		if err != nil {
+			return err
+		}
+		if _, err := uc.repo.HapusProgres(userID, materiIDs); err != nil {
+			return err
+		}
+	}
+	return uc.hitungUlangXP(userID)
+}
+
+// SetXP menetapkan XP secara manual (untuk koreksi asisten).
+func (uc *BelajarUsecase) SetXP(userID, xp int) error {
+	if xp < 0 {
+		xp = 0
+	}
+	profil, err := uc.repo.FindProfil(userID)
+	if err != nil {
+		profil = &entity.ProfilBelajar{UserID: userID, LevelAngka: 1}
+	}
+	profil.XP = xp
+	return uc.repo.SimpanProfil(profil)
+}
+
+func (uc *BelajarUsecase) materiDiLevel(levelID string) ([]string, error) {
+	moduls, err := uc.repo.ListModul(levelID)
+	if err != nil {
+		return nil, err
+	}
+	var ids []string
+	for _, m := range moduls {
+		materi, err := uc.repo.ListMateri(m.ID)
+		if err != nil {
+			return nil, err
+		}
+		for _, mt := range materi {
+			ids = append(ids, mt.ID)
+		}
+	}
+	return ids, nil
+}
+
+// hitungUlangXP menjumlahkan ulang XP dari materi yang benar-benar selesai
+// ditambah XP dari riwayat game, supaya angka selalu cocok dengan kenyataan.
+func (uc *BelajarUsecase) hitungUlangXP(userID int) error {
+	xpMateri, err := uc.repo.TotalXPMateriSelesai(userID)
+	if err != nil {
+		return err
+	}
+	total := xpMateri
+	xpGame, err := uc.repo.TotalXPGame(userID)
+	if err == nil {
+		total += xpGame
+	}
+	profil, err := uc.repo.FindProfil(userID)
+	if err != nil {
+		profil = &entity.ProfilBelajar{UserID: userID, LevelAngka: 1}
+	}
+	profil.XP = total
+	return uc.repo.SimpanProfil(profil)
+}
+
+// SesiBelajar menyiapkan seluruh data awal sesi elearning dalam satu panggilan:
+// identitas, profil belajar, dan materi yang sudah selesai.
+func (uc *BelajarUsecase) SesiBelajar(userID int) (*dto.SesiBelajarResponse, error) {
+	b, err := uc.repo.SesiBelajar(userID)
+	if err != nil {
+		return nil, ErrNotFound
+	}
+	progres, err := uc.repo.ListProgres(userID)
+	if err != nil {
+		return nil, err
+	}
+	selesai := make([]string, 0, len(progres))
+	for _, p := range progres {
+		if p.Selesai {
+			selesai = append(selesai, p.MateriID)
+		}
+	}
+
+	var akses interface{} = map[string]string{}
+	if len(b.AksesLevel) > 0 {
+		var tmp map[string]string
+		if json.Unmarshal(b.AksesLevel, &tmp) == nil {
+			akses = tmp
+		}
+	}
+
+	return &dto.SesiBelajarResponse{
+		UserID: b.UserID, NIM: b.NIM, Nama: b.Nama, Kelas: b.Kelas,
+		Email: b.Email, FotoURL: b.FotoURL, Role: b.Role,
+		XP: b.XP, Level: b.Level, Streak: b.Streak,
+		AksesLevel: akses, MateriSelesai: selesai,
+	}, nil
+}
+
+// ListUserBelajar daftar mahasiswa beserta profil belajarnya (layar admin).
+func (uc *BelajarUsecase) ListUserBelajar() ([]dto.SesiBelajarResponse, error) {
+	rows, err := uc.repo.ListUserBelajar()
+	if err != nil {
+		return nil, err
+	}
+	out := make([]dto.SesiBelajarResponse, 0, len(rows))
+	for _, b := range rows {
+		var akses interface{} = map[string]string{}
+		if len(b.AksesLevel) > 0 {
+			var tmp map[string]string
+			if json.Unmarshal(b.AksesLevel, &tmp) == nil {
+				akses = tmp
+			}
+		}
+		out = append(out, dto.SesiBelajarResponse{
+			UserID: b.UserID, NIM: b.NIM, Nama: b.Nama, Kelas: b.Kelas,
+			Email: b.Email, FotoURL: b.FotoURL, Role: b.Role,
+			XP: b.XP, Level: b.Level, Streak: b.Streak, AksesLevel: akses,
+		})
+	}
+	return out, nil
+}
+
+// ProgresUser progres belajar milik mahasiswa tertentu (layar admin).
+func (uc *BelajarUsecase) ProgresUser(userID int) ([]entity.ProgresBelajar, error) {
+	return uc.repo.ListProgres(userID)
+}
+
+// SetAksesLevel menyetel akses level satu mahasiswa. Nilai yang diterima
+// hanya auto/unlocked/locked supaya tidak ada nilai liar masuk basis data.
+func (uc *BelajarUsecase) SetAksesLevel(userID int, akses map[string]string) error {
+	bersih := map[string]string{}
+	for k, v := range akses {
+		if v == "auto" || v == "unlocked" || v == "locked" {
+			bersih[k] = v
+		}
+	}
+	b, err := json.Marshal(bersih)
+	if err != nil {
+		return err
+	}
+	return uc.repo.SetAksesLevel(userID, b)
+}
+
+// SimpanKurikulum menyimpan seluruh struktur kurikulum sekaligus.
+// Urutan level/modul/materi diambil dari urutan dalam permintaan.
+func (uc *BelajarUsecase) SimpanKurikulum(req dto.SimpanKurikulumRequest) error {
+	var levels []entity.Level
+	var moduls []entity.Modul
+	var materi []entity.Materi
+
+	for li, l := range req.Level {
+		mode := l.ModeAkses
+		if mode != "auto" && mode != "unlocked" && mode != "locked" {
+			mode = "auto"
+		}
+		levels = append(levels, entity.Level{
+			ID: l.ID, Judul: l.Judul, Deskripsi: l.Deskripsi,
+			ModeAkses: mode, Terkunci: l.Terkunci, Urutan: li,
+		})
+		for mi, m := range l.Modul {
+			moduls = append(moduls, entity.Modul{
+				ID: m.ID, LevelID: l.ID, Judul: m.Judul, Urutan: mi,
+			})
+			for ti, t := range m.Materi {
+				materi = append(materi, entity.Materi{
+					ID: t.ID, ModulID: m.ID, Judul: t.Judul,
+					Penjelasan: t.Penjelasan, ContohKode: t.ContohKode,
+					KodeAwal: t.KodeAwal, Solusi: t.Solusi, Petunjuk: t.Petunjuk,
+					Kuis:           keJSON(t.Kuis),
+					KasusUji:       keJSON(t.KasusUji),
+					AturanValidasi: keJSON(t.AturanValidasi),
+					Urutan:         ti,
+					XPHadiah:       t.XPHadiah,
+				})
+			}
+		}
+	}
+	return uc.repo.SimpanKurikulum(levels, moduls, materi)
+}
+
+// KosongkanKurikulum menghapus seluruh kurikulum beserta progres yang menempel.
+func (uc *BelajarUsecase) KosongkanKurikulum() error {
+	return uc.repo.KosongkanKurikulum()
+}
+
+func keJSON(v interface{}) datatypes.JSON {
+	if v == nil {
+		return datatypes.JSON([]byte("null"))
+	}
+	b, err := json.Marshal(v)
+	if err != nil {
+		return datatypes.JSON([]byte("null"))
+	}
+	return datatypes.JSON(b)
 }

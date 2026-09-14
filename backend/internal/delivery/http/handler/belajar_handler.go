@@ -243,3 +243,177 @@ func (h *BelajarHandler) PencapaianSaya(c *gin.Context) {
 	}
 	response.OK(c, http.StatusOK, "Pencapaian", res)
 }
+
+// AdminResetProgres POST /api/admin/belajar/users/:id/reset
+// @Summary Reset Progres Belajar Mahasiswa
+// @Description Menghapus progres belajar. level_id kosong = semua level.
+// @Description XP dihitung ulang dari materi yang tersisa, bukan dikurangi angka tetap.
+// @Tags Admin - Belajar
+// @Security bearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "ID User"
+// @Param request body dto.ResetProgresRequest false "Level tertentu"
+// @Success 200 {object} response.Envelope
+// @Router /admin/belajar/users/{id}/reset [post]
+func (h *BelajarHandler) AdminResetProgres(c *gin.Context) {
+	id, ok := idParam(c, "id")
+	if !ok {
+		return
+	}
+	var req dto.ResetProgresRequest
+	_ = c.ShouldBindJSON(&req)
+	if err := h.uc.ResetProgres(id, req.LevelID); err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Progres belajar direset", nil)
+}
+
+// AdminSetXP PUT /api/admin/belajar/users/:id/xp
+// @Summary Setel XP Mahasiswa
+// @Tags Admin - Belajar
+// @Security bearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "ID User"
+// @Param request body dto.SetXPRequest true "XP baru"
+// @Success 200 {object} response.Envelope
+// @Router /admin/belajar/users/{id}/xp [put]
+func (h *BelajarHandler) AdminSetXP(c *gin.Context) {
+	id, ok := idParam(c, "id")
+	if !ok {
+		return
+	}
+	var req dto.SetXPRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Fail(c, http.StatusBadRequest, "Input tidak valid", err.Error())
+		return
+	}
+	if err := h.uc.SetXP(id, req.XP); err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "XP diperbarui", nil)
+}
+
+// SesiBelajar GET /api/belajar/sesi
+// @Summary Sesi Belajar
+// @Description Identitas, profil belajar, dan materi yang sudah selesai
+// @Description dalam satu panggilan. Dipakai elearning saat mulai.
+// @Tags Belajar
+// @Security bearerAuth
+// @Produce json
+// @Success 200 {object} response.Envelope{data=dto.SesiBelajarResponse}
+// @Router /belajar/sesi [get]
+func (h *BelajarHandler) SesiBelajar(c *gin.Context) {
+	res, err := h.uc.SesiBelajar(middleware.UserID(c))
+	if err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Sesi belajar", res)
+}
+
+// AdminListUserBelajar GET /api/admin/belajar/users
+// @Summary Daftar Mahasiswa + Profil Belajar
+// @Tags Admin - Belajar
+// @Security bearerAuth
+// @Produce json
+// @Success 200 {object} response.Envelope{data=[]dto.SesiBelajarResponse}
+// @Router /admin/belajar/users [get]
+func (h *BelajarHandler) AdminListUserBelajar(c *gin.Context) {
+	res, err := h.uc.ListUserBelajar()
+	if err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Daftar mahasiswa", res)
+}
+
+// AdminProgresUser GET /api/admin/belajar/users/:id/progres
+// @Summary Progres Belajar Mahasiswa
+// @Tags Admin - Belajar
+// @Security bearerAuth
+// @Produce json
+// @Param id path int true "ID User"
+// @Success 200 {object} response.Envelope
+// @Router /admin/belajar/users/{id}/progres [get]
+func (h *BelajarHandler) AdminProgresUser(c *gin.Context) {
+	id, ok := idParam(c, "id")
+	if !ok {
+		return
+	}
+	res, err := h.uc.ProgresUser(id)
+	if err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Progres mahasiswa", res)
+}
+
+// AdminSetAksesLevel PUT /api/admin/belajar/users/:id/akses-level
+// @Summary Atur Akses Level Mahasiswa
+// @Tags Admin - Belajar
+// @Security bearerAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "ID User"
+// @Param request body dto.SetAksesLevelRequest true "Akses per level"
+// @Success 200 {object} response.Envelope
+// @Router /admin/belajar/users/{id}/akses-level [put]
+func (h *BelajarHandler) AdminSetAksesLevel(c *gin.Context) {
+	id, ok := idParam(c, "id")
+	if !ok {
+		return
+	}
+	var req dto.SetAksesLevelRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Fail(c, http.StatusBadRequest, "Input tidak valid", err.Error())
+		return
+	}
+	if err := h.uc.SetAksesLevel(id, req.AksesLevel); err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Akses level diperbarui", nil)
+}
+
+// AdminSimpanKurikulum PUT /api/admin/belajar/kurikulum
+// @Summary Simpan Seluruh Kurikulum
+// @Description Menulis level, modul, dan materi sekaligus dalam satu transaksi.
+// @Tags Admin - Belajar
+// @Security bearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.SimpanKurikulumRequest true "Struktur kurikulum"
+// @Success 200 {object} response.Envelope
+// @Router /admin/belajar/kurikulum [put]
+func (h *BelajarHandler) AdminSimpanKurikulum(c *gin.Context) {
+	var req dto.SimpanKurikulumRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Fail(c, http.StatusBadRequest, "Input tidak valid", err.Error())
+		return
+	}
+	if err := h.uc.SimpanKurikulum(req); err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Kurikulum disimpan", nil)
+}
+
+// AdminKosongkanKurikulum DELETE /api/admin/belajar/kurikulum
+// @Summary Kosongkan Kurikulum
+// @Description PERINGATAN: menghapus seluruh level, modul, materi, dan progres yang menempel.
+// @Tags Admin - Belajar
+// @Security bearerAuth
+// @Produce json
+// @Success 200 {object} response.Envelope
+// @Router /admin/belajar/kurikulum [delete]
+func (h *BelajarHandler) AdminKosongkanKurikulum(c *gin.Context) {
+	if err := h.uc.KosongkanKurikulum(); err != nil {
+		mapError(c, err)
+		return
+	}
+	response.OK(c, http.StatusOK, "Kurikulum dikosongkan", nil)
+}

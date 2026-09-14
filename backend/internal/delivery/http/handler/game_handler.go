@@ -102,12 +102,13 @@ func (h *GameHandler) SelesaiMain(c *gin.Context) {
 func (h *GameHandler) Peringkat(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	kelasID := queryIntPtr(c, "kelas_id")
-	baris, err := h.uc.Peringkat(limit, kelasID)
+	namaKelas := c.Query("kelas")
+	baris, err := h.uc.Peringkat(limit, kelasID, namaKelas)
 	if err != nil {
 		mapError(c, err)
 		return
 	}
-	posisi, err := h.uc.PeringkatSaya(middleware.UserID(c), kelasID)
+	posisi, err := h.uc.PeringkatSaya(middleware.UserID(c), kelasID, namaKelas)
 	if err != nil {
 		posisi = 0
 	}
