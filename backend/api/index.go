@@ -1,8 +1,10 @@
-// Package handler adalah entrypoint serverless untuk Vercel — bust cache 2026-09-08-2.
-// Berbeda dari cmd/server/main.go (server persisten dengan sweeper goroutine),
-// file ini hanya membungkus engine Gin jadi satu fungsi serverless yang
-// dipanggil Vercel tiap request. TIDAK menjalankan goroutine latar belakang —
-// auto-submit ditangani endpoint /api/cron/auto-submit + cron eksternal.
+// Package handler adalah entrypoint serverless untuk Vercel.
+//
+// CATATAN BUILD: file ini di-compile Vercel dari root repo (bukan backend/),
+// sehingga import "lab-ap/internal/app" ditolak aturan internal package Go.
+// Agar tetap satu sumber kebenaran, isi app.Build+middleware+router disalin
+// kembar ke pkg/serverless/ (package public, bebas diimpor dari mana saja).
+// Perubahan app.go wajib dicerminkan ke pkg/serverless/app.go.
 package handler
 
 import (
@@ -13,7 +15,7 @@ import (
 
 	"lab-ap/config"
 	_ "lab-ap/docs"
-	"lab-ap/internal/app"
+	"lab-ap/pkg/serverless"
 
 	"github.com/gin-gonic/gin"
 )
@@ -62,11 +64,11 @@ func ensureInit() error {
 
 	gin.SetMode(gin.ReleaseMode)
 	cfg := config.Load()
-	r, _, err := app.Build(cfg)
+	var err error
+	engine, _, err = serverless.Build(cfg)
 	if err != nil {
 		return err
 	}
-	engine = r
 	return nil
 }
 

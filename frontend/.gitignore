@@ -32,3 +32,5 @@ playwright/.cache/
 
 # OS files
 .DS_Store
+.vercel
+.env*
