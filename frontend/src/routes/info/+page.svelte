@@ -279,7 +279,7 @@
 		{/if}
 
 		<div class="flex flex-wrap justify-center gap-4">
-			<a href="https://ap-learn.web.id" target="_blank" rel="noopener"
+			<a href="https://elearning.algohub.web.id" target="_blank" rel="noopener"
 				class="px-8 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-primary to-primary-hover shadow-md hover:shadow-lg hover:brightness-110 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
 				<Terminal size={16} /> Buka Live Compiler
 			</a>
@@ -394,7 +394,7 @@
 		<div class="lg:col-span-2 flex flex-col gap-6">
 
 			<!-- 1. LIVE CODE EDITOR (full width of col-span-2) -->
-			<a href="https://ap-learn.web.id" target="_blank" rel="noopener"
+			<a href="https://elearning.algohub.web.id" target="_blank" rel="noopener"
 				class="h-full flex flex-col sm:flex-row items-center gap-6 group overflow-hidden relative rounded-[2rem] p-6 lg:p-8 shadow-lg reveal delay-100 hover:shadow-xl transition-all hover:-translate-y-0.5"
 				style="background: linear-gradient(135deg, #1e293b 0%, #160f38 60%, #221454 100%); border: 1px solid #312e81;">
 				<div class="absolute inset-0 bg-gradient-to-br from-fun-blue/5 via-fun-purple/10 to-transparent pointer-events-none z-0"></div>
@@ -449,7 +449,7 @@
 			</a>
 
 			<!-- 2. INTERACTIVE TERMINAL (full width of col-span-2) -->
-			<a href="https://ap-learn.web.id" target="_blank" rel="noopener"
+			<a href="https://elearning.algohub.web.id" target="_blank" rel="noopener"
 				class="h-full flex flex-col sm:flex-row items-center gap-6 group overflow-hidden relative rounded-[2rem] p-6 lg:p-8 shadow-lg reveal delay-150 hover:shadow-xl transition-all hover:-translate-y-0.5"
 				style="background: linear-gradient(135deg, #1e293b 0%, #111c30 60%, #112240 100%); border: 1px solid #1e3a8a;">
 				<div class="absolute inset-0 bg-gradient-to-br from-cyan-950/20 via-slate-900/10 to-transparent pointer-events-none z-0"></div>
