@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { api } from '$lib/api';
+	import { browser } from '$app/environment';
 	import { Play, Square, RefreshCw } from 'lucide-svelte';
-	import { Terminal } from '@xterm/xterm';
-	import { FitAddon } from '@xterm/addon-fit';
-	import '@xterm/xterm/css/xterm.css';
 	import {
 		pyodideWorkerStore,
 		isPyodideLoadingStore,
@@ -19,21 +17,29 @@
 		height = '350px',
 		runnable = false,
 		oninput
-	}: {
-		value?: string;
-		language?: string;
-		readonly?: boolean;
-		height?: string;
-		runnable?: boolean;
-		oninput?: () => void;
 	} = $props();
 
 	let el: HTMLDivElement;
 	let termEl: HTMLDivElement;
 	let editor: any = null;
 	let monacoRef: any = null;
-	let term: Terminal | null = null;
-	let fitAddon: FitAddon | null = null;
+	let term: any = null;
+	let fitAddon: any = null;
+
+	// Mirror output teks ke DOM: xterm menggambar ke canvas (tak terbaca assistive tech),
+	// jadi tulis juga ke live-region agar output bisa dibaca & diverifikasi.
+	let outputText = $state('');
+	function stripAnsi(str: string): string {
+		return str.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, '');
+	}
+	function w(str: string) {
+		term?.write(str);
+		outputText += stripAnsi(str);
+	}
+	function wl(str: string) {
+		term?.writeln(str);
+		outputText += stripAnsi(str) + '\n';
+	}
 
 	// Run state
 	let runLang = $state('c');
@@ -86,6 +92,11 @@
 
 		// Initialize xterm.js if runnable
 		if (runnable && termEl) {
+			const [{ Terminal }, { FitAddon }] = await Promise.all([
+				import('@xterm/xterm'),
+				import('@xterm/addon-fit')
+			]);
+			await import('@xterm/xterm/css/xterm.css');
 			term = new Terminal({
 				theme: {
 					background: '#18181b',
@@ -114,7 +125,7 @@
 			term.open(termEl);
 			fitAddon.fit();
 
-			term.writeln('\x1b[2mKlik RUN untuk menguji kode Anda...\x1b[0m');
+			wl('\x1b[2mKlik RUN untuk menguji kode Anda...\x1b[0m');
 
 			term.onKey(({ key, domEvent }) => {
 				const keyCode = domEvent.keyCode;
@@ -123,7 +134,7 @@
 				if (runLang === 'python' && waitingForInput) {
 					if (keyCode === 13) { // Enter
 						waitingForInput = false;
-						term.write('\r\n');
+						w('\r\n');
 						const inputValue = inputBuffer;
 						inputBuffer = '';
 						if ($pyodideWorkerStore) {
@@ -132,15 +143,15 @@
 					} else if (keyCode === 8) { // Backspace
 						if (inputBuffer.length > 0) {
 							inputBuffer = inputBuffer.slice(0, -1);
-							term.write('\b \b');
+							w('\b \b');
 						}
 					} else if (!domEvent.ctrlKey && !domEvent.altKey && !domEvent.metaKey) {
 						inputBuffer += key;
-						term.write(key);
+						w(key);
 					}
 				} else if (runLang === 'c' && cStdinMode) {
 					if (keyCode === 13) { // Enter
-						term.write('\r\n');
+						w('\r\n');
 						cStdinLines.push(cStdinBuffer);
 						cStdinBuffer = '';
 						const accumulatedStdin = cStdinLines.join('\n') + '\n';
@@ -148,11 +159,11 @@
 					} else if (keyCode === 8) { // Backspace
 						if (cStdinBuffer.length > 0) {
 							cStdinBuffer = cStdinBuffer.slice(0, -1);
-							term.write('\b \b');
+							w('\b \b');
 						}
 					} else if (!domEvent.ctrlKey && !domEvent.altKey && !domEvent.metaKey) {
 						cStdinBuffer += key;
-						term.write(key);
+						w(key);
 					}
 				}
 			});
@@ -182,7 +193,8 @@
 
 	function clearTerminal() {
 		term?.clear();
-		term?.writeln('\x1b[2mKlik RUN untuk menguji kode Anda...\x1b[0m');
+		outputText = '';
+		wl('\x1b[2mKlik RUN untuk menguji kode Anda...\x1b[0m');
 		running = false;
 		waitingForInput = false;
 		cStdinMode = false;
@@ -196,19 +208,18 @@
 		if (!term || running) return;
 
 		term.clear();
+		outputText = '';
 		running = true;
 		fallbackMode = false;
 
 		if (runLang === 'python') {
 			if (!$pyodideWorkerStore) {
-				console.log('Pyodide Worker not ready, falling back to server run...');
 				runServerFallback();
 				return;
 			}
 			runPythonInteractive();
 		} else {
 			if (!$cWorkerStore) {
-				console.log('Clang WASM Compiler not ready, falling back to server run...');
 				runServerFallback();
 				return;
 			}
@@ -231,12 +242,12 @@
 			if (e.data.type === 'INPUT_REQUEST') {
 				const outputVal = e.data.output || '';
 				if (outputVal.length > lastOutputLength) {
-					term.write(outputVal.slice(lastOutputLength));
+					w(outputVal.slice(lastOutputLength));
 					lastOutputLength = outputVal.length;
 				}
 				const prompt = e.data.prompt || '';
 				if (prompt) {
-					term.write(prompt);
+					w(prompt);
 				}
 				waitingForInput = true;
 				inputBuffer = '';
@@ -244,18 +255,18 @@
 				$pyodideWorkerStore.removeEventListener('message', handler);
 				const outputVal = e.data.output || '';
 				if (outputVal.length > lastOutputLength) {
-					term.write(outputVal.slice(lastOutputLength));
+					w(outputVal.slice(lastOutputLength));
 				}
-				term.writeln('');
-				term.writeln('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
+				wl('');
+				wl('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
 				running = false;
 			} else if (e.data.type === 'RUN_ERROR') {
 				$pyodideWorkerStore.removeEventListener('message', handler);
-				term.writeln(`\r\n\x1b[1;31m❌ Error: ${e.data.error}\x1b[0m`);
+				wl(`\r\n\x1b[1;31m❌ Error: ${e.data.error}\x1b[0m`);
 				running = false;
 			} else if (e.data.type === 'RUN_CANCELLED') {
 				$pyodideWorkerStore.removeEventListener('message', handler);
-				term.writeln('\r\n\x1b[1;33m⚠ Program dibatalkan.\x1b[0m');
+				wl('\r\n\x1b[1;33m⚠ Program dibatalkan.\x1b[0m');
 				running = false;
 			}
 		};
@@ -288,8 +299,9 @@
 				if (!data.success) {
 					cStdinMode = false;
 					term.clear();
-					term.writeln('❌ \x1b[1;31mCompilation Error:\x1b[0m');
-					term.write(`\x1b[31m${compileOutputBuffer || data.error || 'Gagal melakukan kompilasi.'}\x1b[0m\r\n`);
+		outputText = '';
+					wl('❌ \x1b[1;31mCompilation Error:\x1b[0m');
+					w(`\x1b[31m${compileOutputBuffer || data.error || 'Gagal melakukan kompilasi.'}\x1b[0m\r\n`);
 					running = false;
 					return;
 				}
@@ -308,6 +320,7 @@
 						$cWorkerStore.removeEventListener('message', runHandler);
 
 						term.clear();
+		outputText = '';
 
 						if (data2.waitingForInput && data2.stdoutLenAtInputRequest !== undefined) {
 							const newOffset = data2.stdoutLenAtInputRequest;
@@ -333,10 +346,10 @@
 						}
 						displayOutput += out.slice(lastOffset);
 
-						term.write(displayOutput);
+						w(displayOutput);
 
 						if (data2.error) {
-							term.write(`\r\n\x1b[33m⚠ ${data2.error}\x1b[0m\r\n`);
+							w(`\r\n\x1b[33m⚠ ${data2.error}\x1b[0m\r\n`);
 						}
 
 						if (data2.waitingForInput) {
@@ -344,8 +357,8 @@
 							cStdinBuffer = '';
 						} else {
 							cStdinMode = false;
-							if (!out.endsWith('\n') && out.length > 0) term.writeln('');
-							term.writeln('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
+							if (!out.endsWith('\n') && out.length > 0) wl('');
+							wl('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
 							running = false;
 						}
 					}
@@ -361,6 +374,14 @@
 	}
 
 	async function runServerFallback() {
+		// Hanya untuk pemakai yang sudah login. /api/praktikum/run butuh Bearer token,
+		// dan api.ts akan melempar 401 ke /praktikum/login — jangan sampai itu terjadi
+		// pada pengunjung publik di /info/praktikum.
+		if (!browser || !localStorage.getItem('token')) {
+			wl('\x1b[33m⏳ Worker masih dimuat. Tunggu sebentar lalu klik Run lagi.\x1b[0m');
+			running = false;
+			return;
+		}
 		if (!term) return;
 		fallbackMode = true;
 
@@ -370,12 +391,12 @@
 				{ language: runLang, source: value, stdin: '' }
 			);
 
-			if (result.stdout) term.write(result.stdout);
-			if (result.stderr) term.write(`\x1b[31m${result.stderr}\x1b[0m`);
-			if (result.error) term.write(`\r\n\x1b[1;31m❌ Error: ${result.error}\x1b[0m`);
-			term.writeln('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
+			if (result.stdout) w(result.stdout);
+			if (result.stderr) w(`\x1b[31m${result.stderr}\x1b[0m`);
+			if (result.error) w(`\r\n\x1b[1;31m❌ Error: ${result.error}\x1b[0m`);
+			wl('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
 		} catch (e) {
-			term.writeln(`\r\n\x1b[1;31m❌ Connection Error: ${(e as Error).message}\x1b[0m`);
+			wl(`\r\n\x1b[1;31m❌ Connection Error: ${(e as Error).message}\x1b[0m`);
 		} finally {
 			running = false;
 		}
@@ -387,7 +408,7 @@
 			(term as any).__cleanup = null;
 		}
 		clearTerminal();
-		term?.writeln('\x1b[1;31m⚠ Eksekusi dihentikan oleh pengguna.\x1b[0m');
+		wl('\x1b[1;31m⚠ Eksekusi dihentikan oleh pengguna.\x1b[0m');
 	}
 
 	onDestroy(() => {
@@ -447,6 +468,7 @@
 		<!-- Terminal contents -->
 		<div class="p-3 bg-[#18181b] flex-grow min-h-[220px]">
 			<div bind:this={termEl} class="w-full h-full min-h-[200px]"></div>
+		<div class="sr-only whitespace-pre-wrap" aria-live="polite" aria-atomic="true">{outputText}</div>
 		</div>
 	</div>
 {/if}
