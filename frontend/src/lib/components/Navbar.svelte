@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { LogIn } from 'lucide-svelte';
+	import { LogIn, ExternalLink } from 'lucide-svelte';
 
 	let open = $state(false);
 
@@ -44,9 +44,17 @@
 			
 			<div class="w-px h-5 bg-slate-200 mx-2"></div>
 			
-			<a href="/praktikum/login" class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all">
-				Login Praktikum <LogIn size={14} />
-			</a>
+			<div class="flex items-center gap-1.5">
+				<a href="https://siakad.algohub.web.id" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-white text-primary border border-primary/25 hover:bg-primary hover:text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all">
+					SIAKAD <ExternalLink size={14} />
+				</a>
+				<a href="https://elearning.algohub.web.id" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-white text-primary border border-primary/25 hover:bg-primary hover:text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all">
+					E-Learning <ExternalLink size={14} />
+				</a>
+				<a href="/praktikum/login" class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all">
+					Login Praktikum <LogIn size={14} />
+				</a>
+			</div>
 		</div>
 	</nav>
 </header>
@@ -62,6 +70,8 @@
 				{/if}
 			{/each}
 			<hr class="border-slate-100 my-1.5" />
+			<a href="https://siakad.algohub.web.id" target="_blank" rel="noopener" class="block text-center rounded-lg bg-white text-primary border border-primary/25 px-4 py-2.5 text-sm font-bold" onclick={() => (open = false)}>SIAKAD Lab</a>
+			<a href="https://elearning.algohub.web.id" target="_blank" rel="noopener" class="block text-center rounded-lg bg-white text-primary border border-primary/25 px-4 py-2.5 text-sm font-bold" onclick={() => (open = false)}>E-Learning Lab</a>
 			<a href="/praktikum/login" class="block text-center rounded-lg bg-primary hover:bg-primary-hover text-white px-4 py-2.5 text-sm font-bold shadow-sm" onclick={() => (open = false)}>Login Praktikum</a>
 		</div>
 	</div>
