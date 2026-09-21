@@ -87,7 +87,7 @@ func (uc *UserUsecase) UpdateMahasiswa(id int, req dto.UserRequest) (*entity.Use
 	if err := uc.users.Update(u); err != nil {
 		return nil, err
 	}
-	return u, nil
+	return uc.users.FindByID(id)
 }
 
 // Delete menghapus user. actorID/actorRole dipakai untuk guard:
