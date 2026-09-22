@@ -101,7 +101,11 @@ func (uc *BelajarUsecase) UpdateMateri(id string, req dto.MateriRequest) (*entit
 	if err := uc.repo.UpdateMateri(m); err != nil {
 		return nil, err
 	}
-	return m, nil
+	fresh, err := uc.repo.FindMateri(id)
+	if err != nil {
+		return nil, err
+	}
+	return fresh, nil
 }
 
 func (uc *BelajarUsecase) DeleteMateri(id string) error {

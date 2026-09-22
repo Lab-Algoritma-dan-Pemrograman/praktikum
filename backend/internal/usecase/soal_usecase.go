@@ -87,7 +87,7 @@ func (uc *SoalUsecase) Update(id int, req dto.SoalRequest) (*entity.Soal, error)
 	if err := uc.soal.Update(s); err != nil {
 		return nil, err
 	}
-	return s, nil
+	return uc.soal.FindByID(id)
 }
 
 func (uc *SoalUsecase) Delete(id int) error { return uc.soal.Delete(id) }
