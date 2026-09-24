@@ -7,11 +7,11 @@ type CekNIMRequest struct {
 
 // CekNIMResponse: status NIM untuk menentukan alur (login / register / ditolak).
 type CekNIMResponse struct {
-	NIM            string `json:"nim"`
-	Ditemukan      bool   `json:"ditemukan"`
-	IsRegistered   bool   `json:"is_registered"`
-	Nama           string `json:"nama,omitempty"`
-	Pesan          string `json:"pesan"`
+	NIM          string `json:"nim"`
+	Ditemukan    bool   `json:"ditemukan"`
+	IsRegistered bool   `json:"is_registered"`
+	Nama         string `json:"nama,omitempty"`
+	Pesan        string `json:"pesan"`
 }
 
 // LoginRequest: login via NIM atau Email + password.

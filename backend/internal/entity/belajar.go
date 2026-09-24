@@ -57,9 +57,9 @@ func (PencapaianTerbuka) TableName() string { return "pencapaian_terbuka" }
 
 // Syarat pencapaian yang sah.
 const (
-	SyaratXP             = "xp"
-	SyaratStreak         = "streak"
-	SyaratJumlahMateri   = "lesson_count"
-	SyaratLevelSelesai   = "level_completed"
-	SyaratSkorGame       = "game_score"
+	SyaratXP           = "xp"
+	SyaratStreak       = "streak"
+	SyaratJumlahMateri = "lesson_count"
+	SyaratLevelSelesai = "level_completed"
+	SyaratSkorGame     = "game_score"
 )

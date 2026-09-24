@@ -13,10 +13,10 @@ const (
 // AllowedEmailDomains: domain populer yang diizinkan untuk register.
 // itpln.ac.id bersifat template: hanya diizinkan bila config EmailAllowItpln = true.
 var AllowedEmailDomains = map[string]bool{
-	"gmail.com":    true,
-	"yahoo.com":    true,
-	"outlook.com":  true,
-	"hotmail.com":  true,
+	"gmail.com":   true,
+	"yahoo.com":   true,
+	"outlook.com": true,
+	"hotmail.com": true,
 }
 
 type JenisCourse string
@@ -62,7 +62,7 @@ var SemuaKategoriUjian = []KategoriUjian{
 type StatusPengerjaan string
 
 const (
-	StatusBelum  StatusPengerjaan = "belum_dikerjakan"
-	StatusSedang StatusPengerjaan = "sedang_dikerjakan"
+	StatusBelum   StatusPengerjaan = "belum_dikerjakan"
+	StatusSedang  StatusPengerjaan = "sedang_dikerjakan"
 	StatusSelesai StatusPengerjaan = "selesai"
 )

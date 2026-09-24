@@ -11,7 +11,9 @@ import (
 )
 
 // RequirePermission cek konfigurasi key=role_permissions JSON {"asisten":{"users:write":true}}
-// superadmin selalu bypass. Lazy: baca dari DB tiap request (kecil, jarang ganti).
+// koordinator selalu bypass. HIGH-04: FAIL-CLOSED — bila repo/config/JSON
+// bermasalah, akses DITOLAK (kecuali koordinator), bukan dibiarkan lewat.
+// Alasan: kegagalan baca config tidak boleh membuka pintu admin.
 func RequirePermission(konfRepo repository.KonfigurasiRepository, resource, action string) gin.HandlerFunc {
 	key := resource + ":" + action
 	return func(c *gin.Context) {
@@ -19,29 +21,34 @@ func RequirePermission(konfRepo repository.KonfigurasiRepository, resource, acti
 			c.Next()
 			return
 		}
-		// tanpa repo → allow (fallback saat bootstrap)
+		deny := func(reason string) {
+			response.Fail(c, http.StatusForbidden, "Akses ditolak: "+reason, nil)
+			c.Abort()
+		}
 		if konfRepo == nil {
-			c.Next()
+			deny("konfigurasi permission belum siap")
 			return
 		}
 		konf, err := konfRepo.Get("role_permissions")
 		if err != nil || konf == nil || konf.Value == "" {
-			c.Next()
+			deny("konfigurasi permission belum diset (hubungi koordinator)")
 			return
 		}
 		var perms map[string]map[string]bool
 		if err := json.Unmarshal([]byte(konf.Value), &perms); err != nil {
-			c.Next()
+			deny("konfigurasi permission rusak")
 			return
 		}
+		// Explicit-deny menang; tanpa entri eksplisit per role+key, tolak juga.
+		// Default ini aman karena seed wajib mengisi semua role non-koordinator
+		// untuk semua key yang dipasang di router (lihat seed_role_permissions.sql).
 		role := Role(c)
 		if m, ok := perms[role]; ok {
-			if allowed, ok := m[key]; ok && !allowed {
-				response.Fail(c, http.StatusForbidden, "Akses ditolak: hak "+key+" dinonaktifkan untuk role "+role, nil)
-				c.Abort()
+			if allowed, ok := m[key]; ok && allowed {
+				c.Next()
 				return
 			}
 		}
-		c.Next()
+		deny("hak " + key + " tidak diberikan untuk role " + role)
 	}
 }

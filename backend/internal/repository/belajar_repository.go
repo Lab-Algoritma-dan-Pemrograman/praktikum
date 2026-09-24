@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"lab-ap/internal/entity"
 
 	"gorm.io/datatypes"
@@ -40,6 +42,10 @@ type BelajarRepository interface {
 	SimpanKurikulum(levels []entity.Level, moduls []entity.Modul, materi []entity.Materi) error
 	KosongkanKurikulum() error
 	TandaiSelesai(p *entity.ProgresBelajar) error
+	// CR-M1: klaim transisi belum->selesai secara atomik (true = transisi baru).
+	KlaimMateriSelesai(userID int, materiID string, pada *time.Time) (bool, error)
+	// TambahXP increment XP atomik (xp = xp + ?), return profil terbaru.
+	TambahXP(userID int, xp int) (*entity.ProfilBelajar, error)
 	FindProfil(userID int) (*entity.ProfilBelajar, error)
 	SimpanProfil(p *entity.ProfilBelajar) error
 }
@@ -291,6 +297,39 @@ func (r *belajarRepository) TandaiSelesai(p *entity.ProgresBelajar) error {
 		on conflict (user_id, materi_id)
 		do update set selesai = excluded.selesai, selesai_pada = excluded.selesai_pada
 	`, p.UserID, p.MateriID, p.Selesai, p.SelesaiPada).Error
+}
+
+// KlaimMateriSelesai menandai materi selesai secara ATOMIK, hanya bila transisi
+// belum-selesai -> selesai benar-benar terjadi. Return true = klaim transisi baru
+// didapat (XP boleh ditambah); false = sudah selesai sebelumnya (XP jangan ditambah).
+// Klausa WHERE pada DO UPDATE membuat dua request paralel tidak bisa dua-duanya menang.
+func (r *belajarRepository) KlaimMateriSelesai(userID int, materiID string, pada *time.Time) (bool, error) {
+	res := r.db.Exec(`
+		insert into progres_belajar (user_id, materi_id, selesai, selesai_pada)
+		values (?, ?, true, ?)
+		on conflict (user_id, materi_id) do update set
+			selesai = true, selesai_pada = excluded.selesai_pada
+		where progres_belajar.selesai = false
+	`, userID, materiID, pada)
+	if res.Error != nil {
+		return false, res.Error
+	}
+	return res.RowsAffected > 0, nil
+}
+
+// TambahXP increment XP secara ATOMIK di DB (xp = xp + ?) — dua request paralel
+// tidak lagi saling menimpa (dulu read-then-add di memori, temuan CR-M1).
+func (r *belajarRepository) TambahXP(userID int, xp int) (*entity.ProfilBelajar, error) {
+	if err := r.db.Exec(`
+		insert into profil_belajar (user_id, xp, level_angka, terakhir_aktif)
+		values (?, ?, 1, now())
+		on conflict (user_id) do update set
+			xp = profil_belajar.xp + excluded.xp,
+			terakhir_aktif = now()
+	`, userID, xp).Error; err != nil {
+		return nil, err
+	}
+	return r.FindProfil(userID)
 }
 
 func (r *belajarRepository) FindProfil(userID int) (*entity.ProfilBelajar, error) {

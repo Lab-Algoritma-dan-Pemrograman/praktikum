@@ -27,11 +27,11 @@ type GameSoalMahasiswa struct {
 
 // GameRiwayat satu kali main.
 type GameRiwayat struct {
-	ID         int       `gorm:"primaryKey;autoIncrement" json:"id"`
-	UserID     int       `gorm:"not null" json:"user_id"`
-	JenisGame  string    `gorm:"type:varchar(50);not null" json:"jenis_game"`
-	XPDidapat  int       `gorm:"column:xp_didapat;not null;default:0" json:"xp_didapat"`
-	Dimainkan  time.Time `gorm:"column:dimainkan;not null;default:now()" json:"dimainkan"`
+	ID        int       `gorm:"primaryKey;autoIncrement" json:"id"`
+	UserID    int       `gorm:"not null" json:"user_id"`
+	JenisGame string    `gorm:"type:varchar(50);not null" json:"jenis_game"`
+	XPDidapat int       `gorm:"column:xp_didapat;not null;default:0" json:"xp_didapat"`
+	Dimainkan time.Time `gorm:"column:dimainkan;not null;default:now()" json:"dimainkan"`
 }
 
 func (GameRiwayat) TableName() string { return "game_riwayat" }

@@ -34,7 +34,7 @@ func Auth(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserRepositor
 		}
 		tokenStr := strings.TrimPrefix(header, "Bearer ")
 		if mode == "legacy" {
-			if legacyAuth(c, jm, tokenStr) {
+			if legacyAuth(c, jm, tokenStr, userRepo) {
 				c.Next()
 				return
 			}
@@ -54,7 +54,7 @@ func Auth(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserRepositor
 			c.Next()
 			return
 		}
-		if legacyAuth(c, jm, tokenStr) {
+		if legacyAuth(c, jm, tokenStr, userRepo) {
 			c.Next()
 			return
 		}
@@ -62,14 +62,24 @@ func Auth(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserRepositor
 	}
 }
 
-func legacyAuth(c *gin.Context, jm *jwt.Manager, tokenStr string) bool {
+func legacyAuth(c *gin.Context, jm *jwt.Manager, tokenStr string, userRepo repository.UserRepository) bool {
 	claims, err := jm.Verify(tokenStr)
 	if err != nil {
 		return false
 	}
-	c.Set(CtxUserID, claims.UserID)
-	c.Set(CtxNIM, claims.NIM)
-	c.Set(CtxRole, claims.Role)
+	// CR-M3: identitas & ROLE di-resolve ulang dari DB, bukan dari claim.
+	// Dulu claims.Role dipakai apa adanya, jadi user yang diturunkan/dihapus
+	// tetap memegang akses admin sampai token 12 jam habis.
+	if userRepo == nil {
+		return false
+	}
+	u, err := userRepo.FindByID(claims.UserID)
+	if err != nil || u == nil {
+		return false
+	}
+	c.Set(CtxUserID, u.ID)
+	c.Set(CtxNIM, u.NIM)
+	c.Set(CtxRole, string(u.Role))
 	return true
 }
 

@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { confirmStore } from '$lib/stores/confirm';
+	import { escapeHtml } from '$lib/sanitize';
 	import { AlertTriangle, Power } from 'lucide-svelte';
 
 	let state = $derived($confirmStore);
 
+	// CR-H2: pesan konfirmasi adalah teks polos → escape penuh dulu,
+	// baru bungkus `backtick` jadi badge. Tanpa escape, pesan berisi HTML
+	// (mis. nama dari input user) bisa disuntikkan sebagai markup.
 	let formattedMessage = $derived(
-		state.message.replace(
+		escapeHtml(state.message).replace(
 			/`([^`]+)`/g,
 			'<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-100 text-xs font-mono font-bold">$1</span>'
 		)

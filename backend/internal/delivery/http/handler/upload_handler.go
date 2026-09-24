@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -17,6 +18,21 @@ import (
 // maxUploadSize membatasi ukuran file unggahan (10 MB) untuk mencegah
 // pemakaian memori berlebih (io.ReadAll memuat seluruh file ke RAM).
 const maxUploadSize = 10 << 20 // 10 MiB
+
+// CR-H1: batas & allowlist berkas. Folder hanya boleh satu segmen aman
+// (mencegah `../../evil`), ekstensi+MIME dibatasi gambar/PDF, dan tipe isi
+// disniff dari byte sebenarnya (header Content-Type dari klien tak dipercaya).
+var (
+	folderRe  = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+	extToMime = map[string]string{
+		".png":  "image/png",
+		".jpg":  "image/jpeg",
+		".jpeg": "image/jpeg",
+		".gif":  "image/gif",
+		".webp": "image/webp",
+		".pdf":  "application/pdf",
+	}
+)
 
 type UploadHandler struct {
 	sb *supabase.Client
@@ -53,6 +69,10 @@ func (h *UploadHandler) Upload(c *gin.Context) {
 	if folder == "" {
 		folder = "uploads"
 	}
+	if !folderRe.MatchString(folder) {
+		response.Fail(c, http.StatusBadRequest, "Nama folder tidak valid (hanya huruf, angka, _ dan -)", nil)
+		return
+	}
 
 	f, err := fileHeader.Open()
 	if err != nil {
@@ -71,14 +91,26 @@ func (h *UploadHandler) Upload(c *gin.Context) {
 		return
 	}
 
-	ext := filepath.Ext(fileHeader.Filename)
-	name := fmt.Sprintf("%s/%d%s", folder, time.Now().UnixNano(), ext)
-	contentType := fileHeader.Header.Get("Content-Type")
-	if contentType == "" {
-		contentType = "application/octet-stream"
+	ext := strings.ToLower(filepath.Ext(fileHeader.Filename))
+	expectedMime, extOK := extToMime[ext]
+	if !extOK {
+		response.Fail(c, http.StatusBadRequest, "Ekstensi file tidak diizinkan (hanya .png, .jpg, .jpeg, .gif, .webp, .pdf)", nil)
+		return
+	}
+	// Sniff isi sebenarnya; MIME dari klien tidak dipercaya.
+	sniffed := http.DetectContentType(content)
+	if i := strings.IndexByte(sniffed, ';'); i >= 0 {
+		sniffed = strings.TrimSpace(sniffed[:i])
+	}
+	if sniffed != expectedMime {
+		response.Fail(c, http.StatusBadRequest, "Isi file tidak cocok dengan ekstensinya (terdeteksi: "+sniffed+")", nil)
+		return
 	}
 
-	url, err := h.sb.Upload(name, content, contentType, true)
+	name := fmt.Sprintf("%s/%d%s", folder, time.Now().UnixNano(), ext)
+
+	// upsert=false: jangan pernah menimpa berkas yang sudah ada di bucket.
+	url, err := h.sb.Upload(name, content, sniffed, false)
 	if err != nil {
 		response.Fail(c, http.StatusBadGateway, "Upload ke Supabase gagal", err.Error())
 		return

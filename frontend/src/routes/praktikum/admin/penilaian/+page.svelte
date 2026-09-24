@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { api } from '$lib/api';
 	import { labelJenis, labelShift, renderMath } from '$lib/utils';
+	import { sanitizeSoal } from '$lib/sanitize';
 	import { ChevronDown, ChevronUp, Search, SlidersHorizontal, Check, ArrowUp } from 'lucide-svelte';
 	import { confirmAction } from '$lib/stores/confirm';
 	import type { Kelas } from '$lib/types';
@@ -586,7 +587,7 @@
 												<div class="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm">
 													<p class="text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1.5">Pertanyaan:</p>
 													<div class="prose prose-sm max-w-none text-slate-800 leading-relaxed" use:renderMath>
-														{@html a.teks_soal}
+														{@html sanitizeSoal(a.teks_soal)}
 													</div>
 												</div>
 

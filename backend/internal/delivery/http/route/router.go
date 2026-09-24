@@ -19,21 +19,21 @@ import (
 
 // Handlers mengumpulkan seluruh handler untuk diregistrasi.
 type Handlers struct {
-	Auth        *handler.AuthHandler
-	Dashboard   *handler.DashboardHandler
-	Sesi        *handler.SesiHandler
-	Aktivasi    *handler.AktivasiHandler
-	Soal        *handler.SoalHandler
-	Jawaban     *handler.JawabanHandler
-	Penilaian   *handler.PenilaianHandler
-	Konfigurasi *handler.KonfigurasiHandler
-	Profile     *handler.ProfileHandler
-	Jadwal      *handler.JadwalHandler
-	User        *handler.UserHandler
-	Kelas       *handler.KelasHandler
-	Pedoman     *handler.PedomanHandler
-	Praktikum   *handler.PraktikumHandler
-	Upload      *handler.UploadHandler
+	Auth         *handler.AuthHandler
+	Dashboard    *handler.DashboardHandler
+	Sesi         *handler.SesiHandler
+	Aktivasi     *handler.AktivasiHandler
+	Soal         *handler.SoalHandler
+	Jawaban      *handler.JawabanHandler
+	Penilaian    *handler.PenilaianHandler
+	Konfigurasi  *handler.KonfigurasiHandler
+	Profile      *handler.ProfileHandler
+	Jadwal       *handler.JadwalHandler
+	User         *handler.UserHandler
+	Kelas        *handler.KelasHandler
+	Pedoman      *handler.PedomanHandler
+	Praktikum    *handler.PraktikumHandler
+	Upload       *handler.UploadHandler
 	Ampuan       *handler.AmpuanHandler
 	Rekap        *handler.RekapHandler
 	AIGrading    *handler.AIGradingHandler
@@ -77,7 +77,11 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 
 	r.GET("/api/health", HealthCheck)
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// MEDIUM-02: Swagger membocorkan 61 endpoint termasuk seluruh /admin/*
+	// (inject jawaban, konfigurasi, bulk delete). Di produksi TIDAK dipasang.
+	if cfg.AppEnv != "production" {
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	api := r.Group("/api")
 
@@ -90,7 +94,9 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 	auth.Use(middleware.RateLimit(20, time.Minute))
 	{
 		auth.POST("/cek-nim", h.Auth.CekNIM)
-		auth.POST("/login", h.Auth.Login)
+		// LOW-04: login lebih ketat (10/menit/IP) — brute-force password langsung
+		// dihambat, terpisah dari kuota endpoint auth lain.
+		auth.POST("/login", middleware.RateLimit(10, time.Minute), h.Auth.Login)
 		auth.POST("/register", h.Auth.Register)
 		auth.POST("/forgot-password", h.Auth.ForgotPassword)
 		auth.POST("/reset-password", h.Auth.ResetPassword)
@@ -148,8 +154,8 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		prak.POST("/mulai", h.Jawaban.Mulai)
 		prak.POST("/autosave", h.Jawaban.AutoSave)
 		prak.POST("/submit", h.Jawaban.Submit)
-		prak.POST("/run", h.Run.Execute)
-		prak.POST("/compile-c", h.Compile.CompileC)
+		prak.POST("/run", middleware.RateLimitUser(30, time.Minute), h.Run.Execute)
+		prak.POST("/compile-c", middleware.RateLimitUser(10, time.Minute), h.Compile.CompileC)
 	}
 
 	// ---- Admin (role admin + superadmin) ----
@@ -160,115 +166,115 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 
 		// Users (mahasiswa)
 		admin.GET("/users", h.User.ListMahasiswa)
-		admin.POST("/users", h.User.CreateMahasiswa)
-		admin.POST("/users/bulk", h.User.BulkUpsertMahasiswa)
-		admin.PUT("/users/:id", h.User.UpdateMahasiswa)
-		admin.DELETE("/users/:id", h.User.Delete)
-		admin.POST("/users/:id/reset-password", h.User.ResetPassword)
+		admin.POST("/users", middleware.RequirePermission(konfRepo, "users", "write"), h.User.CreateMahasiswa)
+		admin.POST("/users/bulk", middleware.RequirePermission(konfRepo, "users", "write"), h.User.BulkUpsertMahasiswa)
+		admin.PUT("/users/:id", middleware.RequirePermission(konfRepo, "users", "write"), h.User.UpdateMahasiswa)
+		admin.DELETE("/users/:id", middleware.RequirePermission(konfRepo, "users", "write"), h.User.Delete)
+		admin.POST("/users/:id/reset-password", middleware.RequirePermission(konfRepo, "users", "write"), h.User.ResetPassword)
 
 		// Materi (LENGKAP dengan kunci jawaban -- jangan dipakai frontend mahasiswa)
 		admin.GET("/materi", h.Belajar.AdminListMateri)
 		admin.GET("/materi/:id", h.Belajar.AdminGetMateri)
-		admin.POST("/materi", h.Belajar.AdminCreateMateri)
-		admin.PUT("/materi/:id", h.Belajar.AdminUpdateMateri)
-		admin.DELETE("/materi/:id", h.Belajar.AdminDeleteMateri)
+		admin.POST("/materi", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Belajar.AdminCreateMateri)
+		admin.PUT("/materi/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Belajar.AdminUpdateMateri)
+		admin.DELETE("/materi/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Belajar.AdminDeleteMateri)
 
 		// Belajar: koreksi progres mahasiswa
-		admin.PUT("/belajar/kurikulum", h.Belajar.AdminSimpanKurikulum)
-		admin.DELETE("/belajar/kurikulum", h.Belajar.AdminKosongkanKurikulum)
+		admin.PUT("/belajar/kurikulum", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Belajar.AdminSimpanKurikulum)
+		admin.DELETE("/belajar/kurikulum", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Belajar.AdminKosongkanKurikulum)
 		admin.GET("/belajar/users", h.Belajar.AdminListUserBelajar)
 		admin.GET("/belajar/users/:id/progres", h.Belajar.AdminProgresUser)
-		admin.PUT("/belajar/users/:id/akses-level", h.Belajar.AdminSetAksesLevel)
-		admin.POST("/belajar/users/:id/reset", h.Belajar.AdminResetProgres)
-		admin.PUT("/belajar/users/:id/xp", h.Belajar.AdminSetXP)
+		admin.PUT("/belajar/users/:id/akses-level", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.Belajar.AdminSetAksesLevel)
+		admin.POST("/belajar/users/:id/reset", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.Belajar.AdminResetProgres)
+		admin.PUT("/belajar/users/:id/xp", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.Belajar.AdminSetXP)
 
 		// Game & monitoring
 		admin.GET("/monitoring/sesi", h.Game.SesiAktif)
 		admin.GET("/game/soal", h.Game.AdminListSoal)
-		admin.POST("/game/soal", h.Game.AdminCreateSoal)
-		admin.PUT("/game/soal/:id", h.Game.AdminUpdateSoal)
-		admin.DELETE("/game/soal/:id", h.Game.AdminDeleteSoal)
-		admin.PUT("/game/konfigurasi", h.Game.AdminSimpanKonfigurasi)
+		admin.POST("/game/soal", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Game.AdminCreateSoal)
+		admin.PUT("/game/soal/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Game.AdminUpdateSoal)
+		admin.DELETE("/game/soal/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Game.AdminDeleteSoal)
+		admin.PUT("/game/konfigurasi", middleware.RequirePermission(konfRepo, "konfigurasi", "write"), h.Game.AdminSimpanKonfigurasi)
 
 		// Kelas
 		admin.GET("/kelas", h.Kelas.List)
-		admin.POST("/kelas", h.Kelas.Create)
-		admin.PUT("/kelas/:id", h.Kelas.Update)
-		admin.DELETE("/kelas/:id", h.Kelas.Delete)
+		admin.POST("/kelas", middleware.RequirePermission(konfRepo, "kelas", "write"), h.Kelas.Create)
+		admin.PUT("/kelas/:id", middleware.RequirePermission(konfRepo, "kelas", "write"), h.Kelas.Update)
+		admin.DELETE("/kelas/:id", middleware.RequirePermission(konfRepo, "kelas", "write"), h.Kelas.Delete)
 
 		// Asisten
 		admin.GET("/asisten", h.User.ListAsisten)
-		admin.POST("/asisten", h.User.CreateAsisten)
-		admin.PUT("/asisten/:id", h.User.UpdateAsisten)
+		admin.POST("/asisten", middleware.RequirePermission(konfRepo, "asisten", "write"), h.User.CreateAsisten)
+		admin.PUT("/asisten/:id", middleware.RequirePermission(konfRepo, "asisten", "write"), h.User.UpdateAsisten)
 
 		// Jadwal
 		admin.GET("/jadwal", h.Jadwal.List)
-		admin.POST("/jadwal", h.Jadwal.Create)
-		admin.PUT("/jadwal/:id", h.Jadwal.Update)
-		admin.DELETE("/jadwal/:id", h.Jadwal.Delete)
+		admin.POST("/jadwal", middleware.RequirePermission(konfRepo, "jadwal", "write"), h.Jadwal.Create)
+		admin.PUT("/jadwal/:id", middleware.RequirePermission(konfRepo, "jadwal", "write"), h.Jadwal.Update)
+		admin.DELETE("/jadwal/:id", middleware.RequirePermission(konfRepo, "jadwal", "write"), h.Jadwal.Delete)
 
 		// Pedoman
 		admin.GET("/pedoman", h.Pedoman.List)
-		admin.POST("/pedoman", h.Pedoman.Create)
-		admin.PUT("/pedoman/:id", h.Pedoman.Update)
-		admin.DELETE("/pedoman/:id", h.Pedoman.Delete)
+		admin.POST("/pedoman", middleware.RequirePermission(konfRepo, "konfigurasi", "write"), h.Pedoman.Create)
+		admin.PUT("/pedoman/:id", middleware.RequirePermission(konfRepo, "konfigurasi", "write"), h.Pedoman.Update)
+		admin.DELETE("/pedoman/:id", middleware.RequirePermission(konfRepo, "konfigurasi", "write"), h.Pedoman.Delete)
 
 		// Konfigurasi (termasuk modul & gdrive jadwal URL)
 		admin.GET("/konfigurasi", h.Konfigurasi.All)
 		admin.GET("/konfigurasi/ai-model", h.Konfigurasi.AIModel)
-		admin.POST("/konfigurasi", h.Konfigurasi.Set)
+		admin.POST("/konfigurasi", middleware.RequirePermission(konfRepo, "konfigurasi", "write"), h.Konfigurasi.Set)
 
 		// Sesi & Course
 		admin.GET("/sesi", h.Sesi.List)
 		admin.GET("/sesi/:id", h.Sesi.Get)
-		admin.POST("/sesi", h.Sesi.Create)
-		admin.PUT("/sesi/:id", h.Sesi.Update)
-		admin.DELETE("/sesi/:id", h.Sesi.Delete)
+		admin.POST("/sesi", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Sesi.Create)
+		admin.PUT("/sesi/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Sesi.Update)
+		admin.DELETE("/sesi/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Sesi.Delete)
 		admin.GET("/sesi/:id/course", h.Sesi.ListCourse)
-		admin.POST("/sesi/:id/course", h.Sesi.CreateCourse)
-		admin.PUT("/course/:courseId", h.Sesi.UpdateCourse)
-		admin.DELETE("/course/:courseId", h.Sesi.DeleteCourse)
+		admin.POST("/sesi/:id/course", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Sesi.CreateCourse)
+		admin.PUT("/course/:courseId", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Sesi.UpdateCourse)
+		admin.DELETE("/course/:courseId", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Sesi.DeleteCourse)
 
 		// Soal
 		admin.GET("/soal", h.Soal.ListByCourse)
-		admin.POST("/soal", h.Soal.Create)
-		admin.PUT("/soal/:id", h.Soal.Update)
-		admin.DELETE("/soal/:id", h.Soal.Delete)
+		admin.POST("/soal", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Soal.Create)
+		admin.PUT("/soal/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Soal.Update)
+		admin.DELETE("/soal/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Soal.Delete)
 
 		// Aktivasi
 		admin.GET("/aktivasi", h.Aktivasi.List)
-		admin.POST("/aktivasi", h.Aktivasi.Aktivasi)
+		admin.POST("/aktivasi", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.Aktivasi)
 		admin.GET("/aktivasi/:id", h.Aktivasi.Get)
-		admin.DELETE("/aktivasi/:id", h.Aktivasi.Delete)
-		admin.POST("/aktivasi/:id/token", h.Aktivasi.GenerateToken)
-		admin.POST("/aktivasi/:id/susulan", h.Aktivasi.AddSusulan)
+		admin.DELETE("/aktivasi/:id", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.Delete)
+		admin.POST("/aktivasi/:id/token", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.GenerateToken)
+		admin.POST("/aktivasi/:id/susulan", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.AddSusulan)
 		admin.GET("/aktivasi/:id/susulan", h.Aktivasi.ListSusulan)
 		admin.GET("/aktivasi/:id/peserta", h.Aktivasi.Peserta)
-		admin.DELETE("/aktivasi/:id/susulan/:mahasiswaId", h.Aktivasi.RemoveSusulan)
-		admin.POST("/aktivasi-course/buka-tutup", h.Aktivasi.BukaTutupCourse)
+		admin.DELETE("/aktivasi/:id/susulan/:mahasiswaId", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.RemoveSusulan)
+		admin.POST("/aktivasi-course/buka-tutup", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.BukaTutupCourse)
 
 		// Penilaian
 		admin.GET("/penilaian/rekap", h.Penilaian.Rekap)
-		admin.POST("/penilaian", h.Penilaian.SetNilai)
-		admin.POST("/keaktifan", h.Penilaian.SetKeaktifan)
+		admin.POST("/penilaian", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.Penilaian.SetNilai)
+		admin.POST("/keaktifan", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.Penilaian.SetKeaktifan)
 		// AI grading SINKRON 1-per-1 (frontend yang loop).
 		admin.GET("/penilaian/ai-grade/targets", h.AIGrading.ListTargets)
-		admin.POST("/penilaian/ai-grade/one", h.AIGrading.GradeOne)
+		admin.POST("/penilaian/ai-grade/one", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.AIGrading.GradeOne)
 
 		// Rekap Jawaban Global & Bulk Actions
 		admin.GET("/rekap-jawaban", h.RekapJawaban.GetRekapJawabanGlobal)
-		admin.POST("/penilaian/bulk-action", h.RekapJawaban.BulkAction)
-		admin.POST("/jawaban/inject", h.Jawaban.AdminInjectJawaban)
+		admin.POST("/penilaian/bulk-action", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.RekapJawaban.BulkAction)
+		admin.POST("/jawaban/inject", middleware.RequirePermission(konfRepo, "penilaian", "write"), h.Jawaban.AdminInjectJawaban)
 
 		// Rekap
 		admin.GET("/rekap/kelas/:id_kelas", h.Rekap.GetRekapKelas)
 
 		// Upload (Supabase)
-		admin.POST("/upload", h.Upload.Upload)
+		admin.POST("/upload", middleware.RequirePermission(konfRepo, "sesi", "write"), h.Upload.Upload)
 
 		admin.GET("/ampuan", h.Ampuan.List)
-		admin.POST("/ampuan", h.Ampuan.Create)
-		admin.DELETE("/ampuan/:id", h.Ampuan.Delete)
+		admin.POST("/ampuan", middleware.RequirePermission(konfRepo, "asisten", "write"), h.Ampuan.Create)
+		admin.DELETE("/ampuan/:id", middleware.RequirePermission(konfRepo, "asisten", "write"), h.Ampuan.Delete)
 
 		// Audit Log
 		admin.GET("/audit-logs", h.AuditLog.GetLogs)

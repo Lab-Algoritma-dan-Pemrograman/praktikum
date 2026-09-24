@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { api } from '$lib/api';
 	import { labelJenis, renderMath } from '$lib/utils';
+	import { sanitizeSoal } from '$lib/sanitize';
 	import { X, Search, ArrowUp, Edit, Trash2, Eye } from 'lucide-svelte';
 	import { confirmAction } from '$lib/stores/confirm';
 	import type { Sesi, Course, Soal, Kelas } from '$lib/types';
@@ -365,7 +366,7 @@
 								<span class="text-ink-caption">{s.poin} poin</span>
 							</div>
 							<div class="prose prose-sm mt-2 max-w-none text-ink-body" use:renderMath>
-								{@html s.teks_soal}
+								{@html sanitizeSoal(s.teks_soal)}
 							</div>
 							{#if s.gambar_url}<img src={s.gambar_url} alt="flowchart" class="mt-2 max-h-32 rounded-lg border" />{/if}
 						</div>

@@ -167,8 +167,6 @@ func (h *UserHandler) ResetPassword(c *gin.Context) {
 	response.OK(c, http.StatusOK, "Password direset (mahasiswa harus register ulang)", nil)
 }
 
-
-
 // ---- Asisten ----
 
 // ListAsisten GET /api/admin/asisten & /api/info/asisten

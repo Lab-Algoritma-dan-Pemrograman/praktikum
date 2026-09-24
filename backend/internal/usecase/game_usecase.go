@@ -172,14 +172,10 @@ func (uc *GameUsecase) SelesaiMain(userID int, req dto.SelesaiMainRequest) (*dto
 		return nil, err
 	}
 
-	profil, err := uc.belajar.FindProfil(userID)
+	// CR-M1: XP ditambah ATOMIK di DB (xp = xp + ?), bukan read-then-add di
+	// memori — dua submit paralel tidak lagi saling menimpa nilai XP.
+	profil, err := uc.belajar.TambahXP(userID, xp)
 	if err != nil {
-		profil = &entity.ProfilBelajar{UserID: userID, LevelAngka: 1}
-	}
-	profil.XP += xp
-	now := time.Now()
-	profil.TerakhirAktif = &now
-	if err := uc.belajar.SimpanProfil(profil); err != nil {
 		return nil, err
 	}
 

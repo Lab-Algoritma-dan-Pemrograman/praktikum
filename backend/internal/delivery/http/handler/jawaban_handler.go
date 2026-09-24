@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"lab-ap/internal/delivery/http/middleware"
@@ -12,10 +13,13 @@ import (
 )
 
 type JawabanHandler struct {
-	uc *usecase.JawabanUsecase
+	uc       *usecase.JawabanUsecase
+	auditLog *usecase.AuditLogUsecase
 }
 
-func NewJawabanHandler(uc *usecase.JawabanUsecase) *JawabanHandler { return &JawabanHandler{uc: uc} }
+func NewJawabanHandler(uc *usecase.JawabanUsecase, al *usecase.AuditLogUsecase) *JawabanHandler {
+	return &JawabanHandler{uc: uc, auditLog: al}
+}
 
 // GetRuang GET /api/praktikum/ruang
 // @Summary Masuk Ruang Ujian/Course
@@ -132,5 +136,11 @@ func (h *JawabanHandler) AdminInjectJawaban(c *gin.Context) {
 		mapError(c, err)
 		return
 	}
+	// CR-M2: injeksi/penimpaan jawaban mahasiswa adalah aksi istimewa —
+	// wajib tercatat di audit log (dulu tanpa jejak sama sekali).
+	_ = h.auditLog.LogAction(middleware.UserID(c), "", "ADMIN_INJECT_JAWABAN",
+		fmt.Sprintf("Inject jawaban: mahasiswa_id=%d soal_terpilih_id=%d auto_submit=%v",
+			req.MahasiswaID, req.SoalTerpilihID, req.AutoSubmit),
+		clientIP(c), c.Request.UserAgent())
 	response.OK(c, http.StatusOK, "Jawaban berhasil diinject", nil)
 }

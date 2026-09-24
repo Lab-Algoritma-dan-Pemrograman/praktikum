@@ -27,9 +27,9 @@ type SesiUserItem struct {
 
 // DashboardUserResponse: data dashboard mahasiswa.
 type DashboardUserResponse struct {
-	Profil      UserResponse   `json:"profil"`
-	Jadwal      *JadwalInfo    `json:"jadwal"`
-	SesiAktif   []SesiUserItem `json:"sesi_aktif"`
+	Profil       UserResponse      `json:"profil"`
+	Jadwal       *JadwalInfo       `json:"jadwal"`
+	SesiAktif    []SesiUserItem    `json:"sesi_aktif"`
 	RiwayatNilai []NilaiCourseItem `json:"riwayat_nilai"`
 }
 

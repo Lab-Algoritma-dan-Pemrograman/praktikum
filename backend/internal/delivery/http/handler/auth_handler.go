@@ -63,8 +63,10 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 	res, err := h.auth.Login(req)
 	if err != nil {
-		_ = h.auditLog.LogAction(0, req.Identifier, "LOGIN_FAILED", "Gagal login: "+err.Error(), clientIP(c), c.Request.UserAgent())
-		mapError(c, err)
+		// MEDIUM-01: pesan generik — user-ada vs user-tidak-ada vs password
+		// salah semuanya balas 401 yang sama (mencegah enumerasi NIM/email).
+		_ = h.auditLog.LogAction(0, req.Identifier, "LOGIN_FAILED", "Gagal login", clientIP(c), c.Request.UserAgent())
+		response.Fail(c, http.StatusUnauthorized, "NIM/email atau password salah", nil)
 		return
 	}
 	_ = h.auditLog.LogAction(0, req.Identifier, "LOGIN", "Login berhasil", clientIP(c), c.Request.UserAgent())

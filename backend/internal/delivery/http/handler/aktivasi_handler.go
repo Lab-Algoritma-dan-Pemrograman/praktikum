@@ -15,7 +15,9 @@ type AktivasiHandler struct {
 	uc *usecase.AktivasiUsecase
 }
 
-func NewAktivasiHandler(uc *usecase.AktivasiUsecase) *AktivasiHandler { return &AktivasiHandler{uc: uc} }
+func NewAktivasiHandler(uc *usecase.AktivasiUsecase) *AktivasiHandler {
+	return &AktivasiHandler{uc: uc}
+}
 
 // List GET /api/admin/aktivasi
 // @Summary Daftar aktivasi

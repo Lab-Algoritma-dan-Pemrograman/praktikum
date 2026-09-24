@@ -10,14 +10,14 @@ import (
 
 // BarisPeringkat satu baris papan peringkat (hasil join users + profil_belajar).
 type BarisPeringkat struct {
-	UserID int    `json:"user_id"`
-	NIM    string `json:"nim"`
-	Nama   string `json:"nama"`
-	Kelas  string `json:"kelas"`
+	UserID  int    `json:"user_id"`
+	NIM     string `json:"nim"`
+	Nama    string `json:"nama"`
+	Kelas   string `json:"kelas"`
 	FotoURL string `json:"foto_url"`
-	XP     int    `json:"xp"`
-	Level  int    `json:"level"`
-	Streak int    `json:"streak"`
+	XP      int    `json:"xp"`
+	Level   int    `json:"level"`
+	Streak  int    `json:"streak"`
 }
 
 // BarisSesiAktif satu baris monitoring (join sesi_aktif + users + kelas).

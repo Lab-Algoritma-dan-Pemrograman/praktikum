@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"lab-ap/pkg/response"
 	"lab-ap/internal/usecase"
+	"lab-ap/pkg/response"
 )
 
 type RekapHandler struct {

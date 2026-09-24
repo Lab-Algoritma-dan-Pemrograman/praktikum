@@ -129,42 +129,26 @@ func (uc *BelajarUsecase) ProgresSaya(userID int) (*dto.ProgresSayaResponse, err
 }
 
 // SelesaikanMateri menandai materi selesai dan menambah XP sesuai xp_hadiah.
-// XP hanya ditambah saat transisi belum-selesai -> selesai, supaya tak dobel.
+// CR-M1: klaim transisi belum->selesai + increment XP dilakukan ATOMIK di DB,
+// sehingga dua request paralel tidak bisa menambah XP dua kali (dulu read-then-add).
 func (uc *BelajarUsecase) SelesaikanMateri(userID int, materiID string) (*entity.ProfilBelajar, error) {
 	m, err := uc.repo.FindMateri(materiID)
 	if err != nil {
 		return nil, ErrNotFound
 	}
 
-	sudah := false
-	if list, err := uc.repo.ListProgres(userID); err == nil {
-		for _, p := range list {
-			if p.MateriID == materiID && p.Selesai {
-				sudah = true
-				break
-			}
-		}
-	}
-
 	now := time.Now()
-	if err := uc.repo.TandaiSelesai(&entity.ProgresBelajar{
-		UserID: userID, MateriID: materiID, Selesai: true, SelesaiPada: &now,
-	}); err != nil {
+	baru, err := uc.repo.KlaimMateriSelesai(userID, materiID, &now)
+	if err != nil {
 		return nil, err
 	}
 
-	profil, err := uc.repo.FindProfil(userID)
-	if err != nil {
-		profil = &entity.ProfilBelajar{UserID: userID, LevelAngka: 1}
+	// XP hanya ditambah bila klaim transisi baru berhasil. TambahXP(userID, 0)
+	// tetap menyentuh terakhir_aktif tanpa mengubah XP untuk submit ulang.
+	if baru {
+		return uc.repo.TambahXP(userID, m.XPHadiah)
 	}
-	if !sudah {
-		profil.XP += m.XPHadiah
-	}
-	profil.TerakhirAktif = &now
-	if err := uc.repo.SimpanProfil(profil); err != nil {
-		return nil, err
-	}
-	return profil, nil
+	return uc.repo.TambahXP(userID, 0)
 }
 
 // PencapaianSaya mengembalikan semua pencapaian + yang sudah terbuka,

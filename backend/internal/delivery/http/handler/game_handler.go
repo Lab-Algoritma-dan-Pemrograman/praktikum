@@ -113,7 +113,7 @@ func (h *GameHandler) Peringkat(c *gin.Context) {
 		posisi = 0
 	}
 	response.OK(c, http.StatusOK, "Papan peringkat", gin.H{
-		"peringkat":    baris,
+		"peringkat":   baris,
 		"posisi_saya": posisi,
 	})
 }

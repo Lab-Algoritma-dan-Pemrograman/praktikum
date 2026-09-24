@@ -42,7 +42,9 @@ type userRepository struct{ db *gorm.DB }
 func NewUserRepository(db *gorm.DB) UserRepository { return &userRepository{db: db} }
 
 func (r *userRepository) Create(u *entity.User) error { return r.db.Create(u).Error }
-func (r *userRepository) Update(u *entity.User) error { return r.db.Omit(clause.Associations).Save(u).Error }
+func (r *userRepository) Update(u *entity.User) error {
+	return r.db.Omit(clause.Associations).Save(u).Error
+}
 func (r *userRepository) Delete(id int) error {
 	return r.db.Delete(&entity.User{}, id).Error
 }

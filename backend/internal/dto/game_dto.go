@@ -68,9 +68,9 @@ type DetakRequest struct {
 // ---- Pencapaian ----
 
 type PencapaianSayaResponse struct {
-	Semua    []entity.Pencapaian `json:"semua"`
-	TerbukaID []string           `json:"terbuka_id"`
-	BaruSaja []entity.Pencapaian `json:"baru_saja"`
+	Semua     []entity.Pencapaian `json:"semua"`
+	TerbukaID []string            `json:"terbuka_id"`
+	BaruSaja  []entity.Pencapaian `json:"baru_saja"`
 }
 
 // ---- Admin belajar ----
@@ -89,18 +89,18 @@ type SetXPRequest struct {
 // Menggabungkan identitas (dari token) dengan profil belajar, supaya
 // frontend tidak perlu membaca tabel users sendiri.
 type SesiBelajarResponse struct {
-	UserID    int    `json:"user_id"`
-	NIM       string `json:"nim"`
-	Nama      string `json:"nama"`
-	Kelas     string `json:"kelas"`
-	Email     string `json:"email"`
-	FotoURL   string `json:"foto_url"`
-	Role      string `json:"role"`
-	XP        int    `json:"xp"`
-	Level     int    `json:"level"`
-	Streak    int    `json:"streak"`
-	AksesLevel interface{} `json:"akses_level"`
-	MateriSelesai []string `json:"materi_selesai"`
+	UserID        int         `json:"user_id"`
+	NIM           string      `json:"nim"`
+	Nama          string      `json:"nama"`
+	Kelas         string      `json:"kelas"`
+	Email         string      `json:"email"`
+	FotoURL       string      `json:"foto_url"`
+	Role          string      `json:"role"`
+	XP            int         `json:"xp"`
+	Level         int         `json:"level"`
+	Streak        int         `json:"streak"`
+	AksesLevel    interface{} `json:"akses_level"`
+	MateriSelesai []string    `json:"materi_selesai"`
 }
 
 type SetAksesLevelRequest struct {

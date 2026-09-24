@@ -32,12 +32,12 @@ func setupAuthUsecase(t *testing.T) (*usecase.AuthUsecase, *mocks.UserRepository
 func rosterUser() *entity.User {
 	kelasID := 1
 	return &entity.User{
-		ID:       1,
-		NIM:      "123456",
-		Nama:     "Budi",
-		Role:     entity.RoleMahasiswa,
-		KelasID:  &kelasID,
-		Email:    nil,
+		ID:      1,
+		NIM:     "123456",
+		Nama:    "Budi",
+		Role:    entity.RoleMahasiswa,
+		KelasID: &kelasID,
+		Email:   nil,
 	}
 }
 
@@ -46,15 +46,15 @@ func registeredUser(role entity.RoleType) *entity.User {
 	hashed, _ := hash.Password("password123")
 	supa := "supa-uid-1"
 	return &entity.User{
-		ID:              1,
-		NIM:             "123456",
-		Nama:            "Budi",
-		Role:            role,
-		KelasID:         nil,
-		IsRegistered:    true,
-		PasswordHash:    &hashed,
-		Email:           &[]string{"budi@gmail.com"}[0],
-		SupabaseUserID:  &supa,
+		ID:             1,
+		NIM:            "123456",
+		Nama:           "Budi",
+		Role:           role,
+		KelasID:        nil,
+		IsRegistered:   true,
+		PasswordHash:   &hashed,
+		Email:          &[]string{"budi@gmail.com"}[0],
+		SupabaseUserID: &supa,
 	}
 }
 

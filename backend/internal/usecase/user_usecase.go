@@ -172,5 +172,3 @@ func (uc *UserUsecase) UpdateAsisten(id int, req dto.AsistenRequest) (*entity.Us
 	}
 	return u, nil
 }
-
-

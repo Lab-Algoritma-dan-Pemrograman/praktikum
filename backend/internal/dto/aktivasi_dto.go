@@ -2,9 +2,9 @@ package dto
 
 // AktivasiRequest: aktifkan sesi untuk kelas + shift, sekaligus gacha pretest/posttest.
 type AktivasiRequest struct {
-	SesiPraktikumID int    `json:"sesi_praktikum_id" binding:"required"`
-	KelasID         int    `json:"kelas_id" binding:"required"`
-	Shift           int    `json:"shift" binding:"required,oneof=1 2"`
+	SesiPraktikumID int `json:"sesi_praktikum_id" binding:"required"`
+	KelasID         int `json:"kelas_id" binding:"required"`
+	Shift           int `json:"shift" binding:"required,oneof=1 2"`
 	// Gelombang: 1 atau 2, hanya untuk sesi ujian praktik. Diabaikan untuk sesi normal.
 	Gelombang *int `json:"gelombang" binding:"omitempty,oneof=1 2"`
 	// GachaPilihan: "pretest" atau "posttest" (course mana yang dipakai untuk sesi normal).

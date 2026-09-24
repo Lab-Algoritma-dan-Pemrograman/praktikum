@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { api } from '$lib/api';
 	import { labelJenis, renderMath } from '$lib/utils';
+	import { sanitizeSoal } from '$lib/sanitize';
 	import CodeEditor from './CodeEditor.svelte';
 	import Countdown from './Countdown.svelte';
 	import { Save, ChevronLeft, ChevronRight } from 'lucide-svelte';
@@ -240,7 +241,7 @@
 				<!-- Isi Soal (Scrollable) -->
 				<div class="flex-grow overflow-y-auto pr-1 text-left custom-scrollbar">
 					<div class="prose prose-sm max-w-none text-slate-700 leading-relaxed" use:renderMath={s.teks_soal}>
-						{@html s.teks_soal}
+						{@html sanitizeSoal(s.teks_soal)}
 					</div>
 					{#if s.gambar_url}
 						<div class="mt-4 overflow-hidden rounded-xl border border-slate-250 shadow-inner bg-slate-50 p-2">

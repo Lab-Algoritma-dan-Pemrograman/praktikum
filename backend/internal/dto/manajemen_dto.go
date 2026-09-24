@@ -4,12 +4,12 @@ package dto
 
 // UserRequest: tambah/ubah data mahasiswa oleh admin.
 type UserRequest struct {
-	NIM     string `json:"nim" binding:"required"`
-	Nama    string `json:"nama" binding:"required"`
-	KelasID *int   `json:"kelas_id"`
-	Shift    *int     `json:"shift" binding:"omitempty,oneof=1 2"`
+	NIM       string  `json:"nim" binding:"required"`
+	Nama      string  `json:"nama" binding:"required"`
+	KelasID   *int    `json:"kelas_id"`
+	Shift     *int    `json:"shift" binding:"omitempty,oneof=1 2"`
 	Gelombang *int    `json:"gelombang" binding:"omitempty,oneof=1 2"`
-	Kelompok *string  `json:"kelompok"`
+	Kelompok  *string `json:"kelompok"`
 }
 
 // UserBulkRequest: payload untuk import mahasiswa secara masal via CSV (Frontend JSON).

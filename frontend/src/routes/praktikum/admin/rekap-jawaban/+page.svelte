@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { api } from '$lib/api';
 	import { labelJenis, renderMath } from '$lib/utils';
+	import { sanitizeSoal } from '$lib/sanitize';
 	import { confirmAction } from '$lib/stores/confirm';
 	import { RotateCcw, Trash2, X, LockOpen, Syringe } from 'lucide-svelte';
 	import type { Kelas, User } from '$lib/types';
@@ -464,7 +465,7 @@
 						<div class="text-ink-caption mb-1">Soal / Modul</div>
 						<div class="font-medium text-ink-body">{detailData.judul_course} ({detailData.jenis_soal})</div>
 						<div class="mt-2 prose prose-sm max-w-none bg-white p-3 rounded border" use:renderMath>
-							{@html detailData.teks_soal}
+							{@html sanitizeSoal(detailData.teks_soal)}
 						</div>
 					</div>
 					<div class="rounded-lg bg-surface-soft p-4 text-sm">

@@ -18,10 +18,10 @@ import (
 )
 
 type AuthUsecase struct {
-	users repository.UserRepository
-	kelas repository.KelasRepository
-	jwt   *jwt.Manager
-	cfg   *config.Config
+	users    repository.UserRepository
+	kelas    repository.KelasRepository
+	jwt      *jwt.Manager
+	cfg      *config.Config
 	fbScrypt hash.FbScryptConfig
 }
 
