@@ -17,7 +17,7 @@
 		readonly = false,
 		height = '350px',
 		runnable = false,
-		oninput
+		oninput = undefined
 	} = $props();
 
 	let el: HTMLDivElement;
@@ -238,11 +238,10 @@
 	// sementara kompilatornya tetap C — gejalanya error "C++ requires a type
 	// specifier" saat Run, tepat saat pengguna menekan tombol Python.
 	//
-	// Hanya bereaksi saat PROP berubah (lastLangProp), bukan saat pengguna
-	// mengubah select internal: halaman praktikum mengirim language="c" tetap,
-	// jadi tanpa penjaga ini pilihan Python dari select akan langsung dipaksa
-	// balik ke C.
-	let lastLangProp = language;
+	// Hanya bereaksi saat PROP berubah, bukan saat pengguna mengubah select
+	// internal: halaman praktikum mengirim language="c" tetap, jadi tanpa penjaga
+	// ini pilihan Python dari select akan langsung dipaksa balik ke C.
+	let lastLangProp: string | undefined = undefined;
 	$effect(() => {
 		if (language === lastLangProp) return;
 		lastLangProp = language;

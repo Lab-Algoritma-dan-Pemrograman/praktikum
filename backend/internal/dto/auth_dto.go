@@ -32,6 +32,20 @@ type ForgotPasswordRequest struct {
 	Email string `json:"email" binding:"required,email"`
 }
 
+// ForgotPasswordResponse: hasil sebenarnya pengiriman OTP.
+// Sebelumnya endpoint selalu membalas pesan generik "kode telah dikirim" walau
+// tidak ada email yang dikirim sama sekali (akun tanpa kanal email), sehingga
+// pengguna menunggu kode yang tak akan pernah datang. Status di sini membuat
+// frontend bisa memberi arahan yang benar tanpa membocorkan apakah sebuah
+// ALAMAT EMAIL terdaftar (pesan OTP dikirim vs gagal kirim tetap sama).
+type ForgotPasswordResponse struct {
+	// sent = OTP benar-benar dikirim ke email tersebut.
+	Sent bool `json:"sent"`
+	// reason = alasan saat sent=false: "no_email_channel" (akun belum punya
+	// email/kanal OTP — arahkan ke halaman Profil) atau "send_failed".
+	Reason string `json:"reason,omitempty"`
+}
+
 type ResetPasswordViaOTPRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Token    string `json:"token" binding:"required"`

@@ -207,18 +207,32 @@ func (uc *AuthUsecase) Register(req dto.RegisterRequest) (*dto.AuthResponse, err
 	return uc.issue(u)
 }
 
-// ForgotPassword selalu 200 generik (anti-enumeration); kirim OTP hanya jika email terdaftar.
-func (uc *AuthUsecase) ForgotPassword(email string) error {
+// ForgotPassword tetap SELALU sukses dari sisi HTTP (anti-enumeration), tetapi
+// melaporkan apakah OTP benar-benar terkirim. Balasan untuk email yang tidak
+// terdaftar dan email yang gagal kirim sengaja dibedakan: yang pertama tetap
+// terlihat "terkirim" (tidak membocorkan data akun), sedangkan pengguna yang
+// memang login — tapi akunnya belum punya email/kanal OTP — diberi tahu apa
+// yang harus dilakukan, bukan dibiarkan menunggu kode yang tak akan datang.
+func (uc *AuthUsecase) ForgotPassword(email string) dto.ForgotPasswordResponse {
 	norm := strings.ToLower(strings.TrimSpace(email))
 	u, err := uc.users.FindByEmail(norm)
-	if err != nil || u.SupabaseUserID == nil {
-		return nil
+	if err != nil {
+		// Alamat tidak terdaftar: tetap tampilkan seolah terkirim.
+		return dto.ForgotPasswordResponse{Sent: true}
+	}
+	// Akun ada tapi belum punya kanal OTP (email belum diisi / belum terhubung
+	// ke Supabase Auth). Ini yang sebelumnya diam-diam tidak mengirim apa pun.
+	if u.SupabaseUserID == nil {
+		return dto.ForgotPasswordResponse{Sent: false, Reason: "no_email_channel"}
 	}
 	if uc.cfg.SupabaseURL == "" || uc.cfg.SupabaseServiceKey == "" {
-		return nil
+		return dto.ForgotPasswordResponse{Sent: false, Reason: "send_failed"}
 	}
-	_ = supabase.NewAdmin(uc.cfg.SupabaseURL, uc.cfg.SupabaseServiceKey).SendRecoveryOTP(norm)
-	return nil
+	if err := supabase.NewAdmin(uc.cfg.SupabaseURL, uc.cfg.SupabaseServiceKey).SendRecoveryOTP(norm); err != nil {
+		log.Printf("WARN ForgotPassword kirim OTP ke %s gagal: %v", norm, err)
+		return dto.ForgotPasswordResponse{Sent: false, Reason: "send_failed"}
+	}
+	return dto.ForgotPasswordResponse{Sent: true}
 }
 
 // ResetPassword verifikasi OTP + set password baru (Supabase & lokal).

@@ -6,6 +6,10 @@
 	let err = $state('');
 	let loading = $state(false);
 	let sent = $state(false);
+	// Akun ada tapi belum punya email/kanal OTP: jangan tampilkan "kode sudah
+	// dikirim". Sebelumnya kondisi ini tak terlihat dan pengguna menunggu kode
+	// yang tak akan pernah datang.
+	let pesanKirim = $state('');
 
 	async function kirim() {
 		if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email.trim())) {
@@ -15,8 +19,20 @@
 		err = '';
 		loading = true;
 		try {
-			// Backend selalu 200 (anti-enumeration). Simpan email utk halaman OTP.
-			await api.post('/api/auth/forgot-password', { email: email.trim() });
+			// Backend selalu 200 (anti-enumeration) tetapi membawa status pengiriman.
+			const hasil = await api.post<{ sent: boolean; reason?: string }>('/api/auth/forgot-password', {
+				email: email.trim()
+			});
+			if (hasil && !hasil.sent) {
+				err =
+					hasil.reason === 'no_email_channel'
+						? 'Akun ini belum punya email untuk menerima kode OTP. Isi email dulu di halaman Profil, lalu coba lagi.'
+						: 'Kode OTP gagal dikirim. Coba lagi beberapa saat lagi.';
+				return;
+			}
+			pesanKirim =
+				'Jika email tersebut terdaftar, kami sudah mengirim kode OTP 6 digit. Masukkan kode itu di halaman berikutnya. Cek juga folder spam.';
+			// Simpan email utk halaman OTP.
 			sessionStorage.setItem('reset_email', email.trim());
 			sent = true;
 		} catch (e) {
@@ -46,7 +62,7 @@
 			<div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-left mb-5">
 				<h2 class="text-sm font-black text-emerald-800 mb-1.5">Cek Email Anda</h2>
 				<p class="text-xs text-emerald-700 leading-relaxed">
-					Jika email tersebut terdaftar, kami sudah mengirim <strong>kode OTP 6 digit</strong>. Masukkan kode itu di halaman berikutnya. Cek juga folder spam.
+					{pesanKirim}
 				</p>
 			</div>
 			<a href="/praktikum/reset-password" class="w-full h-12 bg-[#8A1538] hover:bg-[#730d2d] text-white rounded-2xl text-sm font-black flex items-center justify-center gap-2 shadow-lg shadow-[#8A1538]/10 transition-all">

@@ -107,15 +107,23 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	response.OK(c, http.StatusOK, "Logout berhasil", nil)
 }
 
-// ForgotPassword POST /api/auth/forgot-password (selalu 200 generik)
+// ForgotPassword POST /api/auth/forgot-password
+// Selalu 200 (anti-enumeration) tetapi membawa status pengiriman sebenarnya
+// supaya pengguna yang akunnya belum punya email tidak menunggu kode kosong.
 func (h *AuthHandler) ForgotPassword(c *gin.Context) {
 	var req dto.ForgotPasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Fail(c, http.StatusBadRequest, "Email tidak valid", err.Error())
 		return
 	}
-	_ = h.auth.ForgotPassword(req.Email)
-	response.OK(c, http.StatusOK, "Jika email terdaftar, kode OTP telah dikirim. Cek inbox Anda.", nil)
+	hasil := h.auth.ForgotPassword(req.Email)
+	pesan := "Jika email terdaftar, kode OTP telah dikirim. Cek inbox Anda."
+	if !hasil.Sent && hasil.Reason == "no_email_channel" {
+		pesan = "Akun ini belum punya email untuk menerima kode OTP. Isi email dulu di halaman Profil, lalu coba lagi."
+	} else if !hasil.Sent {
+		pesan = "Kode OTP gagal dikirim. Coba lagi beberapa saat lagi."
+	}
+	response.OK(c, http.StatusOK, pesan, hasil)
 }
 
 // ResetPassword POST /api/auth/reset-password

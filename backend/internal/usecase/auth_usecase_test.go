@@ -377,20 +377,39 @@ func TestForgotPassword_EmailTidakTerdaftar_TetapSukses(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
 	mockUserRepo.On("FindByEmail", "hantu@gmail.com").Return(nil, gorm.ErrRecordNotFound)
 
-	err := uc.ForgotPassword("hantu@gmail.com")
+	hasil := uc.ForgotPassword("hantu@gmail.com")
 
-	assert.NoError(t, err)
+	// Alamat tak terdaftar: tetap dilaporkan "terkirim" supaya tidak bisa dipakai
+	// menebak email mana yang terdaftar.
+	assert.True(t, hasil.Sent)
+	assert.Empty(t, hasil.Reason)
 	mockUserRepo.AssertExpectations(t)
 }
 
-// Terdaftar tapi tanpa konfigurasi Supabase -> diam-diam no-op (tidak panic).
-func TestForgotPassword_TanpaSupabase_NoOp(t *testing.T) {
+// Akun terdaftar tapi belum punya akun Supabase (kanal OTP) -> sebelumnya diam-diam
+// no-op dan pengguna dibohongi "kode telah dikirim". Sekarang dilaporkan apa adanya.
+func TestForgotPassword_TanpaKanalEmail_Dilaporkan(t *testing.T) {
+	uc, mockUserRepo, _ := setupAuthUsecase(t)
+	u := registeredUser(entity.RoleMahasiswa)
+	u.SupabaseUserID = nil // kanal OTP belum ada
+	mockUserRepo.On("FindByEmail", "budi@gmail.com").Return(u, nil)
+
+	hasil := uc.ForgotPassword("budi@gmail.com")
+
+	assert.False(t, hasil.Sent)
+	assert.Equal(t, "no_email_channel", hasil.Reason)
+	mockUserRepo.AssertExpectations(t)
+}
+
+// Kanal ada tapi Supabase belum dikonfigurasi -> jangan ngaku terkirim.
+func TestForgotPassword_TanpaSupabase_TidakNgakuTerkirim(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
 	mockUserRepo.On("FindByEmail", "budi@gmail.com").Return(registeredUser(entity.RoleMahasiswa), nil)
 
-	err := uc.ForgotPassword("budi@gmail.com")
+	hasil := uc.ForgotPassword("budi@gmail.com")
 
-	assert.NoError(t, err)
+	assert.False(t, hasil.Sent)
+	assert.Equal(t, "send_failed", hasil.Reason)
 	mockUserRepo.AssertExpectations(t)
 }
 
