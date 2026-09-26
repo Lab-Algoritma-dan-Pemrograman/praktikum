@@ -237,7 +237,15 @@
 	// bahasa toolbar. Tanpa sinkronisasi ini halaman bisa menampilkan kode Python
 	// sementara kompilatornya tetap C — gejalanya error "C++ requires a type
 	// specifier" saat Run, tepat saat pengguna menekan tombol Python.
+	//
+	// Hanya bereaksi saat PROP berubah (lastLangProp), bukan saat pengguna
+	// mengubah select internal: halaman praktikum mengirim language="c" tetap,
+	// jadi tanpa penjaga ini pilihan Python dari select akan langsung dipaksa
+	// balik ke C.
+	let lastLangProp = language;
 	$effect(() => {
+		if (language === lastLangProp) return;
+		lastLangProp = language;
 		const want = language === 'python' ? 'python' : 'c';
 		if (want !== runLang) {
 			runLang = want;
