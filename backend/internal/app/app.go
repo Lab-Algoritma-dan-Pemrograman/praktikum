@@ -68,7 +68,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 		Rounds:        cfg.FbScryptRounds,
 		MemCost:       cfg.FbScryptMemCost,
 	})
-	profileUC := usecase.NewProfileUsecase(userRepo)
+	profileUC := usecase.NewProfileUsecase(userRepo, cfg)
 	dashboardUC := usecase.NewDashboardUsecase(userRepo, aktivasiRepo, pengerjaanRepo)
 	sesiUC := usecase.NewSesiUsecase(sesiRepo, courseRepo)
 	soalUC := usecase.NewSoalUsecase(soalRepo, courseRepo, terpilihRepo)

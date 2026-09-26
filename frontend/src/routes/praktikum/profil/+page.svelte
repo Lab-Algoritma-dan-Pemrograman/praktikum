@@ -5,6 +5,7 @@
 	import { User, Lock, Camera, Save, AtSign, Phone, Link2 } from 'lucide-svelte';
 
 	let isAdmin = $derived($user?.role === 'asisten');
+	let email = $state('');
 	let nama = $state('');
 	let nomorHp = $state('');
 	let medsos = $state('');
@@ -17,6 +18,7 @@
 	onMount(async () => {
 		try {
 			const u = await api.get<any>('/api/profile');
+			email = u.email ?? '';
 			nama = u.nama ?? '';
 			nomorHp = u.nomor_hp ?? '';
 			medsos = u.medsos_link ?? '';
@@ -44,6 +46,7 @@
 	async function save() {
 		msg = ''; err = '';
 		const body: Record<string, unknown> = { nama };
+		if (email.trim()) body.email = email.trim();
 		if (isAdmin) {
 			body.nomor_hp = nomorHp;
 			body.medsos_link = medsos;
@@ -87,6 +90,12 @@
 		<div>
 			<label class="label flex items-center gap-1.5" for="nama"><User size={12} class="text-ink-caption" /> Nama</label>
 			<input id="nama" class="input" bind:value={nama} />
+		</div>
+
+		<div>
+			<label class="label flex items-center gap-1.5" for="email"><AtSign size={12} class="text-ink-caption" /> Email</label>
+			<input id="email" type="email" class="input" bind:value={email} placeholder="nama@gmail.com" />
+			<p class="text-xs text-ink-caption mt-1">Dipakai untuk memulihkan password lewat kode OTP. Isi email aktif Anda.</p>
 		</div>
 
 		{#if isAdmin}

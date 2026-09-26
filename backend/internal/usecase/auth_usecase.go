@@ -110,19 +110,29 @@ func (uc *AuthUsecase) verifyAndMigrateFirebase(u *entity.User, plain string) bo
 	return true
 }
 
-// Register roster-gated: NIM harus ada di roster & belum diklaim, email allowlist, kelas harus dibuka.
-func (uc *AuthUsecase) Register(req dto.RegisterRequest) (*dto.AuthResponse, error) {
-	emailNorm := strings.ToLower(strings.TrimSpace(req.Email))
-	if err := validateEmailAllowlist(emailNorm, uc.cfg); err != nil {
-		return nil, err
+// validateEmailBaru: normalisasi + allowlist domain + anti-alias.
+// Dipakai bersama oleh Register dan ganti-email dari halaman profil.
+func validateEmailBaru(email string, cfg *config.Config) (string, error) {
+	norm := strings.ToLower(strings.TrimSpace(email))
+	if err := validateEmailAllowlist(norm, cfg); err != nil {
+		return "", err
 	}
 	// Reject '+' alias dan '.' trick gmail
-	local, domain, _ := strings.Cut(emailNorm, "@")
+	local, domain, _ := strings.Cut(norm, "@")
 	if strings.Contains(local, "+") {
-		return nil, errors.Join(ErrBadRequest, errors.New("karakter '+' tidak diizinkan pada email"))
+		return "", errors.Join(ErrBadRequest, errors.New("karakter '+' tidak diizinkan pada email"))
 	}
 	if domain == "gmail.com" && strings.Contains(local, ".") {
-		return nil, errors.Join(ErrBadRequest, errors.New("karakter '.' tidak diizinkan pada email Gmail"))
+		return "", errors.Join(ErrBadRequest, errors.New("karakter '.' tidak diizinkan pada email Gmail"))
+	}
+	return norm, nil
+}
+
+// Register roster-gated: NIM harus ada di roster & belum diklaim, email allowlist, kelas harus dibuka.
+func (uc *AuthUsecase) Register(req dto.RegisterRequest) (*dto.AuthResponse, error) {
+	emailNorm, err := validateEmailBaru(req.Email, uc.cfg)
+	if err != nil {
+		return nil, err
 	}
 
 	u, err := uc.users.FindByNIM(req.NIM)

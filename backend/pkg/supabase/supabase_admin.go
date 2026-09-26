@@ -134,3 +134,25 @@ func (s *Admin) updatePassword(uid, newPassword string) error {
 	}
 	return nil
 }
+
+// UpdateAuthUserEmail mengubah email akun auth Supabase — dipakai saat pengguna
+// mengganti email sendiri dari halaman profil (email inilah kanal OTP lupa-password).
+func (s *Admin) UpdateAuthUserEmail(uid, email string) error {
+	b, _ := json.Marshal(map[string]string{"email": email})
+	req, _ := http.NewRequest(http.MethodPut, s.URL+"/auth/v1/admin/users/"+uid, bytes.NewReader(b))
+	req.Header.Set("apikey", s.ServiceKey)
+	req.Header.Set("Authorization", "Bearer "+s.ServiceKey)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := s.HTTP.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode == http.StatusUnprocessableEntity {
+		return fmt.Errorf("email sudah terdaftar di Supabase Auth")
+	}
+	if resp.StatusCode >= 300 {
+		return fmt.Errorf("gagal ubah email Supabase: %d", resp.StatusCode)
+	}
+	return nil
+}
