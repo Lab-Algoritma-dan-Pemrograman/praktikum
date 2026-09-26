@@ -29,6 +29,15 @@ func NewAuthUsecase(u repository.UserRepository, k repository.KelasRepository, j
 	return &AuthUsecase{users: u, kelas: k, jwt: j, cfg: cfg, fbScrypt: fb}
 }
 
+// punyaKredensial: baris benar-benar bisa login — ada hash lokal, password Firebase lama,
+// atau akun Supabase yang sudah diklaim. Ini sumber kebenaran gate roster, BUKAN flag
+// is_registered yang bisa drift: baris dengan is_registered=true tapi password_hash NULL
+// bikin cek-nim bilang "belum terdaftar" sementara register ditolak "konflik data" —
+// mahasiswa mentok di keduanya (login gagal, daftar ditolak).
+func punyaKredensial(u *entity.User) bool {
+	return u.PasswordHash != nil || u.FbPasswordHash != nil || u.SupabaseUserID != nil
+}
+
 // CekNIM menentukan alur first-time login (login / register / ditolak).
 func (uc *AuthUsecase) CekNIM(nim string) (*dto.CekNIMResponse, error) {
 	u, err := uc.users.FindByNIM(nim)
@@ -38,13 +47,14 @@ func (uc *AuthUsecase) CekNIM(nim string) (*dto.CekNIMResponse, error) {
 		}
 		return nil, err
 	}
+	punya := punyaKredensial(u)
 	resp := &dto.CekNIMResponse{
 		NIM:          u.NIM,
 		Ditemukan:    true,
-		IsRegistered: u.IsRegistered,
+		IsRegistered: punya,
 		Nama:         u.Nama,
 	}
-	if u.IsRegistered && u.PasswordHash != nil {
+	if punya {
 		resp.Pesan = "Silakan masukkan password Anda."
 		return resp, nil
 	}
@@ -70,8 +80,8 @@ func (uc *AuthUsecase) Login(req dto.LoginRequest) (*dto.AuthResponse, error) {
 		}
 		return nil, err
 	}
-	// Mahasiswa roster yang belum register dianggap akun tidak ada (jangan bocorkan "belum aktivasi")
-	if u.Role == entity.RoleMahasiswa && !u.IsRegistered {
+	// Mahasiswa roster yang belum punya kredensial dianggap akun tidak ada (jangan bocorkan "belum aktivasi")
+	if u.Role == entity.RoleMahasiswa && !punyaKredensial(u) {
 		return nil, ErrNotFound
 	}
 	if u.PasswordHash != nil && hash.Verify(*u.PasswordHash, req.Password) {
@@ -122,7 +132,9 @@ func (uc *AuthUsecase) Register(req dto.RegisterRequest) (*dto.AuthResponse, err
 		}
 		return nil, err
 	}
-	if u.IsRegistered || u.SupabaseUserID != nil {
+	// Klaim roster ditolak hanya kalau kredensial sudah ada — flag is_registered saja
+	// tidak cukup (baris drift: flag true tapi password kosong = mahasiswa mentok).
+	if punyaKredensial(u) {
 		return nil, ErrConflict
 	}
 	if u.KelasID == nil {

@@ -118,6 +118,8 @@ func (uc *UserUsecase) ResetPassword(id int) error {
 		return ErrNotFound
 	}
 	u.PasswordHash = nil
+	u.FbPasswordHash = nil
+	u.FbPasswordSalt = nil
 	u.IsRegistered = false
 	return uc.users.Update(u)
 }

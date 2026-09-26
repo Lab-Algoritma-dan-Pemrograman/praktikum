@@ -183,6 +183,80 @@ func TestLogin_AdminBelumRegisterFlag_TetapMasuk(t *testing.T) {
 
 // ============================= Register =============================
 
+// ---- Regresi: baris drift (is_registered=true TANPA kredensial) ----
+// Kasus nyata: admin mengedit mahasiswa, flag is_registered ikut ter-set true padahal
+// password_hash NULL. Akibatnya cek-nim bilang "belum terdaftar" tapi register ditolak
+// "konflik data" — mahasiswa mentok total. Gate harus ikut kredensial, bukan flag.
+
+// driftUser: flag true, tapi tidak ada hash lokal / Firebase / akun Supabase.
+func driftUser() *entity.User {
+	kelasID := 1
+	return &entity.User{
+		ID:           649,
+		NIM:          "202615056",
+		Nama:         "Efraim",
+		Role:         entity.RoleMahasiswa,
+		KelasID:      &kelasID,
+		IsRegistered: true,
+		PasswordHash: nil,
+	}
+}
+
+func TestCekNIM_DriftFlagTrueTanpaKredensial_DianggapBelumDaftar(t *testing.T) {
+	uc, mockUserRepo, _ := setupAuthUsecase(t)
+	mockUserRepo.On("FindByNIM", "202615056").Return(driftUser(), nil)
+
+	resp, err := uc.CekNIM("202615056")
+
+	assert.NoError(t, err)
+	assert.True(t, resp.Ditemukan)
+	assert.False(t, resp.IsRegistered, "flag drift tidak boleh dilaporkan sebagai terdaftar")
+	assert.Equal(t, "Akun belum terdaftar. Silakan buat password.", resp.Pesan)
+	mockUserRepo.AssertExpectations(t)
+}
+
+func TestRegister_DriftFlagTrueTanpaKredensial_TetapBolehKlaim(t *testing.T) {
+	uc, mockUserRepo, _ := setupAuthUsecase(t)
+	mockUserRepo.On("FindByNIM", "202615056").Return(driftUser(), nil)
+	mockUserRepo.On("FindByEmail", "efraim@gmail.com").Return(nil, gorm.ErrRecordNotFound)
+	mockUserRepo.On("Update", mock.AnythingOfType("*entity.User")).Return(nil)
+	mockUserRepo.On("FindByID", 649).Return(driftUser(), nil)
+
+	resp, err := uc.Register(dto.RegisterRequest{NIM: "202615056", Email: "efraim@gmail.com", Password: "password123"})
+
+	assert.NoError(t, err, "baris drift harus bisa diklaim ulang, bukan 409")
+	assert.NotEmpty(t, resp.Token)
+	mockUserRepo.AssertExpectations(t)
+}
+
+func TestLogin_DriftFlagTrueTanpaKredensial_TetapDitolak(t *testing.T) {
+	uc, mockUserRepo, _ := setupAuthUsecase(t)
+	mockUserRepo.On("FindByNIM", "202615056").Return(driftUser(), nil)
+
+	resp, err := uc.Login(dto.LoginRequest{Identifier: "202615056", Password: "apapun"})
+
+	assert.ErrorIs(t, err, usecase.ErrNotFound)
+	assert.Nil(t, resp)
+	mockUserRepo.AssertExpectations(t)
+}
+
+// Password Firebase lama juga dihitung kredensial: baris migrasi Firebase sah login.
+func TestCekNIM_PunyaPasswordFirebase_DianggapTerdaftar(t *testing.T) {
+	uc, mockUserRepo, _ := setupAuthUsecase(t)
+	u := rosterUser()
+	u.IsRegistered = false
+	fbHash, fbSalt := "hash", "salt"
+	u.FbPasswordHash, u.FbPasswordSalt = &fbHash, &fbSalt
+	mockUserRepo.On("FindByNIM", "123456").Return(u, nil)
+
+	resp, err := uc.CekNIM("123456")
+
+	assert.NoError(t, err)
+	assert.True(t, resp.IsRegistered)
+	assert.Equal(t, "Silakan masukkan password Anda.", resp.Pesan)
+	mockUserRepo.AssertExpectations(t)
+}
+
 func TestRegister_Sukses_LocalFallback(t *testing.T) {
 	uc, mockUserRepo, _ := setupAuthUsecase(t)
 	// cfg tanpa Supabase -> jalur fallback lokal (tanpa network).
