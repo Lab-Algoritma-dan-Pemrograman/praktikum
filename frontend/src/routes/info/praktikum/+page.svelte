@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import CodeEditor from '$lib/components/CodeEditor.svelte';
-	import { initRunner } from '$lib/stores/runner';
 	import { Code } from 'lucide-svelte';
 
 	// starter snippets per language
@@ -12,18 +11,11 @@
 
 	let code = $state(STARTER.c);
 	let language = $state<'c' | 'python'>('c');
-	let editorKey = $state(0); // force re-mount on language switch
-
-	// run on mount to ensure workers init even if user only watches
-	onMount(() => {
-		initRunner();
-	});
 
 	function switchLang(lang: 'c' | 'python') {
+		if (lang === language) return;
 		language = lang;
 		code = STARTER[lang];
-		// remount CodeEditor so Monaco reloads with the right language
-		editorKey += 1;
 	}
 
 	function reset() {
@@ -62,14 +54,16 @@
 			<div class="flex gap-2">
 				<button
 					class="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm font-medium"
-					onclick={reset}>Reset</button>
+					onclick={() => switchLang(language === 'c' ? 'python' : 'c')}>Ganti Bahasa</button>
+				<button
+					class="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm font-medium"
+					onclick={reset}>Reset Kode</button>
 			</div>
 		</div>
 
 		<!-- editor (runnable wires its internal terminal + run button) -->
 		<div class="border border-gray-200 rounded-xl overflow-hidden shadow bg-white">
 			<CodeEditor
-				key={editorKey}
 				bind:value={code}
 				language={language}
 				height="500px"

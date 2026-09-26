@@ -4,6 +4,7 @@
 	import { browser } from '$app/environment';
 	import { Play, Square, RefreshCw } from 'lucide-svelte';
 	import {
+		initRunner,
 		pyodideWorkerStore,
 		isPyodideLoadingStore,
 		cWorkerStore,
@@ -45,6 +46,39 @@
 	let runLang = $state('c');
 	let running = $state(false);
 	let fallbackMode = $state(false);
+	let statusText = $state('');
+
+	// Worker WASM itu berat (clang ~30 MB + lld ~19 MB + sysroot ~9 MB). Jangan
+	// diunduh begitu halaman dibuka — mulai hanya saat pengguna menyentuh editor
+	// atau menekan Run, supaya halaman publik tidak membebani pengunjung.
+	let runnerStarted = false;
+
+	function ensureRunner() {
+		if (runnerStarted || !browser) return;
+		runnerStarted = true;
+		initRunner();
+	}
+
+	function workerReady(lang: string): boolean {
+		return lang === 'python' ? $pyodideWorkerStore !== null : $cWorkerStore !== null;
+	}
+
+	// Tunggu worker selesai dimuat (unduhan pertama bisa lama) tanpa memblokir UI.
+	function tungguWorker(lang: string, ms = 180000): Promise<boolean> {
+		return new Promise((resolve) => {
+			if (workerReady(lang)) return resolve(true);
+			const mulai = Date.now();
+			const timer = setInterval(() => {
+				if (workerReady(lang)) {
+					clearInterval(timer);
+					resolve(true);
+				} else if (Date.now() - mulai > ms) {
+					clearInterval(timer);
+					resolve(false);
+				}
+			}, 400);
+		});
+	}
 
 	// Python interactive input state
 	let inputBuffer = '';
@@ -171,6 +205,16 @@
 			const resizeObserver = new ResizeObserver(() => fitAddon?.fit());
 			resizeObserver.observe(termEl);
 
+			// Mulai unduh compiler begitu pengguna menyentuh editor/terminal, supaya
+			// klik Run pertama tidak terasa menggantung. Dipasang di sini (bukan di
+			// $effect) karena dijalankan sekali setelah elemen benar-benar ada.
+			if (runnable) {
+				const mulai = () => ensureRunner();
+				el?.addEventListener('pointerdown', mulai, { once: true });
+				el?.addEventListener('keydown', mulai, { once: true });
+				termEl?.addEventListener('pointerdown', mulai, { once: true });
+			}
+
 			return () => {
 				resizeObserver.disconnect();
 				term?.dispose();
@@ -179,8 +223,25 @@
 	});
 
 	$effect(() => {
-		if (editor && value !== editor.getValue()) {
-			editor.setValue(value ?? '');
+		// `value` WAJIB dibaca tanpa syarat di baris pertama: kalau dibaca setelah
+		// guard `editor &&` (yang bernilai false saat init), Svelte tidak pernah
+		// mencatatnya sebagai dependency dan effect ini tak akan jalan lagi —
+		// akibatnya ganti bahasa di halaman induk tidak mengganti isi editor.
+		const v = value;
+		if (editor && v !== editor.getValue()) {
+			editor.setValue(v ?? '');
+		}
+	});
+
+	// Prop `language` dari halaman induk wajib menggerakkan mode editor + pilihan
+	// bahasa toolbar. Tanpa sinkronisasi ini halaman bisa menampilkan kode Python
+	// sementara kompilatornya tetap C — gejalanya error "C++ requires a type
+	// specifier" saat Run, tepat saat pengguna menekan tombol Python.
+	$effect(() => {
+		const want = language === 'python' ? 'python' : 'c';
+		if (want !== runLang) {
+			runLang = want;
+			onLangChange();
 		}
 	});
 
@@ -207,22 +268,35 @@
 	async function runCode() {
 		if (!term || running) return;
 
+		// Kompilator baru diunduh saat pertama kali dibutuhkan.
+		ensureRunner();
+
 		term.clear();
 		outputText = '';
 		running = true;
 		fallbackMode = false;
+		statusText = '';
+
+		const lang = runLang;
+		if (!workerReady(lang)) {
+			const info = lang === 'python' ? 'Python (Pyodide)' : 'compiler C (clang+wasi)';
+			statusText = `Menyiapkan ${info}… unduhan pertama bisa sampai ±1 menit.`;
+			await tungguWorker(lang).then(async (siap) => {
+				statusText = '';
+				if (siap) {
+					running = false;
+					await runCode();
+				} else {
+					running = false;
+					runServerFallback();
+				}
+			});
+			return;
+		}
 
 		if (runLang === 'python') {
-			if (!$pyodideWorkerStore) {
-				runServerFallback();
-				return;
-			}
 			runPythonInteractive();
 		} else {
-			if (!$cWorkerStore) {
-				runServerFallback();
-				return;
-			}
 			cStdinLines = [];
 			cStdinBuffer = '';
 			cStdinOffsets = [];
@@ -378,7 +452,8 @@
 		// dan api.ts akan melempar 401 ke /praktikum/login — jangan sampai itu terjadi
 		// pada pengunjung publik di /info/praktikum.
 		if (!browser || !localStorage.getItem('token')) {
-			wl('\x1b[33m⏳ Worker masih dimuat. Tunggu sebentar lalu klik Run lagi.\x1b[0m');
+			statusText = '';
+			wl('\x1b[33m⚠ Compiler belum siap di browser ini. Coba klik Run sekali lagi, atau muat ulang halaman.\x1b[0m');
 			running = false;
 			return;
 		}
@@ -407,6 +482,7 @@
 			(term as any).__cleanup();
 			(term as any).__cleanup = null;
 		}
+		statusText = '';
 		clearTerminal();
 		wl('\x1b[1;31m⚠ Eksekusi dihentikan oleh pengguna.\x1b[0m');
 	}
@@ -443,8 +519,12 @@
 			{/if}
 		</div>
 
-		<!-- Spacer/Status area empty -->
-		<div></div>
+		<!-- Status: jelaskan kenapa Run belum kelihatan bereaksi (worker WASM berat) -->
+		<div class="text-[11px] font-mono text-zinc-400">
+			{#if statusText}
+				{statusText}
+			{/if}
+		</div>
 	</div>
 
 	<!-- Monaco Editor -->
