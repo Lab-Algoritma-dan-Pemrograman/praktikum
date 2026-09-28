@@ -131,6 +131,22 @@
 		} catch (e) { err = (e as Error).message; }
 	}
 
+	async function unlockCourse(ac: AktivasiCourse) {
+		err = ''; msg = '';
+		if (!await confirmAction({
+			title: 'Buka Kunci Peserta?',
+			message: 'Seluruh praktikan pada course ini direset ke "belum dikerjakan" supaya bisa mengetik dan mengerjakan lagi. Isi jawaban mereka TIDAK dihapus, dan timer dihitung ulang dari praktikan pertama yang mulai.'
+		})) return;
+		try {
+			await api.post('/api/admin/aktivasi-course/buka-tutup', {
+				aktivasi_course_id: ac.id,
+				unlock_only: true
+			});
+			msg = 'Kunci peserta dilepas. Praktikan bisa mengerjakan dan mengetik lagi.';
+			if (selected) await selectAktivasi(selected);
+		} catch (e) { err = (e as Error).message; }
+	}
+
 	async function addSusulan() {
 		if (!selected) return;
 		err = ''; msg = '';
@@ -321,20 +337,26 @@
 			<!-- Buka/Tutup Courses -->
 			<div>
 				<h3 class="text-base font-bold text-slate-800 mb-1.5">Buka / Tutup Ujian/Course</h3>
-				<p class="text-xs text-slate-500 mb-4 leading-relaxed">Membuka atau menutup course praktikan. Menutup course akan men-submit otomatis seluruh praktikan yang belum submit.</p>
+				<p class="text-xs text-slate-500 mb-4 leading-relaxed">Membuka atau menutup course praktikan. Menutup course akan men-submit otomatis seluruh praktikan yang belum submit. Pakai <strong>Buka Kunci Peserta</strong> kalau praktikan sudah terlanjur berstatus selesai padahal masih mau mengerjakan (course tetap terbuka, isi jawaban tidak dihapus).</p>
 				<div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
 					{#each selected.aktivasi_courses ?? [] as ac}
-						<div class="card bg-slate-50/60 border border-slate-200/80 flex items-center justify-between p-4 shadow-sm">
+						<div class="card bg-slate-50/60 border border-slate-200/80 flex items-center justify-between gap-3 p-4 shadow-sm">
 							<div>
 								<p class="font-bold text-slate-800 text-sm">{ac.course?.judul ?? labelJenis(ac.course?.jenis ?? '')}</p>
 								<span class="badge mt-1.5 inline-block {ac.is_open ? 'bg-state-success-bg text-state-success' : 'bg-slate-100 border-slate-200 text-ink-caption'}">
 									{ac.is_open ? 'Terbuka' : 'Tertutup'}
 								</span>
 							</div>
-							<button
-								class="btn-outline py-1.5 text-xs font-bold {ac.is_open ? 'text-state-error hover:bg-state-error-bg border-state-error/30' : 'text-state-success hover:bg-state-success-bg border-state-success/30'}"
-								onclick={() => toggleCourse(ac)}
-							>{ac.is_open ? 'Tutup' : 'Buka'}</button>
+							<div class="flex flex-col items-end gap-2">
+								<button
+									class="btn-outline py-1.5 text-xs font-bold {ac.is_open ? 'text-state-error hover:bg-state-error-bg border-state-error/30' : 'text-state-success hover:bg-state-success-bg border-state-success/30'}"
+									onclick={() => toggleCourse(ac)}
+								>{ac.is_open ? 'Tutup' : 'Buka'}</button>
+								<button
+									class="btn-outline py-1.5 text-xs font-bold text-primary border-primary/30 hover:bg-primary hover:text-white"
+									onclick={() => unlockCourse(ac)}
+								>Buka Kunci Peserta</button>
+							</div>
 						</div>
 					{/each}
 				</div>

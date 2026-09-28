@@ -204,6 +204,22 @@ func (uc *AktivasiUsecase) BukaTutupCourse(req dto.BukaTutupCourseRequest) (*ent
 		return nil, ErrNotFound
 	}
 	now := time.Now()
+	// Mode khusus: HANYA melepas kunci peserta. Dipakai asisten saat course sudah
+	// terbuka tetapi seluruh peserta terlanjur berstatus selesai (mis. habis waktu
+	// atau course ditutup-dibuka), supaya tidak perlu menutup course lagi.
+	if req.UnlockOnly {
+		ac.StartedAt = nil
+		if err := uc.aktivasi.UpdateCourse(ac); err != nil {
+			return nil, err
+		}
+		if _, err := uc.jawaban.UnmarkSubmittedForCourse(ac.AktivasiSesiID, ac.CourseID); err != nil {
+			return nil, err
+		}
+		if _, err := uc.pengerjaan.ResetForCourse(ac.AktivasiSesiID, ac.CourseID); err != nil {
+			return nil, err
+		}
+		return ac, nil
+	}
 	ac.IsOpen = req.IsOpen
 	if req.IsOpen {
 		ac.OpenedAt = &now

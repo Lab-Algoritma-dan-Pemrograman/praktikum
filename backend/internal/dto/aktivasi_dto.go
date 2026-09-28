@@ -13,9 +13,11 @@ type AktivasiRequest struct {
 }
 
 // BukaTutupCourseRequest: buka/tutup course per aktivasi.
+// UnlockOnly: lepas kunci peserta saja, tanpa mengubah is_open course.
 type BukaTutupCourseRequest struct {
 	AktivasiCourseID int  `json:"aktivasi_course_id" binding:"required"`
 	IsOpen           bool `json:"is_open"`
+	UnlockOnly       bool `json:"unlock_only"`
 }
 
 // SusulanRequest: daftarkan mahasiswa susulan ke aktivasi.

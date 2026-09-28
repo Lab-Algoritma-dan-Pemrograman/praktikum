@@ -107,15 +107,19 @@ func (h *AktivasiHandler) BukaTutupCourse(c *gin.Context) {
 		return
 	}
 	msg := "Course ditutup (auto-submit massal dijalankan)"
-	if req.IsOpen {
+	action := "BUKA_TUTUP_COURSE"
+	if req.UnlockOnly {
+		msg = "Kunci peserta dilepas. Pengerjaan direset, isi jawaban tetap tersimpan, timer mulai ulang dari peserta pertama."
+		action = "BUKA_KUNCI_COURSE"
+	} else if req.IsOpen {
 		msg = "Course dibuka"
 	}
 	// Buka/tutup course berdampak massal (auto-submit semua peserta / melepas
 	// kunci semua peserta) dan sebelumnya tidak meninggalkan jejak sama sekali.
 	if h.auditLog != nil {
-		_ = h.auditLog.LogAction(middleware.UserID(c), "", "BUKA_TUTUP_COURSE",
-			fmt.Sprintf("aktivasi_course_id=%d aktivasi_sesi_id=%d course_id=%d is_open=%v",
-				res.ID, res.AktivasiSesiID, res.CourseID, req.IsOpen),
+		_ = h.auditLog.LogAction(middleware.UserID(c), "", action,
+			fmt.Sprintf("aktivasi_course_id=%d aktivasi_sesi_id=%d course_id=%d is_open=%v unlock_only=%v",
+				res.ID, res.AktivasiSesiID, res.CourseID, res.IsOpen, req.UnlockOnly),
 			clientIP(c), c.Request.UserAgent())
 	}
 	response.OK(c, http.StatusOK, msg, res)

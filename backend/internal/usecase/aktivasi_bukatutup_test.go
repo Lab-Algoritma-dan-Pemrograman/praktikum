@@ -99,6 +99,42 @@ func TestBukaTutupCourse_TutupAutoSubmitMassal(t *testing.T) {
 	mPengerjaan.AssertNotCalled(t, "ResetForCourse", mock.Anything, mock.Anything)
 }
 
+// Mode unlock_only: hanya melepas kunci peserta, is_open tidak diubah.
+func TestBukaTutupCourse_UnlockOnlyTidakMengubahIsOpen(t *testing.T) {
+	anchor := time.Date(2026, 9, 28, 11, 56, 48, 0, time.UTC)
+	ac := &entity.AktivasiCourse{ID: 9, AktivasiSesiID: 5, CourseID: 1, IsOpen: true, StartedAt: &anchor}
+
+	mAkt := &mocks.AktivasiRepository{}
+	mAkt.On("FindCourseByID", 9).Return(ac, nil)
+	mAkt.On("UpdateCourse", mock.AnythingOfType("*entity.AktivasiCourse")).
+		Run(func(args mock.Arguments) {
+			saved := args.Get(0).(*entity.AktivasiCourse)
+			if !saved.IsOpen {
+				t.Error("unlock_only tidak boleh menutup course")
+			}
+			if saved.StartedAt != nil {
+				t.Error("started_at harus dikosongkan supaya timer dihitung ulang")
+			}
+		}).
+		Return(nil)
+
+	mJawaban := &mocks.JawabanRepository{}
+	mJawaban.On("UnmarkSubmittedForCourse", 5, 1).Return(int64(5), nil)
+
+	mPengerjaan := &mocks.PengerjaanRepository{}
+	mPengerjaan.On("ResetForCourse", 5, 1).Return(int64(19), nil)
+
+	uc := &AktivasiUsecase{aktivasi: mAkt, jawaban: mJawaban, pengerjaan: mPengerjaan}
+	if _, err := uc.BukaTutupCourse(dto.BukaTutupCourseRequest{AktivasiCourseID: 9, UnlockOnly: true}); err != nil {
+		t.Fatalf("unlock_only tidak boleh error: %v", err)
+	}
+
+	mJawaban.AssertCalled(t, "UnmarkSubmittedForCourse", 5, 1)
+	mPengerjaan.AssertCalled(t, "ResetForCourse", 5, 1)
+	mJawaban.AssertNotCalled(t, "MarkSubmittedForCourse", mock.Anything, mock.Anything)
+	mPengerjaan.AssertNotCalled(t, "MarkSelesaiForCourse", mock.Anything, mock.Anything)
+}
+
 // Course yang tidak ada -> ErrNotFound, tanpa menyentuh repo lain.
 func TestBukaTutupCourse_CourseTidakAda(t *testing.T) {
 	mAkt := &mocks.AktivasiRepository{}
