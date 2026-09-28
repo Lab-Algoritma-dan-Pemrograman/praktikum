@@ -231,6 +231,34 @@ func (_m *PengerjaanRepository) MarkSelesaiForCourse(aktivasiSesiID int, courseI
 	return r0
 }
 
+// ResetForCourse provides a mock function with given fields: aktivasiSesiID, courseID
+func (_m *PengerjaanRepository) ResetForCourse(aktivasiSesiID int, courseID int) (int64, error) {
+	ret := _m.Called(aktivasiSesiID, courseID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ResetForCourse")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int, int) (int64, error)); ok {
+		return rf(aktivasiSesiID, courseID)
+	}
+	if rf, ok := ret.Get(0).(func(int, int) int64); ok {
+		r0 = rf(aktivasiSesiID, courseID)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(int, int) error); ok {
+		r1 = rf(aktivasiSesiID, courseID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ProgressSummary provides a mock function with given fields: aktivasiSesiID, courseID
 func (_m *PengerjaanRepository) ProgressSummary(aktivasiSesiID int, courseID int) (repository.ProgressSummary, error) {
 	ret := _m.Called(aktivasiSesiID, courseID)

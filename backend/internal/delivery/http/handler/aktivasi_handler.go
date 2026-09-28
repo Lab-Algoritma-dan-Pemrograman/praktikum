@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
+	"lab-ap/internal/delivery/http/middleware"
 	"lab-ap/internal/dto"
 	_ "lab-ap/internal/entity"
 	"lab-ap/internal/usecase"
@@ -12,11 +14,12 @@ import (
 )
 
 type AktivasiHandler struct {
-	uc *usecase.AktivasiUsecase
+	uc       *usecase.AktivasiUsecase
+	auditLog *usecase.AuditLogUsecase
 }
 
-func NewAktivasiHandler(uc *usecase.AktivasiUsecase) *AktivasiHandler {
-	return &AktivasiHandler{uc: uc}
+func NewAktivasiHandler(uc *usecase.AktivasiUsecase, al *usecase.AuditLogUsecase) *AktivasiHandler {
+	return &AktivasiHandler{uc: uc, auditLog: al}
 }
 
 // List GET /api/admin/aktivasi
@@ -106,6 +109,14 @@ func (h *AktivasiHandler) BukaTutupCourse(c *gin.Context) {
 	msg := "Course ditutup (auto-submit massal dijalankan)"
 	if req.IsOpen {
 		msg = "Course dibuka"
+	}
+	// Buka/tutup course berdampak massal (auto-submit semua peserta / melepas
+	// kunci semua peserta) dan sebelumnya tidak meninggalkan jejak sama sekali.
+	if h.auditLog != nil {
+		_ = h.auditLog.LogAction(middleware.UserID(c), "", "BUKA_TUTUP_COURSE",
+			fmt.Sprintf("aktivasi_course_id=%d aktivasi_sesi_id=%d course_id=%d is_open=%v",
+				res.ID, res.AktivasiSesiID, res.CourseID, req.IsOpen),
+			clientIP(c), c.Request.UserAgent())
 	}
 	response.OK(c, http.StatusOK, msg, res)
 }

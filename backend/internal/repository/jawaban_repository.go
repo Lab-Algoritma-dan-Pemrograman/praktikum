@@ -18,6 +18,10 @@ type JawabanRepository interface {
 	// MarkSubmittedForCourse: tandai submitted semua jawaban belum-submit pada aktivasi+course
 	// (auto-submit massal saat course ditutup). Mengembalikan jumlah baris terdampak.
 	MarkSubmittedForCourse(aktivasiSesiID, courseID int) (int64, error)
+	// UnmarkSubmittedForCourse: kebalikan MarkSubmittedForCourse, dipakai saat
+	// course DIBUKA ULANG agar peserta bisa mengerjakan & submit ulang.
+	// Isi jawaban_teks dibiarkan (tidak dihapus), hanya status submit yang dilepas.
+	UnmarkSubmittedForCourse(aktivasiSesiID, courseID int) (int64, error)
 	// MarkSubmittedForMahasiswaCourse: auto-submit untuk 1 mahasiswa (timer habis).
 	MarkSubmittedForMahasiswaCourse(mahasiswaID, aktivasiSesiID, courseID int) (int64, error)
 	// SumNilai: total nilai mahasiswa untuk satu aktivasi+course.
@@ -93,6 +97,21 @@ func (r *jawabanRepository) MarkSubmittedForCourse(aktivasiSesiID, courseID int)
 	res := r.db.Model(&entity.JawabanMahasiswa{}).
 		Where("soal_terpilih_id IN ? AND is_submitted = ?", ids, false).
 		Updates(map[string]interface{}{"is_submitted": true, "waktu_submit": gorm.Expr("NOW()")})
+	return res.RowsAffected, res.Error
+}
+
+// UnmarkSubmittedForCourse melepas status submit seluruh jawaban satu course (buka ulang ujian).
+func (r *jawabanRepository) UnmarkSubmittedForCourse(aktivasiSesiID, courseID int) (int64, error) {
+	ids, err := r.soalTerpilihIDsForCourse(aktivasiSesiID, courseID)
+	if err != nil {
+		return 0, err
+	}
+	if len(ids) == 0 {
+		return 0, nil
+	}
+	res := r.db.Model(&entity.JawabanMahasiswa{}).
+		Where("soal_terpilih_id IN ? AND is_submitted = ?", ids, true).
+		Updates(map[string]interface{}{"is_submitted": false, "waktu_submit": nil})
 	return res.RowsAffected, res.Error
 }
 

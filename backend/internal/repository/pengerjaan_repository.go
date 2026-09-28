@@ -19,6 +19,12 @@ type PengerjaanRepository interface {
 	ListByAktivasiCourse(aktivasiSesiID, courseID int) ([]entity.PengerjaanCourse, error)
 	// MarkSelesaiForCourse: set status selesai utk semua yg belum selesai (mass auto-submit).
 	MarkSelesaiForCourse(aktivasiSesiID, courseID int) error
+	// ResetForCourse: lepas kunci pengerjaan seluruh peserta (status kembali
+	// belum_dikerjakan, waktu_mulai/selesai dikosongkan). Dipakai saat course
+	// DIBUKA ULANG: tanpa ini peserta tetap read-only di ruang ujian walau
+	// course sudah is_open=true (gejala "tidak bisa mengetik").
+	// Mengembalikan jumlah baris terdampak. total_nilai/keaktifan TIDAK diubah.
+	ResetForCourse(aktivasiSesiID, courseID int) (int64, error)
 	ProgressSummary(aktivasiSesiID, courseID int) (ProgressSummary, error)
 	// FindExpired mengambil pengerjaan yang sedang berjalan & sudah lewat deadline (untuk sweeper).
 	FindExpired() ([]ExpiredPengerjaan, error)
@@ -123,6 +129,18 @@ func (r *pengerjaanRepository) MarkSelesaiForCourse(aktivasiSesiID, courseID int
 	return r.db.Model(&entity.PengerjaanCourse{}).
 		Where("aktivasi_sesi_id = ? AND course_id = ? AND status <> ?", aktivasiSesiID, courseID, entity.StatusSelesai).
 		Updates(map[string]interface{}{"status": entity.StatusSelesai, "waktu_selesai": gorm.Expr("NOW()")}).Error
+}
+
+// ResetForCourse melepas kunci seluruh peserta satu course (buka ulang ujian).
+func (r *pengerjaanRepository) ResetForCourse(aktivasiSesiID, courseID int) (int64, error) {
+	res := r.db.Model(&entity.PengerjaanCourse{}).
+		Where("aktivasi_sesi_id = ? AND course_id = ? AND status <> ?", aktivasiSesiID, courseID, entity.StatusBelum).
+		Updates(map[string]interface{}{
+			"status":        entity.StatusBelum,
+			"waktu_mulai":   nil,
+			"waktu_selesai": nil,
+		})
+	return res.RowsAffected, res.Error
 }
 
 func (r *pengerjaanRepository) ProgressSummary(aktivasiSesiID, courseID int) (ProgressSummary, error) {

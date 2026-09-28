@@ -233,6 +233,14 @@
 		}
 	});
 
+	// `readOnly` hanya dipasang sekali saat editor dibuat, jadi kunci yang dilepas
+	// asisten (mis. course dibuka ulang) tidak berpengaruh sampai halaman dimuat
+	// ulang. Sinkronkan tiap prop berubah.
+	$effect(() => {
+		const ro = readonly;
+		if (editor) editor.updateOptions({ readOnly: ro });
+	});
+
 	// Prop `language` dari halaman induk wajib menggerakkan mode editor + pilihan
 	// bahasa toolbar. Tanpa sinkronisasi ini halaman bisa menampilkan kode Python
 	// sementara kompilatornya tetap C — gejalanya error "C++ requires a type

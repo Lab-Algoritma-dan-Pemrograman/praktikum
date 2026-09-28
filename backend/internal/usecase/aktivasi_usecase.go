@@ -193,6 +193,11 @@ func urutanCourse(jenis entity.JenisCourse, fallback int) int {
 // BukaTutupCourse mengubah is_open sebuah aktivasi_course.
 // Saat menutup (is_open=false): auto-submit massal semua jawaban belum-submit
 // dan tandai pengerjaan_course = selesai.
+// Saat membuka (is_open=true): kunci peserta DILEPAS kembali (pengerjaan ->
+// belum_dikerjakan, is_submitted direset) dan anchor timer global dikosongkan,
+// supaya peserta bisa mengetik & mengerjakan ulang. Sebelumnya buka-ulang hanya
+// mengubah is_open, sehingga seluruh peserta tetap read-only di ruang ujian
+// (gejala "tidak bisa mengetik" setelah course ditutup lalu dibuka).
 func (uc *AktivasiUsecase) BukaTutupCourse(req dto.BukaTutupCourseRequest) (*entity.AktivasiCourse, error) {
 	ac, err := uc.aktivasi.FindCourseByID(req.AktivasiCourseID)
 	if err != nil {
@@ -203,6 +208,8 @@ func (uc *AktivasiUsecase) BukaTutupCourse(req dto.BukaTutupCourseRequest) (*ent
 	if req.IsOpen {
 		ac.OpenedAt = &now
 		ac.ClosedAt = nil
+		// Anchor timer global (peserta pertama) dimulai ulang dari nol.
+		ac.StartedAt = nil
 	} else {
 		ac.ClosedAt = &now
 	}
@@ -216,6 +223,14 @@ func (uc *AktivasiUsecase) BukaTutupCourse(req dto.BukaTutupCourseRequest) (*ent
 			return nil, err
 		}
 		if err := uc.pengerjaan.MarkSelesaiForCourse(ac.AktivasiSesiID, ac.CourseID); err != nil {
+			return nil, err
+		}
+	} else {
+		// Buka ulang: lepas kunci peserta. Isi jawaban tidak dihapus.
+		if _, err := uc.jawaban.UnmarkSubmittedForCourse(ac.AktivasiSesiID, ac.CourseID); err != nil {
+			return nil, err
+		}
+		if _, err := uc.pengerjaan.ResetForCourse(ac.AktivasiSesiID, ac.CourseID); err != nil {
 			return nil, err
 		}
 	}

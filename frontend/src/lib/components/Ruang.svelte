@@ -6,7 +6,7 @@
 	import { sanitizeSoal } from '$lib/sanitize';
 	import CodeEditor from './CodeEditor.svelte';
 	import Countdown from './Countdown.svelte';
-	import { Save, ChevronLeft, ChevronRight } from 'lucide-svelte';
+	import { Save, ChevronLeft, ChevronRight, Lock } from 'lucide-svelte';
 	import { confirmAction } from '$lib/stores/confirm';
 	import type { RuangCourse } from '$lib/types';
 
@@ -179,6 +179,23 @@
 		</div>
 
 		{#if err}<p class="mb-3 rounded-lg bg-state-error-bg p-3 text-sm text-state-error">{err}</p>{/if}
+
+		<!-- Jelaskan kenapa editor terkunci. Tanpa ini mahasiswa hanya melihat
+		     editor yang tidak bisa diketik tanpa alasan (terjadi 2026-09-28 di PK). -->
+		{#if locked}
+			<div class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+				<Lock size={18} class="mt-0.5 flex-shrink-0 text-amber-600" />
+				<div class="text-sm leading-relaxed text-amber-900">
+					{#if ruang.status === 'selesai'}
+						<p class="font-bold">Jawaban Anda sudah terkumpul (submit sendiri atau auto-submit saat waktu habis).</p>
+						<p class="mt-1">Karena itu editor dikunci dan tidak bisa diketik. Jika asisten membuka kembali sesi ini, muat ulang halaman untuk mengerjakan lagi.</p>
+					{:else}
+						<p class="font-bold">Sesi ini sedang ditutup oleh asisten.</p>
+						<p class="mt-1">Editor dikunci sampai asisten membukanya kembali. Muat ulang halaman setelah dibuka.</p>
+					{/if}
+				</div>
+			</div>
+		{/if}
 		{#if info}
 			<p class="mb-3 rounded-xl border p-3.5 text-xs font-semibold flex items-center gap-2
 				{info.includes('Tersimpan otomatis') 

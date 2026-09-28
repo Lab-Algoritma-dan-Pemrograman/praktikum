@@ -52,6 +52,8 @@ SvelteKit (Svelte 5 runes) + TypeScript + Tailwind, deployed to Vercel.
   - `src/routes/praktikum/admin/+layout.svelte` requires `role === 'admin'`. **Any admin-only page MUST live under `praktikum/admin/`** or it silently skips the role guard. (Backend `RequireRole` still enforces it server-side, but don't rely on that alone.)
 - **Editors:** `CodeEditor.svelte` (Monaco, live coding), `RichTextEditor.svelte` + `src/lib/components/edra/` (TipTap-based WYSIWYG with KaTeX) for composing questions.
 - **`Countdown.svelte`** drives exam timers; the server is authoritative on expiry (sweeper/cron), the client countdown is display + auto-save trigger only.
+- **Kunci ruang ujian (`Ruang.svelte`):** `locked = !is_open || status === 'selesai'` mengirim `readonly` ke editor/textarea. Jadi status `selesai` milik peserta berarti editor mati total ("tidak bisa mengetik"). Penutupan course (`BukaTutupCourse`, `is_open=false`) meng-auto-submit massal semua peserta, dan sejak 2026-09-28 pembukaan kembali (`is_open=true`) ikut melepas kunci: `pengerjaan_course` kembali `belum_dikerjakan`, `is_submitted` direset, `aktivasi_course.started_at` dikosongkan (anchor timer global). Kalau mengubah jalur buka/tutup course, jangan hapus pelepasan kunci ini — pernah bikin satu kelas (19 peserta, PK Modul 1) tidak bisa mengetik.
+- **`aktivasi_course.started_at` = anchor timer global** (peserta pertama yang menekan Mulai, kecuali peserta susulan yang pakai timer sendiri). Selama nilai ini terisi, deadline semua peserta = `started_at + course.durasi_menit`, jadi jangan lupa dikosongkan saat course dibuka ulang.
 
 ## Config & environment
 

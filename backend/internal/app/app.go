@@ -93,7 +93,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 		Auth:         handler.NewAuthHandler(authUC, profileUC, auditLogUC),
 		Dashboard:    handler.NewDashboardHandler(dashboardUC),
 		Sesi:         handler.NewSesiHandler(sesiUC, auditLogUC),
-		Aktivasi:     handler.NewAktivasiHandler(aktivasiUC),
+		Aktivasi:     handler.NewAktivasiHandler(aktivasiUC, auditLogUC),
 		Soal:         handler.NewSoalHandler(soalUC, auditLogUC),
 		Jawaban:      handler.NewJawabanHandler(jawabanUC, auditLogUC),
 		Penilaian:    handler.NewPenilaianHandler(penilaianUC, auditLogUC),
