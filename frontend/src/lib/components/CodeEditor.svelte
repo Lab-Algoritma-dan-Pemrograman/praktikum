@@ -26,6 +26,7 @@
 	let monacoRef: any = null;
 	let term: any = null;
 	let fitAddon: any = null;
+	let resizeObserver: ResizeObserver | null = null;
 
 	// Mirror output teks ke DOM: xterm menggambar ke canvas (tak terbaca assistive tech),
 	// jadi tulis juga ke live-region agar output bisa dibaca & diverifikasi.
@@ -44,6 +45,7 @@
 
 	// Run state
 	let runLang = $state('c');
+	let loadError = $state('');
 	let running = $state(false);
 	let fallbackMode = $state(false);
 	let statusText = $state('');
@@ -101,20 +103,37 @@
 	onMount(async () => {
 		if (language === 'python') runLang = 'python';
 
-		// Initialize Monaco
+		// Initialize Monaco (diunduh dari CDN saat runtime). Kalau CDN/loader
+		// gagal, tampilkan fallback error yang jelas supaya pengguna tahu kenapa
+		// editor kosong (bukan diam tanpa penjelasan).
 		const loader = (await import('@monaco-editor/loader')).default;
-		const monaco = await loader.init();
+		let monaco: any;
+		try {
+			monaco = await loader.init();
+		} catch {
+			loadError = 'Editor kode gagal dimuat (CDN terblokir di jaringan/ISP Anda). Coba muat ulang halaman atau gunakan koneksi lain.';
+			return;
+		}
+		if (!monaco?.editor) {
+			loadError = 'Editor kode gagal dimuat. Coba muat ulang halaman.';
+			return;
+		}
 		monacoRef = monaco;
-		editor = monaco.editor.create(el, {
-			value,
-			language: runLang,
-			readOnly: readonly,
-			automaticLayout: true,
-			minimap: { enabled: false },
-			fontSize: 14,
-			scrollBeyondLastLine: false,
-			theme: 'vs-dark'
-		});
+		try {
+			editor = monaco.editor.create(el, {
+				value,
+				language: runLang,
+				readOnly: readonly,
+				automaticLayout: true,
+				minimap: { enabled: false },
+				fontSize: 14,
+				scrollBeyondLastLine: false,
+				theme: 'vs-dark'
+			});
+		} catch {
+			loadError = 'Editor kode gagal dibuat. Coba muat ulang halaman.';
+			return;
+		}
 		editor.onDidChangeModelContent(() => {
 			value = editor.getValue();
 			oninput?.();
@@ -124,8 +143,16 @@
 			runCode();
 		});
 
-		// Initialize xterm.js if runnable
-		if (runnable && termEl) {
+		// Terminal diinisialisasi terpisah dari Monaco: kegagalan xterm atau
+		// return dini karena CDN Monaco gagal tidak boleh membunuh inisialisasi
+		// terminal. Keduanya jalan sendiri apa pun yang terjadi pada yang lain.
+		await initTerminal();
+	});
+
+	// Inisialisasi terminal dipisah supaya tidak ikut mati bila Monaco gagal.
+	async function initTerminal() {
+		if (!runnable || !termEl) return;
+		try {
 			const [{ Terminal }, { FitAddon }] = await Promise.all([
 				import('@xterm/xterm'),
 				import('@xterm/addon-fit')
@@ -202,25 +229,21 @@
 				}
 			});
 
-			const resizeObserver = new ResizeObserver(() => fitAddon?.fit());
-			resizeObserver.observe(termEl);
+			const resizeObserverLocal = new ResizeObserver(() => fitAddon?.fit());
+			resizeObserverLocal.observe(termEl);
+			resizeObserver = resizeObserverLocal;
 
 			// Mulai unduh compiler begitu pengguna menyentuh editor/terminal, supaya
 			// klik Run pertama tidak terasa menggantung. Dipasang di sini (bukan di
 			// $effect) karena dijalankan sekali setelah elemen benar-benar ada.
-			if (runnable) {
-				const mulai = () => ensureRunner();
-				el?.addEventListener('pointerdown', mulai, { once: true });
-				el?.addEventListener('keydown', mulai, { once: true });
-				termEl?.addEventListener('pointerdown', mulai, { once: true });
-			}
-
-			return () => {
-				resizeObserver.disconnect();
-				term?.dispose();
-			};
+			const mulai = () => ensureRunner();
+			el?.addEventListener('pointerdown', mulai, { once: true });
+			el?.addEventListener('keydown', mulai, { once: true });
+			termEl?.addEventListener('pointerdown', mulai, { once: true });
+		} catch (e) {
+			console.error('Terminal gagal diinisialisasi:', e);
 		}
-	});
+	}
 
 	$effect(() => {
 		// `value` WAJIB dibaca tanpa syarat di baris pertama: kalau dibaca setelah
@@ -503,6 +526,8 @@
 	}
 
 	onDestroy(() => {
+		resizeObserver?.disconnect();
+		term?.dispose();
 		editor?.dispose();
 	});
 </script>
@@ -542,8 +567,17 @@
 		</div>
 	</div>
 
-	<!-- Monaco Editor -->
-	<div bind:this={el} style="height: {height};" class="overflow-hidden bg-[#1e1e1e]"></div>
+	<!-- Monaco Editor (dengan fallback error bila CDN gagal) -->
+	{#if loadError}
+		<div class="p-6 text-center" style="height: {height};">
+			<p class="text-sm font-bold text-red-400">{loadError}</p>
+			<button class="mt-3 h-8 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-1 rounded-lg text-xs font-bold border border-zinc-700" onclick={() => location.reload()}>
+				Muat Ulang
+			</button>
+		</div>
+	{:else}
+		<div bind:this={el} style="height: {height};" class="overflow-hidden bg-[#1e1e1e]"></div>
+	{/if}
 </div>
 
 <!-- Standalone Mac-style Terminal (below the editor) -->
