@@ -78,14 +78,19 @@ func (uc *PraktikumUsecase) ListSesi(userID int) ([]dto.SesiUserItem, error) {
 			Urutan:         s.Urutan,
 			IsUjianPraktik: s.IsUjianPraktik,
 		}
-		aktivasi := aktivasiBySesi[s.ID]
-		susulan := false
-		if aktivasi == nil {
-			if a, ok := susulanAktivasiBySesi[s.ID]; ok {
+		aktivasi := susulanAktivasiBySesi[s.ID]
+		susulan := true
+		if aktivasi == nil || !aktivasi.IsActive {
+			if a := aktivasiBySesi[s.ID]; a != nil {
 				aktivasi = a
-				susulan = true
+				susulan = false
 			}
 		}
+		// Susulan = override eksplisit admin: diprioritaskan di atas aktivasi
+		// kelas asal. Kasus nyata: mhs TE C / TSE A dititipkan ke TE B
+		// (keterampilan dibuka di TE B, kelas asal sudah ditutup) — kalau
+		// kelas asal menang, susulan tidak pernah terlihat dan tombol
+		// Kerjakan Terkunci walau course tujuan sedang dibuka.
 		if aktivasi != nil && aktivasi.IsActive {
 			item.Aktif = true
 			item.Susulan = susulan
