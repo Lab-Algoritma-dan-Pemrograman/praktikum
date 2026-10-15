@@ -119,18 +119,13 @@ func (uc *AktivasiUsecase) Aktivasi(req dto.AktivasiRequest) (*entity.AktivasiSe
 			return nil, errors.New("sesi ujian praktik belum punya course ujian_praktik")
 		}
 	} else {
-		// Gacha: pretest ATAU posttest (wajib pilih), + keterampilan.
-		if req.GachaPilihan == "" {
-			return nil, errors.New("gacha_pilihan (pretest/posttest) wajib untuk sesi normal")
-		}
-		pilihan := entity.JenisCourse(req.GachaPilihan)
-		for _, c := range courses {
-			if c.Jenis == pilihan || c.Jenis == entity.CourseKeterampilan {
-				dipakai = append(dipakai, c)
-			}
-		}
-		if len(dipakai) == 0 {
-			return nil, errors.New("course terpilih tidak tersedia di sesi ini")
+		// pilihCourseNormal: gacha pretest/posttest (wajib bila sesi punya
+		// course-nya) + keterampilan. Sesi karyawan (hanya keterampilan)
+		// tidak butuh gacha_pilihan.
+		var err error
+		dipakai, err = pilihCourseNormal(courses, req.GachaPilihan)
+		if err != nil {
+			return nil, err
 		}
 	}
 
@@ -172,6 +167,34 @@ func (uc *AktivasiUsecase) Aktivasi(req dto.AktivasiRequest) (*entity.AktivasiSe
 	}
 
 	return uc.aktivasi.FindSesiByID(aks.ID)
+}
+
+// pilihCourseNormal menentukan course sesi normal yang dibuatkan aktivasi_course:
+// gacha pretest ATAU posttest (wajib bila sesi punya course-nya) + keterampilan.
+// Sesi karyawan (hanya keterampilan, tanpa pretest/posttest) tidak butuh
+// gacha_pilihan — gacha yang terisi tapi course-nya tidak ada ikut diabaikan.
+func pilihCourseNormal(courses []entity.Course, gachaPilihan string) ([]entity.Course, error) {
+	punyaPrePost := false
+	for _, c := range courses {
+		if c.Jenis == entity.CoursePretest || c.Jenis == entity.CoursePosttest {
+			punyaPrePost = true
+			break
+		}
+	}
+	if punyaPrePost && gachaPilihan == "" {
+		return nil, errors.New("gacha_pilihan (pretest/posttest) wajib untuk sesi normal")
+	}
+	pilihan := entity.JenisCourse(gachaPilihan)
+	var dipakai []entity.Course
+	for _, c := range courses {
+		if c.Jenis == pilihan || c.Jenis == entity.CourseKeterampilan {
+			dipakai = append(dipakai, c)
+		}
+	}
+	if len(dipakai) == 0 {
+		return nil, errors.New("course terpilih tidak tersedia di sesi ini")
+	}
+	return dipakai, nil
 }
 
 // urutanCourse menentukan urutan default buka course.
