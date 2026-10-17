@@ -306,6 +306,11 @@ func (uc *JawabanUsecase) buildRuang(userID int, aktivasi *entity.AktivasiSesi, 
 		if j, ok := jawabanMap[st.ID]; ok {
 			item.JawabanTeks = j.JawabanTeks
 			item.IsSubmitted = j.IsSubmitted
+		} else if st.Soal != nil && st.Soal.KodeRumpang != nil && *st.Soal.KodeRumpang != "" &&
+			st.Soal.JenisSoal == entity.SoalCoding {
+			// Prefill kode rumpang (kelas karyawan): jawaban awal = kerangka
+			// ber-blank, hanya bila mahasiswa belum pernah menyimpan apa pun.
+			item.JawabanTeks = *st.Soal.KodeRumpang
 		}
 		resp.Soal = append(resp.Soal, item)
 	}

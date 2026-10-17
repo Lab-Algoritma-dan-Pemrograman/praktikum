@@ -42,6 +42,11 @@ func (uc *SoalUsecase) Create(req dto.SoalRequest) (*entity.Soal, error) {
 		sanitized := p.Sanitize(*req.KunciJawaban)
 		s.KunciJawaban = &sanitized
 	}
+	// KodeRumpang disimpan mentah (kode C murni) — JANGAN disanitasi HTML,
+	// sanitizer merusak <stdio.h> dan operator seperti &&.
+	if req.KodeRumpang != nil {
+		s.KodeRumpang = req.KodeRumpang
+	}
 	if req.Difficulty != nil {
 		d := entity.Difficulty(*req.Difficulty)
 		s.Difficulty = &d
@@ -74,6 +79,8 @@ func (uc *SoalUsecase) Update(id int, req dto.SoalRequest) (*entity.Soal, error)
 	} else {
 		s.KunciJawaban = nil
 	}
+	// KodeRumpang disimpan mentah (kode C murni), bukan HTML.
+	s.KodeRumpang = req.KodeRumpang
 	s.Difficulty = nil
 	if req.Difficulty != nil {
 		d := entity.Difficulty(*req.Difficulty)

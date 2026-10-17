@@ -159,6 +159,47 @@ func (c *Client) GradeAnswer(ctx context.Context, p GradeParams) (*AIResult, err
 	return res, nil
 }
 
+// RawChat memanggil endpoint chat dengan prompt bebas (tanpa format JSON)
+// dan mengembalikan isi balasan mentah. Dipakai untuk tugas generatif
+// non-grading (mis. pembuatan kode rumpang).
+func (c *Client) RawChat(ctx context.Context, prompt string) (string, error) {
+	reqPayload := ChatRequest{
+		Model:    c.cfg.OllamaModel,
+		Messages: []ChatMessage{{Role: "user", Content: prompt}},
+		Stream:   false,
+	}
+	payloadBytes, err := json.Marshal(reqPayload)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal request: %w", err)
+	}
+	url := c.cfg.OllamaURL
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadBytes))
+	if err != nil {
+		return "", fmt.Errorf("failed to create request: %w", err)
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+	if c.cfg.OllamaAPIKey != "" {
+		httpReq.Header.Set("Authorization", "Bearer "+c.cfg.OllamaAPIKey)
+	}
+	resp, err := c.httpClient.Do(httpReq)
+	if err != nil {
+		return "", fmt.Errorf("failed to execute request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		bodyErr, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("ollama API returned status %d: %s", resp.StatusCode, string(bodyErr))
+	}
+	var chatResp ChatResponse
+	if err := json.NewDecoder(resp.Body).Decode(&chatResp); err != nil {
+		return "", fmt.Errorf("failed to decode response: %w", err)
+	}
+	if len(chatResp.Choices) == 0 {
+		return "", fmt.Errorf("ollama API returned no choices")
+	}
+	return strings.TrimSpace(chatResp.Choices[0].Message.Content), nil
+}
+
 // chat memanggil Ollama /api/chat dengan satu prompt dan mengembalikan isi balasan.
 func (c *Client) chat(ctx context.Context, prompt, model string) (string, error) {
 	reqPayload := ChatRequest{

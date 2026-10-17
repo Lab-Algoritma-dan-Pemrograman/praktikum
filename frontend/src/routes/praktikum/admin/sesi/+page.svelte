@@ -32,7 +32,7 @@
 	let soalForm = $state({
 		course_id: 0, jenis_soal: 'essay', difficulty: '' as string,
 		kategori_ujian: '' as string, teks_soal: '', gambar_url: '' as string,
-		poin: 20, kunci_jawaban: '' as string
+		poin: 20, kunci_jawaban: '' as string, kode_rumpang: '' as string
 	});
 	let editSoalId = $state<number | null>(null);
 	let showSoalModal = $state(false);
@@ -134,7 +134,7 @@
 
 	function resetSoalForm() {
 		editSoalId = null;
-		soalForm = { course_id: selectedCourse?.id ?? 0, jenis_soal: 'essay', difficulty: '', kategori_ujian: '', teks_soal: '', gambar_url: '', poin: 20, kunci_jawaban: '' };
+		soalForm = { course_id: selectedCourse?.id ?? 0, jenis_soal: 'essay', difficulty: '', kategori_ujian: '', teks_soal: '', gambar_url: '', poin: 20, kunci_jawaban: '', kode_rumpang: '' };
 	}
 	// Saran poin sesuai rubrik AI grading (default project lama), berdasar jenis course + difficulty.
 	function rubrikPoin(courseJenis: string, difficulty: string): number {
@@ -162,7 +162,7 @@
 			course_id: s.course_id, jenis_soal: s.jenis_soal,
 			difficulty: s.difficulty ?? '', kategori_ujian: s.kategori_ujian ?? '',
 			teks_soal: s.teks_soal, gambar_url: s.gambar_url ?? '',
-			poin: s.poin, kunci_jawaban: s.kunci_jawaban ?? ''
+			poin: s.poin, kunci_jawaban: s.kunci_jawaban ?? '', kode_rumpang: s.kode_rumpang ?? ''
 		};
 		showSoalModal = true;
 	}
@@ -184,7 +184,8 @@
 			difficulty: soalForm.difficulty || null,
 			kategori_ujian: soalForm.kategori_ujian || null,
 			gambar_url: soalForm.gambar_url || null,
-			kunci_jawaban: soalForm.kunci_jawaban || null
+			kunci_jawaban: soalForm.kunci_jawaban || null,
+			kode_rumpang: soalForm.kode_rumpang || null
 		};
 		try {
 			if (editSoalId) await api.put(`/api/admin/soal/${editSoalId}`, body);
@@ -439,6 +440,17 @@
 				<div class="mt-1">
 					<RichTextEditor bind:value={soalForm.kunci_jawaban} placeholder="Tulis referensi atau rubrik jawaban..." />
 				</div>
+				{#if soalForm.jenis_soal === 'coding'}
+					<label class="label mt-2" for="kr">Kode Rumpang (khusus keterampilan karyawan)</label>
+					<textarea
+						id="kr"
+						class="input mt-1 font-mono text-sm leading-relaxed"
+						rows="10"
+						bind:value={soalForm.kode_rumpang}
+						placeholder={"Kerangka kode ber-blank __ / ____.\nContoh:\nint main() {\n    char __[__];\n    ____(\"Halo\");\n}"}
+					></textarea>
+					<p class="mt-1 text-xs text-ink-caption">Tampil sebagai jawaban awal di editor mahasiswa. Kosongkan bila dikerjakan dari nol. Cron mengisi otomatis soal yang masih kosong tapi punya kunci.</p>
+				{/if}
 			</div>
 			<div class="flex justify-end gap-2 border-t border-gray-200 px-6 py-4">
 				<button class="btn-outline" onclick={closeSoalModal}>Batal</button>

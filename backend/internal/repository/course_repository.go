@@ -12,6 +12,7 @@ type CourseRepository interface {
 	Delete(id int) error
 	FindByID(id int) (*entity.Course, error)
 	ListBySesi(sesiID int) ([]entity.Course, error)
+	ListByJenis(jenis entity.JenisCourse) ([]entity.Course, error)
 	FindBySesiJenis(sesiID int, jenis entity.JenisCourse) (*entity.Course, error)
 }
 
@@ -36,6 +37,11 @@ func (r *courseRepository) FindByID(id int) (*entity.Course, error) {
 func (r *courseRepository) ListBySesi(sesiID int) ([]entity.Course, error) {
 	var cs []entity.Course
 	return cs, r.db.Where("sesi_praktikum_id = ?", sesiID).Find(&cs).Error
+}
+
+func (r *courseRepository) ListByJenis(jenis entity.JenisCourse) ([]entity.Course, error) {
+	var cs []entity.Course
+	return cs, r.db.Where("jenis = ?", jenis).Order("id asc").Find(&cs).Error
 }
 
 func (r *courseRepository) FindBySesiJenis(sesiID int, jenis entity.JenisCourse) (*entity.Course, error) {

@@ -84,6 +84,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	ampuanUC := usecase.NewAmpuanUsecase(ampuanRepo)
 	rekapUC := usecase.NewRekapUsecase(rekapRepo, kelasRepo)
 	aiGradingUC := usecase.NewAIGradingUsecase(jawabanRepo, penilaianUC, oc, konfRepo)
+	rumpangUC := usecase.NewRumpangUsecase(soalRepo, courseRepo, oc)
 	auditLogUC := usecase.NewAuditLogUsecase(auditLogRepo, userRepo)
 	belajarUC := usecase.NewBelajarUsecase(belajarRepo)
 	gameUC := usecase.NewGameUsecase(gameRepo, belajarRepo)
@@ -109,7 +110,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 		Rekap:        handler.NewRekapHandler(rekapUC),
 		AIGrading:    handler.NewAIGradingHandler(aiGradingUC),
 		RekapJawaban: handler.NewRekapJawabanHandler(penilaianUC, auditLogUC),
-		Cron:         handler.NewCronHandler(jawabanUC, cfg.CronSecret),
+		Cron:         handler.NewCronHandler(jawabanUC, rumpangUC, cfg.CronSecret),
 		Run:          handler.NewRunHandler(glotClient),
 		Compile:      handler.NewCompileHandler(cwasmCompiler),
 		AuditLog:     handler.NewAuditLogHandler(auditLogUC),

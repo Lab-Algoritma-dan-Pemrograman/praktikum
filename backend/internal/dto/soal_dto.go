@@ -10,4 +10,7 @@ type SoalRequest struct {
 	GambarURL     *string `json:"gambar_url"`
 	Poin          float64 `json:"poin" binding:"min=0"`
 	KunciJawaban  *string `json:"kunci_jawaban"`
+	// KodeRumpang: kerangka kode ber-blank untuk soal coding keterampilan
+	// kelas karyawan (tampil sebagai jawaban awal di editor mahasiswa).
+	KodeRumpang *string `json:"kode_rumpang"`
 }

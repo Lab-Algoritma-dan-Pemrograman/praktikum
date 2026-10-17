@@ -13,6 +13,10 @@ type Soal struct {
 	GambarURL     *string        `gorm:"type:varchar(500)" json:"gambar_url"`
 	Poin          float64        `gorm:"not null;default:0" json:"poin"`
 	KunciJawaban  *string        `gorm:"type:text" json:"kunci_jawaban"`
+	// KodeRumpang: kerangka kode ber-blank __ / ____ untuk soal coding
+	// keterampilan kelas karyawan. Tampil sebagai jawaban awal (prefill)
+	// di editor mahasiswa; NULL = tanpa rumpang (editor kosongan).
+	KodeRumpang *string `gorm:"type:text" json:"kode_rumpang,omitempty"`
 	IsArsip       bool           `gorm:"column:is_arsip;not null;default:false" json:"is_arsip"`
 	CreatedAt     time.Time      `json:"created_at"`
 }

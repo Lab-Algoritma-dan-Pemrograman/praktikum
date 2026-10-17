@@ -87,6 +87,7 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 
 	// ---- Cron (dipicu cron eksternal, dijaga X-Cron-Secret) ----
 	api.POST("/cron/auto-submit", h.Cron.AutoSubmit)
+	api.POST("/cron/rumpang", h.Cron.Rumpang)
 
 	// ---- Auth (publik) ----
 	// Rate-limit untuk meredam brute-force: maks 20 percobaan/menit per IP.

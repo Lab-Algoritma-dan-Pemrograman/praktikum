@@ -86,6 +86,7 @@ export interface Soal {
 	gambar_url?: string | null;
 	poin: number;
 	kunci_jawaban?: string | null;
+	kode_rumpang?: string | null;
 }
 
 export interface CourseUserItem {
