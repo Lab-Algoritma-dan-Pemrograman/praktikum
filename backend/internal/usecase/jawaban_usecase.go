@@ -64,6 +64,12 @@ func (uc *JawabanUsecase) loadKonteks(userID, aktivasiSesiID, courseID int) (*en
 	if err != nil {
 		return nil, nil, nil, nil, ErrNotFound
 	}
+	// Kelas karyawan (TE AD / TE AE) hanya boleh keterampilan: pretest/posttest
+	// ditolak walau diakses via URL langsung.
+	if isKelasKaryawan(user) &&
+		(course.Jenis == entity.CoursePretest || course.Jenis == entity.CoursePosttest) {
+		return nil, nil, nil, nil, ErrForbidden
+	}
 	ok, err := uc.cekAkses(user, aktivasi)
 	if err != nil {
 		return nil, nil, nil, nil, err

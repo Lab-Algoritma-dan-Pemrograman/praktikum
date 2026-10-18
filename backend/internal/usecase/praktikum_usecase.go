@@ -31,6 +31,13 @@ func NewPraktikumUsecase(
 	return &PraktikumUsecase{sesi: s, course: c, aktivasi: a, pengerjaan: p, users: u, jadwal: j, terpilih: t}
 }
 
+// isKelasKaryawan: kelas karyawan (TE AD / TE AE) hanya mengerjakan
+// keterampilan — pretest/posttest disembunyikan di semua tampilan mahasiswa.
+func isKelasKaryawan(user *entity.User) bool {
+	return user != nil && user.Kelas != nil &&
+		(user.Kelas.NamaKelas == "TE AD" || user.Kelas.NamaKelas == "TE AE")
+}
+
 // ListSesi mengembalikan seluruh sesi dari sudut pandang mahasiswa (aktif/terkunci).
 func (uc *PraktikumUsecase) ListSesi(userID int) ([]dto.SesiUserItem, error) {
 	user, err := uc.users.FindByID(userID)
@@ -96,16 +103,22 @@ func (uc *PraktikumUsecase) ListSesi(userID int) ([]dto.SesiUserItem, error) {
 			item.Susulan = susulan
 			id := aktivasi.ID
 			item.AktivasiSesiID = &id
-			item.Courses = uc.buildCourses(userID, aktivasi)
+			item.Courses = uc.buildCourses(userID, user, aktivasi)
 		}
 		items = append(items, item)
 	}
 	return items, nil
 }
 
-func (uc *PraktikumUsecase) buildCourses(userID int, aktivasi *entity.AktivasiSesi) []dto.CourseUserItem {
+func (uc *PraktikumUsecase) buildCourses(userID int, user *entity.User, aktivasi *entity.AktivasiSesi) []dto.CourseUserItem {
+	// Kelas karyawan (TE AD / TE AE): pretest/posttest tidak dikirim sama sekali.
+	karyawan := isKelasKaryawan(user)
 	courses := make([]dto.CourseUserItem, 0, len(aktivasi.AktivasiCourses))
 	for _, ac := range aktivasi.AktivasiCourses {
+		if ac.Course != nil && karyawan &&
+			(ac.Course.Jenis == entity.CoursePretest || ac.Course.Jenis == entity.CoursePosttest) {
+			continue
+		}
 		ci := dto.CourseUserItem{
 			CourseID:         ac.CourseID,
 			AktivasiCourseID: ac.ID,
@@ -169,6 +182,11 @@ func (uc *PraktikumUsecase) Dashboard(userID int) (*dto.DashboardUserResponse, e
 			}
 			item := dto.NilaiCourseItem{Status: string(p.Status)}
 			if c, err := uc.course.FindByID(p.CourseID); err == nil {
+				// Kelas karyawan: riwayat pretest/posttest ikut disembunyikan.
+				if isKelasKaryawan(user) &&
+					(c.Jenis == entity.CoursePretest || c.Jenis == entity.CoursePosttest) {
+					continue
+				}
 				item.Jenis = string(c.Jenis)
 				if (c.Jenis == entity.CoursePretest || c.Jenis == entity.CoursePosttest) && p.Keaktifan != nil {
 					final += *p.Keaktifan
