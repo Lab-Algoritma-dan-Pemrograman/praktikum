@@ -128,11 +128,15 @@ async def _async_input(prompt_str=""):
     return result
 `);
 
-      // Build the wrapped code: replace input() with await _async_input()
+      // Build the wrapped code: replace input() with (await _async_input())
+      // Kurung wajib: tanpa itu `input("x").lower()` jadi
+      // `await _async_input("x").lower()` — .lower() jalan di coroutine, bukan
+      // di string, dan meledak "AttributeError: 'coroutine' object has no
+      // attribute 'lower'". Sama untuk int(input()), .strip(), .split().
       const userLines = code.split('\n');
       const wrappedLines = userLines.map(line => {
         if (line.trim() === '' || line.trim().startsWith('#')) return line;
-        return '    ' + line.replace(/\binput\(/g, 'await _async_input(');
+        return '    ' + line.replace(/\binput\(/g, '(await _async_input(').replace(/(\(await _async_input\((?:[^()]|\([^()]*\))*\))/g, '$1)');
       });
 
       const wrappedCode = `
