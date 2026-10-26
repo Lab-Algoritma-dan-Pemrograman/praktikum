@@ -31,6 +31,9 @@
 	// Mirror output teks ke DOM: xterm menggambar ke canvas (tak terbaca assistive tech),
 	// jadi tulis juga ke live-region agar output bisa dibaca & diverifikasi.
 	let outputText = $state('');
+	// Grafik matplotlib dirender di worker sebagai PNG base64 (data: URL),
+	// lalu ditampilkan di panel bawah terminal.
+	let plotImages = $state<string[]>([]);
 	function stripAnsi(str: string): string {
 		return str.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, '');
 	}
@@ -293,6 +296,7 @@
 	function clearTerminal() {
 		term?.clear();
 		outputText = '';
+		plotImages = [];
 		wl('\x1b[2mKlik RUN untuk menguji kode Anda...\x1b[0m');
 		running = false;
 		waitingForInput = false;
@@ -311,6 +315,7 @@
 
 		term.clear();
 		outputText = '';
+		plotImages = [];
 		running = true;
 		fallbackMode = false;
 		statusText = '';
@@ -368,6 +373,10 @@
 				const outputVal = e.data.output || '';
 				if (outputVal.length > lastOutputLength) {
 					w(outputVal.slice(lastOutputLength));
+				}
+				if (Array.isArray(e.data.images) && e.data.images.length > 0) {
+					plotImages = e.data.images;
+					wl(`\x1b[2m[${e.data.images.length} grafik dirender]\x1b[0m`);
 				}
 				wl('');
 				wl('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
@@ -599,5 +608,26 @@
 			<div bind:this={termEl} class="w-full h-full min-h-[200px]"></div>
 		<div class="sr-only whitespace-pre-wrap" aria-live="polite" aria-atomic="true">{outputText}</div>
 		</div>
+
+		<!-- Grafik matplotlib dari worker (PNG base64) -->
+		{#if plotImages.length > 0}
+			<div class="border-t border-zinc-800 bg-[#141414] p-3 flex flex-col gap-3">
+				{#each plotImages as src, i}
+					<figure class="flex flex-col gap-2">
+						<div class="flex items-center justify-between">
+							<span class="text-[10px] font-mono font-bold tracking-wider text-zinc-500">
+								GRAFIK {plotImages.length > 1 ? `#${i + 1}` : ''}
+							</span>
+							<a
+								href={src}
+								download={`grafik_${i + 1}.png`}
+								class="text-[10px] font-mono font-bold text-zinc-400 hover:text-zinc-100 transition-colors duration-200"
+							>UNDUH PNG</a>
+						</div>
+						<img src={src} alt={`Grafik matplotlib ${i + 1}`} class="max-w-full rounded-lg bg-white" />
+					</figure>
+				{/each}
+			</div>
+		{/if}
 	</div>
 {/if}

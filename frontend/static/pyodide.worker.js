@@ -5,6 +5,47 @@ let pendingInputResolve = null;
 let currentInteractiveId = '';
 let pyodideReady = false;
 let moduleRegistered = false;
+// matplotlib di Pyodide default ke wasm_backend yang butuh `document`. Di Web
+// Worker tidak ada DOM -> "ImportError: cannot import name 'document' from 'js'".
+// Agg murni CPU, aman di worker; gambarnya dikirim balik sebagai PNG base64.
+const MPL_SETUP = `
+import os
+os.environ['MPLBACKEND'] = 'Agg'
+try:
+    import matplotlib.pyplot as _plt
+    _plt.show = lambda *a, **k: None  # tampil lewat PNG, bukan window
+except Exception:
+    pass
+`;
+
+const CAPTURE_PLOTS = `
+import io, base64
+
+def _capture_plots():
+    try:
+        import matplotlib.pyplot as plt
+    except Exception:
+        return []
+    imgs = []
+    for n in plt.get_fignums():
+        b = io.BytesIO()
+        plt.figure(n).savefig(b, format='png', dpi=110, bbox_inches='tight', facecolor='white')
+        imgs.append('data:image/png;base64,' + base64.b64encode(b.getvalue()).decode())
+        b.close()
+    plt.close('all')
+    return imgs
+
+_capture_plots()
+`;
+
+async function capturePlots(pyodide) {
+  try {
+    const res = await pyodide.runPythonAsync(CAPTURE_PLOTS);
+    return res && res.toJs ? Array.from(res.toJs()) : [];
+  } catch {
+    return [];
+  }
+}
 
 self.onmessage = async (event) => {
   const { type, code, id } = event.data;
@@ -50,6 +91,14 @@ self.onmessage = async (event) => {
       }
 
       const { input = '' } = event.data;
+
+      // Muat paket yang diimpor user (matplotlib, numpy, ...) dari index Pyodide.
+      if (pyodide.loadPackagesFromImports) {
+        try {
+          await pyodide.loadPackagesFromImports(code);
+        } catch {}
+      }
+      await pyodide.runPythonAsync(MPL_SETUP);
       
       await pyodide.runPythonAsync(`
 import sys
@@ -60,8 +109,9 @@ sys.stdin = io.StringIO(${JSON.stringify(input)})
 
       await pyodide.runPythonAsync(code);
       const stdout = await pyodide.runPythonAsync('sys.stdout.getvalue()');
+      const images = await capturePlots(pyodide);
       
-      self.postMessage({ type: 'RUN_DONE', id, output: stdout });
+      self.postMessage({ type: 'RUN_DONE', id, output: stdout, images });
     } catch (err) {
       self.postMessage({ type: 'RUN_ERROR', id, error: err.message });
     }
@@ -75,6 +125,15 @@ sys.stdin = io.StringIO(${JSON.stringify(input)})
 
       // Update the current run ID (read by the module's readLine callback)
       currentInteractiveId = id;
+
+      // Paket dari import user (matplotlib, numpy, ...) wajib dimuat sebelum
+      // MPL_SETUP: MPLBACKEND harus diset sebelum matplotlib.pyplot diimpor.
+      if (pyodide.loadPackagesFromImports) {
+        try {
+          await pyodide.loadPackagesFromImports(code);
+        } catch {}
+      }
+      await pyodide.runPythonAsync(MPL_SETUP);
 
       // Register terminal_io module ONCE (it reads currentInteractiveId dynamically)
       if (!moduleRegistered) {
@@ -150,7 +209,8 @@ await __interactive_run()
 
       // Final flush
       const stdout = await pyodide.runPythonAsync('_term_buf.getvalue()');
-      self.postMessage({ type: 'RUN_DONE', id, output: stdout });
+      const images = await capturePlots(pyodide);
+      self.postMessage({ type: 'RUN_DONE', id, output: stdout, images });
     } catch (err) {
       // Check if this was a user cancellation
       if (err.message && err.message.includes('cancelled')) {
