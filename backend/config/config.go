@@ -40,9 +40,11 @@ type Config struct {
 	OnlineTTL       time.Duration
 	SweeperInterval time.Duration
 
-	SupabaseURL        string
-	SupabaseServiceKey string
-	SupabaseBucket     string
+	SupabaseURL           string
+	SupabaseServiceKey    string
+	SupabaseBucket        string
+	// SupabaseBucketLaporan: bucket privat khusus berkas laporan besar (baca via signed URL).
+	SupabaseBucketLaporan string
 
 	OllamaURL    string
 	OllamaModel  string
@@ -93,6 +95,7 @@ func Load() *Config {
 		SupabaseURL:           getEnv("SUPABASE_URL", ""),
 		SupabaseServiceKey:    getEnv("SUPABASE_SERVICE_KEY", ""),
 		SupabaseBucket:        getEnv("SUPABASE_BUCKET", "public-assets"),
+		SupabaseBucketLaporan: getEnv("SUPABASE_BUCKET_LAPORAN", "laporan-besar"),
 		OllamaURL:             getEnv("OLLAMA_URL", "https://router.bynara.id/v1/chat/completions"),
 		OllamaModel:           getEnv("OLLAMA_MODEL", "mimo-v2.5-pro-hermes"),
 		OllamaAPIKey:          getEnv("OLLAMA_API_KEY", ""),

@@ -19,6 +19,9 @@ type JawabanUsecase struct {
 	pengerjaan repository.PengerjaanRepository
 	users      repository.UserRepository
 	course     repository.CourseRepository
+	// laporanBesar: gerbang ujian praktik — laporan besar wajib terkumpul
+	// (atau di-override) sebelum mahasiswa boleh memulai ujian praktik.
+	laporanBesar *LaporanBesarUsecase
 }
 
 func NewJawabanUsecase(
@@ -28,8 +31,9 @@ func NewJawabanUsecase(
 	p repository.PengerjaanRepository,
 	u repository.UserRepository,
 	c repository.CourseRepository,
+	lb *LaporanBesarUsecase,
 ) *JawabanUsecase {
-	return &JawabanUsecase{aktivasi: a, terpilih: t, jawaban: j, pengerjaan: p, users: u, course: c}
+	return &JawabanUsecase{aktivasi: a, terpilih: t, jawaban: j, pengerjaan: p, users: u, course: c, laporanBesar: lb}
 }
 
 // cekAkses memverifikasi mahasiswa boleh mengakses aktivasi (kelas+shift cocok ATAU susulan).
@@ -110,12 +114,21 @@ func (uc *JawabanUsecase) GetRuang(userID, aktivasiSesiID, courseID int) (*dto.R
 
 // Mulai menandai mahasiswa mulai mengerjakan (set waktu_mulai sekali).
 func (uc *JawabanUsecase) Mulai(userID int, req dto.MulaiCourseRequest) (*dto.RuangCourseResponse, error) {
-	_, aktivasi, ac, course, err := uc.loadKonteks(userID, req.AktivasiSesiID, req.CourseID)
+	user, aktivasi, ac, course, err := uc.loadKonteks(userID, req.AktivasiSesiID, req.CourseID)
 	if err != nil {
 		return nil, err
 	}
 	if !ac.IsOpen {
 		return nil, ErrAlreadyDone
+	}
+
+	// Gerbang ujian praktik: Laporan Besar wajib terkumpul (atau di-override)
+	// SEBELUM validasi token. Bila kelas ini ditarget laporan besar aktif,
+	// mahasiswa tidak boleh mulai tanpa memenuhi syarat tersebut.
+	if course.Jenis == entity.CourseUjianPraktik && uc.laporanBesar != nil {
+		if err := uc.laporanBesar.CekGerbangLaporanBesar(user.ID, user.KelasID); err != nil {
+			return nil, err
+		}
 	}
 
 	// Validasi Token hanya jika jenis course adalah ujian

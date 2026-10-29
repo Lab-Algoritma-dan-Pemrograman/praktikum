@@ -44,6 +44,7 @@ type Handlers struct {
 	AuditLog     *handler.AuditLogHandler
 	Belajar      *handler.BelajarHandler
 	Game         *handler.GameHandler
+	LaporanBesar *handler.LaporanBesarHandler
 }
 
 // HealthCheck GET /api/health
@@ -157,6 +158,12 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		prak.POST("/submit", h.Jawaban.Submit)
 		prak.POST("/run", middleware.RateLimitUser(30, time.Minute), h.Run.Execute)
 		prak.POST("/compile-c", middleware.RateLimitUser(10, time.Minute), h.Compile.CompileC)
+
+		// Laporan Besar (tugas akhir praktikum). Berkas via signed URL ke bucket privat.
+		prak.GET("/laporan-besar", h.LaporanBesar.StatusSaya)
+		prak.POST("/laporan-besar/upload-url", h.LaporanBesar.UploadURL)
+		prak.POST("/laporan-besar/kumpul", h.LaporanBesar.Kumpul)
+		prak.DELETE("/laporan-besar/kumpul", h.LaporanBesar.Batalkan)
 	}
 
 	// ---- Admin (role admin + superadmin) ----
@@ -279,6 +286,21 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 
 		// Audit Log
 		admin.GET("/audit-logs", h.AuditLog.GetLogs)
+
+		// Laporan Besar (tugas akhir). Tulis butuh permission "sesi", baca cukup role admin.
+		admin.GET("/laporan-besar", h.LaporanBesar.List)
+		admin.POST("/laporan-besar", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.Create)
+		admin.GET("/laporan-besar/:id", h.LaporanBesar.GetDetail)
+		admin.PUT("/laporan-besar/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.Update)
+		admin.DELETE("/laporan-besar/:id", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.Delete)
+		admin.PUT("/laporan-besar/:id/target", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.SetTarget)
+		admin.GET("/laporan-besar/:id/pengumpulan", h.LaporanBesar.ListPengumpulan)
+		admin.PUT("/laporan-besar/:id/pengumpulan/:mhsId/mark", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.Mark)
+		admin.PUT("/laporan-besar/:id/pengumpulan/:mhsId/override", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.SetOverride)
+		admin.DELETE("/laporan-besar/:id/pengumpulan/:mhsId/override", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.RevokeOverride)
+		admin.GET("/laporan-besar/:id/pengumpulan/:mhsId/preview", h.LaporanBesar.Preview)
+		admin.GET("/laporan-besar/:id/pengumpulan/:mhsId/download", h.LaporanBesar.Download)
+		admin.POST("/laporan-besar/:id/download-batch", middleware.RequirePermission(konfRepo, "sesi", "write"), h.LaporanBesar.DownloadBatch)
 	}
 
 	// ---- Superadmin (role superadmin only, hidden ninja) ----

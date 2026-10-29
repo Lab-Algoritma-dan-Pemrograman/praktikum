@@ -36,6 +36,8 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 
 	jm := jwt.NewManager(cfg.JWTSecret, cfg.JWTExpireHours)
 	sb := supabase.New(cfg.SupabaseURL, cfg.SupabaseServiceKey, cfg.SupabaseBucket)
+	// Bucket privat khusus berkas laporan besar (baca via signed URL).
+	sbLaporan := supabase.New(cfg.SupabaseURL, cfg.SupabaseServiceKey, cfg.SupabaseBucketLaporan)
 	oc := ollama.NewClient(cfg)
 	glotClient := glot.New(cfg.GlotURL, cfg.GlotToken)
 	cwasmCompiler := cwasm.New(cfg.CwasmClang, cfg.CwasmSysroot)
@@ -60,6 +62,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	auditLogRepo := repository.NewAuditLogRepository(db)
 	belajarRepo := repository.NewBelajarRepository(db)
 	gameRepo := repository.NewGameRepository(db)
+	laporanBesarRepo := repository.NewLaporanBesarRepository(db)
 
 	// ---- Usecase ----
 	authUC := usecase.NewAuthUsecase(userRepo, kelasRepo, jm, cfg, hash.FbScryptConfig{
@@ -72,8 +75,9 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	dashboardUC := usecase.NewDashboardUsecase(userRepo, aktivasiRepo, pengerjaanRepo)
 	sesiUC := usecase.NewSesiUsecase(sesiRepo, courseRepo)
 	soalUC := usecase.NewSoalUsecase(soalRepo, courseRepo, terpilihRepo)
+	laporanBesarUC := usecase.NewLaporanBesarUsecase(laporanBesarRepo, userRepo, sbLaporan)
 	aktivasiUC := usecase.NewAktivasiUsecase(aktivasiRepo, sesiRepo, courseRepo, kelasRepo, jawabanRepo, pengerjaanRepo, soalUC, aktivasiTxRepo)
-	jawabanUC := usecase.NewJawabanUsecase(aktivasiRepo, terpilihRepo, jawabanRepo, pengerjaanRepo, userRepo, courseRepo)
+	jawabanUC := usecase.NewJawabanUsecase(aktivasiRepo, terpilihRepo, jawabanRepo, pengerjaanRepo, userRepo, courseRepo, laporanBesarUC)
 	penilaianUC := usecase.NewPenilaianUsecase(jawabanRepo, pengerjaanRepo, userRepo, penilaianTxRepo)
 	konfUC := usecase.NewKonfigurasiUsecase(konfRepo)
 	userUC := usecase.NewUserUsecase(userRepo, kelasRepo)
@@ -116,6 +120,7 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 		AuditLog:     handler.NewAuditLogHandler(auditLogUC),
 		Belajar:      handler.NewBelajarHandler(belajarUC),
 		Game:         handler.NewGameHandler(gameUC),
+		LaporanBesar: handler.NewLaporanBesarHandler(laporanBesarUC),
 	}
 
 	r := route.Setup(cfg, jm, userRepo, konfRepo, h)
