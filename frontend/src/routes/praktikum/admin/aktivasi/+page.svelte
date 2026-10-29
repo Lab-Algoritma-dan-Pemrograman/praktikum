@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { api } from '$lib/api';
 	import { labelJenis, labelShift } from '$lib/utils';
-	import { KeyRound, Trash2, Search, Zap, ArrowUp, Eye } from 'lucide-svelte';
+	import { KeyRound, Trash2, Search, Zap, ArrowUp, Eye, ChevronLeft, ChevronRight } from 'lucide-svelte';
 	import { confirmAction } from '$lib/stores/confirm';
 	import type { Sesi, Kelas, User } from '$lib/types';
 
@@ -43,6 +43,15 @@
 			const matchKelas = queryKelas === '' || (a.kelas?.nama_kelas ?? '').toLowerCase().includes(queryKelas);
 			return matchSesi && matchKelas;
 		})
+	);
+
+	// Paginasi tabel daftar aktivasi (client-side; endpoint mengembalikan semua baris).
+	let page = $state(1);
+	let limit = $state(5);
+	let totalPages = $derived(Math.max(1, Math.ceil(filteredAktivasi.length / limit)));
+	let currentPage = $derived(Math.min(page, totalPages));
+	let paginatedAktivasi = $derived(
+		filteredAktivasi.slice((currentPage - 1) * limit, currentPage * limit)
 	);
 
 	let form = $state({ sesi_praktikum_id: 0, kelas_id: 0, shift: 1, gelombang: null as number | null, gacha_pilihan: 'pretest' });
@@ -273,11 +282,11 @@
 				<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
 					<div class="relative flex-1">
 						<Search size={14} class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-						<input type="text" placeholder="Filter judul sesi..." bind:value={searchSesi} class="input pl-9 w-full text-xs" />
+						<input type="text" placeholder="Filter judul sesi..." bind:value={searchSesi} oninput={() => (page = 1)} class="input pl-9 w-full text-xs" />
 					</div>
 					<div class="relative flex-1">
 						<Search size={14} class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-						<input type="text" placeholder="Filter nama kelas..." bind:value={searchKelas} class="input pl-9 w-full text-xs" />
+						<input type="text" placeholder="Filter nama kelas..." bind:value={searchKelas} oninput={() => (page = 1)} class="input pl-9 w-full text-xs" />
 					</div>
 				</div>
 
@@ -287,7 +296,7 @@
 							<tr><th>Sesi</th><th>Kelas</th><th>Shift</th><th>Gel.</th><th>Aksi</th></tr>
 						</thead>
 						<tbody>
-							{#each filteredAktivasi as a}
+							{#each paginatedAktivasi as a}
 								<tr class={selected?.id === a.id ? 'ring-2 ring-primary' : ''}>
 									<td class="font-bold text-slate-850">{a.sesi?.judul_sesi ?? a.sesi_praktikum_id}</td>
 									<td><span class="badge bg-slate-50 border border-slate-200 font-bold">{a.kelas?.nama_kelas ?? a.kelas_id}</span></td>
@@ -306,6 +315,47 @@
 						</tbody>
 					</table>
 				</div>
+
+				{#if totalPages > 1}
+					<div class="flex flex-col items-center justify-between gap-3 border-t border-slate-100 pt-4 sm:flex-row">
+						<div class="text-xs font-semibold text-slate-500">
+							Menampilkan <span class="font-bold text-slate-800">{paginatedAktivasi.length}</span> dari <span class="font-bold text-slate-800">{filteredAktivasi.length}</span> aktivasi
+						</div>
+						<div class="flex items-center gap-1">
+							<button
+								onclick={() => (page = Math.max(1, currentPage - 1))}
+								disabled={currentPage === 1}
+								class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all disabled:opacity-40"
+								aria-label="Halaman sebelumnya"
+							>
+								<ChevronLeft size={16} />
+							</button>
+
+							{#each Array(totalPages) as _, i}
+								{@const p = i + 1}
+								{#if p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)}
+									<button
+										onclick={() => (page = p)}
+										class="w-8 h-8 rounded-lg text-xs font-bold border transition-all {currentPage === p ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300'}"
+									>
+										{p}
+									</button>
+								{:else if p === 2 || p === totalPages - 1}
+									<span class="w-8 text-center text-xs font-bold text-slate-400">...</span>
+								{/if}
+							{/each}
+
+							<button
+								onclick={() => (page = Math.min(totalPages, currentPage + 1))}
+								disabled={currentPage === totalPages}
+								class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 transition-all disabled:opacity-40"
+								aria-label="Halaman berikutnya"
+							>
+								<ChevronRight size={16} />
+							</button>
+						</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
