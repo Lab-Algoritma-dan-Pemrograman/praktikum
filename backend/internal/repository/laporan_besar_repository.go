@@ -21,10 +21,10 @@ type LaporanBesarRepository interface {
 	FindAktif() (*entity.LaporanBesar, error)
 	List() ([]entity.LaporanBesar, error)
 
-	// Target per kelas
+	// Target per kelas (dan opsional per shift)
 	UpsertTarget(t *entity.LaporanBesarTarget) error
 	ListTarget(laporanID int) ([]entity.LaporanBesarTarget, error)
-	FindTarget(laporanID, kelasID int) (*entity.LaporanBesarTarget, error)
+	FindTarget(laporanID, kelasID int, shift *int) (*entity.LaporanBesarTarget, error)
 	DeleteTarget(laporanID, kelasID int) error
 
 	// Pengumpulan per mahasiswa
@@ -75,12 +75,12 @@ func (r *laporanBesarRepository) List() ([]entity.LaporanBesar, error) {
 	return ls, r.db.Order("id desc").Find(&ls).Error
 }
 
-// UpsertTarget menyimpan window per kelas; konflik pada (laporan_besar_id, kelas_id)
-// akan memperbarui window yang sudah ada.
+// UpsertTarget menyimpan window per (kelas, shift); konflik pada
+// (laporan_besar_id, kelas_id, shift) akan memperbarui window yang sudah ada.
 func (r *laporanBesarRepository) UpsertTarget(t *entity.LaporanBesarTarget) error {
 	return r.db.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "laporan_besar_id"}, {Name: "kelas_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"buka_at", "deadline_at", "late_until"}),
+		Columns:   []clause.Column{{Name: "laporan_besar_id"}, {Name: "kelas_id"}, {Name: "shift"}},
+		DoUpdates: clause.AssignmentColumns([]string{"shift", "buka_at", "deadline_at", "late_until"}),
 	}).Create(t).Error
 }
 
@@ -89,9 +89,16 @@ func (r *laporanBesarRepository) ListTarget(laporanID int) ([]entity.LaporanBesa
 	return ts, r.db.Preload("Kelas").Where("laporan_besar_id = ?", laporanID).Order("kelas_id asc").Find(&ts).Error
 }
 
-func (r *laporanBesarRepository) FindTarget(laporanID, kelasID int) (*entity.LaporanBesarTarget, error) {
+// FindTarget mencari window untuk (laporan, kelas, shift). Prioritas:
+// 1) baris spesifik shift kalau ada, 2) fallback ke shift NULL (berlaku semua).
+func (r *laporanBesarRepository) FindTarget(laporanID, kelasID int, shift *int) (*entity.LaporanBesarTarget, error) {
 	var t entity.LaporanBesarTarget
-	if err := r.db.Where("laporan_besar_id = ? AND kelas_id = ?", laporanID, kelasID).First(&t).Error; err != nil {
+	if shift != nil {
+		if err := r.db.Where("laporan_besar_id = ? AND kelas_id = ? AND shift = ?", laporanID, kelasID, *shift).First(&t).Error; err == nil {
+			return &t, nil
+		}
+	}
+	if err := r.db.Where("laporan_besar_id = ? AND kelas_id = ? AND shift IS NULL", laporanID, kelasID).First(&t).Error; err != nil {
 		return nil, err
 	}
 	return &t, nil

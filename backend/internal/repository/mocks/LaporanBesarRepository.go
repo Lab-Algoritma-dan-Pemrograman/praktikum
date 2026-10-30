@@ -157,9 +157,9 @@ func (_m *LaporanBesarRepository) FindPengumpulan(laporanID int, mahasiswaID int
 	return r0, r1
 }
 
-// FindTarget provides a mock function with given fields: laporanID, kelasID
-func (_m *LaporanBesarRepository) FindTarget(laporanID int, kelasID int) (*entity.LaporanBesarTarget, error) {
-	ret := _m.Called(laporanID, kelasID)
+// FindTarget provides a mock function with given fields: laporanID, kelasID, shift
+func (_m *LaporanBesarRepository) FindTarget(laporanID int, kelasID int, shift *int) (*entity.LaporanBesarTarget, error) {
+	ret := _m.Called(laporanID, kelasID, shift)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindTarget")

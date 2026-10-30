@@ -13,9 +13,10 @@ type LaporanBesarRequest struct {
 	ButuhAnalisa *bool  `json:"butuh_analisa"`
 }
 
-// LaporanBesarTargetRequest: satu window per kelas.
+// LaporanBesarTargetRequest: satu window per kelas + shift (opsional).
 type LaporanBesarTargetRequest struct {
 	KelasID    int        `json:"kelas_id" binding:"required"`
+	Shift      *int       `json:"shift" binding:"omitempty,oneof=1 2"`
 	BukaAt     *time.Time `json:"buka_at"`
 	DeadlineAt time.Time  `json:"deadline_at" binding:"required"`
 	LateUntil  *time.Time `json:"late_until"`
@@ -123,6 +124,7 @@ type PengumpulanRow struct {
 	Sumber      *string    `json:"sumber"`
 	SubmittedAt *time.Time `json:"submitted_at"`
 	IsLate      bool       `json:"is_late"`
+	DeadlineAt  *time.Time `json:"deadline_at"`
 
 	LaporanPath *string `json:"laporan_path"`
 	AnalisaPath *string `json:"analisa_path"`

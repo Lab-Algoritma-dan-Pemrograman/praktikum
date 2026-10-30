@@ -7,10 +7,10 @@
 --       Pemicu: admin Reset Password (flag->false) lalu simpan-edit data mahasiswa,
 --       struct hasil FindByID sebelum reset menulis flag lama (true) kembali.
 --   (b) flag=false padahal kredensial ada -> cek-nim menyuruh "buat password" padahal
---       akun sudah bisa login; register ikut menimpa hash yang sedang dipakai.
+--       akun sudah bisa login, register ikut menimpa hash yang sedang dipakai.
 --
 -- Setelah 029, gate auth memakai punyaKredensial() (lihat auth_usecase.go) sehingga
--- flag tidak lagi menentukan alur; normalisasi ini menyelaraskan data & tampilan admin.
+-- flag tidak lagi menentukan alur, normalisasi ini menyelaraskan data & tampilan admin.
 
 -- (a) flag true tanpa kredensial -> belum daftar
 UPDATE users

@@ -126,7 +126,7 @@ func (uc *JawabanUsecase) Mulai(userID int, req dto.MulaiCourseRequest) (*dto.Ru
 	// SEBELUM validasi token. Bila kelas ini ditarget laporan besar aktif,
 	// mahasiswa tidak boleh mulai tanpa memenuhi syarat tersebut.
 	if course.Jenis == entity.CourseUjianPraktik && uc.laporanBesar != nil {
-		if err := uc.laporanBesar.CekGerbangLaporanBesar(user.ID, user.KelasID); err != nil {
+		if err := uc.laporanBesar.CekGerbangLaporanBesar(user.ID, user.KelasID, user.Shift); err != nil {
 			return nil, err
 		}
 	}

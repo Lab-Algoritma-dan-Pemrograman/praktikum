@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { api } from '$lib/api';
-	import { Eye, Download, Check, Unlock, Lock, X, Save, Trash2 } from 'lucide-svelte';
+	import { Eye, Download, Check, Unlock, Lock, X, Save, Trash2, FileText } from 'lucide-svelte';
 	import { confirmAction } from '$lib/stores/confirm';
+	import RichTextEditor from '$lib/components/RichTextEditor.svelte';
 	import type { Kelas } from '$lib/types';
 
 	interface Target {
 		id?: number;
 		kelas_id: number;
+		shift: number | null;
 		buka_at: string | null;
 		deadline_at: string | null;
 		late_until: string | null;
@@ -34,6 +36,7 @@
 		sumber: 'web' | 'manual' | null;
 		submitted_at: string | null;
 		is_late: boolean;
+		deadline_at: string | null;
 		manual_catatan: string | null;
 		override_alasan: string | null;
 		override_oleh: string | null;
@@ -78,6 +81,18 @@
 			: pengumpulan.filter((p) => p.kelas_id === filterKelas)
 	);
 
+	// Paging depan tabel pengumpulan.
+	const PAGE_SIZE = 10;
+	let page = $state(1);
+	let totalHalaman = $derived(Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)));
+	let visible = $derived(filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE));
+	$effect(() => {
+		if (page > totalHalaman) page = totalHalaman;
+	});
+	function gantiHalaman(n: number) {
+		page = Math.min(totalHalaman, Math.max(1, n));
+	}
+
 	let selectedCount = $derived(Object.values(selected).filter(Boolean).length);
 
 	// Format ISO -> nilai untuk <input type="datetime-local"> (tanpa detik & zona).
@@ -102,6 +117,16 @@
 		const d = new Date(iso);
 		if (isNaN(d.getTime())) return '—';
 		return d.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+	}
+
+	// Penalti keterlambatan (1/7..7/7), terlihat di dashboard admin.
+	function formatPenalti(submitted: string | null, deadline: string | null): string {
+		if (!submitted || !deadline) return '?/7';
+		const s = new Date(submitted).getTime();
+		const d = new Date(deadline).getTime();
+		if (isNaN(s) || isNaN(d)) return '?/7';
+		const telatHari = Math.max(1, Math.min(7, Math.ceil((s - d) / (24 * 60 * 60 * 1000))));
+		return `${telatHari}/7`;
 	}
 
 	function namaKelas(kelasId: number): string {
@@ -188,6 +213,7 @@
 			...targets,
 			{
 				kelas_id: addKelasId,
+				shift: null,
 				buka_at: null,
 				deadline_at: null,
 				late_until: null,
@@ -210,6 +236,7 @@
 			await api.put(`/api/admin/laporan-besar/${lb.id}/target`, {
 				targets: targets.map((t) => ({
 					kelas_id: t.kelas_id,
+					shift: t.shift,
 					buka_at: t.buka_at,
 					deadline_at: t.deadline_at,
 					late_until: t.late_until
@@ -417,7 +444,7 @@
 	}
 </script>
 
-<h1 class="mb-4 text-2xl">Laporan Besar</h1>
+<h1 class="mb-4 text-2xl">Tugas Akhir Praktikum</h1>
 <p class="mb-4 text-sm text-ink-caption">
 	Satu tugas laporan berdiri sendiri (terpisah dari modul praktikum). Atur judul, target kelas, dan pantau
 	pengumpulan mahasiswa di sini.
@@ -429,28 +456,112 @@
 {#if loading}
 	<p class="text-sm text-ink-caption">Memuat…</p>
 {:else}
-	<!-- 1. Form pengaturan laporan besar -->
-	<div class="card max-w-2xl">
-		<h2 class="mb-3 text-lg">{lb ? 'Pengaturan Laporan Besar' : 'Buat Laporan Besar'}</h2>
-		<label class="label" for="lb-judul">Judul</label>
-		<input id="lb-judul" class="input" bind:value={form.judul} placeholder="mis. Laporan Besar" />
-		<label class="label mt-2" for="lb-desk">Deskripsi</label>
-		<textarea id="lb-desk" class="input min-h-16" bind:value={form.deskripsi}></textarea>
-		<div class="mt-3 space-y-2">
-			<label class="flex items-center gap-2 text-sm">
-				<input type="checkbox" bind:checked={form.is_aktif} /> Aktifkan laporan besar
-			</label>
-			<label class="flex items-center gap-2 text-sm">
-				<input type="checkbox" bind:checked={form.butuh_laporan} /> Wajib unggah laporan
-			</label>
-			<label class="flex items-center gap-2 text-sm">
-				<input type="checkbox" bind:checked={form.butuh_analisa} /> Wajib unggah analisa
-			</label>
+	<!-- 1. Form pengaturan laporan besar + preview sisi praktikan -->
+	<div class="grid gap-4 lg:grid-cols-2">
+		<div class="card">
+			<h2 class="mb-3 text-lg">{lb ? 'Pengaturan Tugas Akhir Praktikum' : 'Buat Tugas Akhir Praktikum'}</h2>
+			<label class="label" for="lb-judul">Judul</label>
+			<input id="lb-judul" class="input" bind:value={form.judul} placeholder="mis. Laporan Besar" />
+			<label class="label mt-2" for="lb-desk">Deskripsi</label>
+			<RichTextEditor bind:value={form.deskripsi} placeholder="Tulis deskripsi tugas (bisa tebal/miring/dll)…" />
+			<div class="mt-3 space-y-2">
+				<label class="flex items-center gap-2 text-sm">
+					<input type="checkbox" bind:checked={form.is_aktif} /> Aktifkan laporan besar
+				</label>
+				<label class="flex items-center gap-2 text-sm">
+					<input type="checkbox" bind:checked={form.butuh_laporan} /> Wajib unggah laporan
+				</label>
+				<label class="flex items-center gap-2 text-sm">
+					<input type="checkbox" bind:checked={form.butuh_analisa} /> Wajib unggah analisa
+				</label>
+			</div>
+			<div class="mt-3">
+				<button class="btn-primary" onclick={savePengaturan} disabled={savingForm}>
+					{savingForm ? 'Menyimpan…' : 'Simpan'}
+				</button>
+			</div>
 		</div>
-		<div class="mt-3">
-			<button class="btn-primary" onclick={savePengaturan} disabled={savingForm}>
-				{savingForm ? 'Menyimpan…' : 'Simpan'}
-			</button>
+
+		<!-- Preview: tampilan yang akan dilihat praktikan -->
+		<div class="card bg-state-info-bg/40">
+			<h2 class="mb-3 text-lg">Preview sisi Praktikan</h2>
+			{#if form.is_aktif}
+				<div class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200">
+					<div class="flex items-center gap-3">
+						<div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+							<FileText size={20} />
+						</div>
+						<div>
+							<h3 class="font-semibold text-ink-heading">{form.judul || '(judul belum diisi)'}</h3>
+							<p class="text-xs text-ink-caption">Praktikum Algoritma &amp; Pemrograman</p>
+						</div>
+					</div>
+					{#if form.deskripsi}
+						<div class="prose prose-sm prose-slate mt-3 break-words text-ink-body">
+							{@html form.deskripsi}
+						</div>
+					{/if}
+					<div class="mt-4 border-t border-gray-100 pt-3">
+						<p class="text-xs font-semibold uppercase tracking-wide text-ink-caption">Window Pengumpulan</p>
+						{#if targets.length === 0}
+							<p class="mt-2 text-xs text-ink-caption">
+								Belum ada target kelas. Tambahkan target untuk mengatur buka / deadline / batas telat.
+							</p>
+						{:else}
+							<ul class="mt-2 space-y-2">
+								{#each targets as t (t.kelas_id + '-' + (t.shift ?? 0))}
+									<li class="rounded-md bg-gray-50 px-3 py-2 text-xs">
+										<div class="flex items-center justify-between">
+											<span class="font-semibold text-ink-heading">
+												{t.kelas?.nama_kelas ?? namaKelas(t.kelas_id)}
+											</span>
+											<span class="rounded bg-indigo-100 px-1.5 py-0.5 font-medium text-indigo-600">
+												{t.shift ? `Shift ${t.shift}` : 'Semua shift'}
+											</span>
+										</div>
+										<div class="mt-1.5 grid grid-cols-3 gap-2 text-ink-caption">
+											<div>
+												<p class="text-[10px] uppercase tracking-wide">Buka</p>
+												<p class="font-medium text-ink-body">{t.buka_at ? fmtWaktu(t.buka_at) : 'Segera'}</p>
+											</div>
+											<div>
+												<p class="text-[10px] uppercase tracking-wide">Deadline</p>
+												<p class="font-medium text-ink-body">{fmtWaktu(t.deadline_at)}</p>
+											</div>
+											<div>
+												<p class="text-[10px] uppercase tracking-wide">Telat s.d</p>
+												<p class="font-medium text-ink-body">{t.late_until ? fmtWaktu(t.late_until) : 'Tanpa batas'}</p>
+											</div>
+										</div>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</div>
+					<div class="mt-4 space-y-2 border-t border-gray-100 pt-3">
+						{#if form.butuh_laporan}
+							<div class="flex items-center justify-between rounded-md bg-gray-50 px-3 py-2 text-sm">
+								<span class="text-ink-body">Laporan (PDF)</span>
+								<span class="rounded bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-600">Unggah</span>
+							</div>
+						{/if}
+						{#if form.butuh_analisa}
+							<div class="flex items-center justify-between rounded-md bg-gray-50 px-3 py-2 text-sm">
+								<span class="text-ink-body">Analisa (DOCX)</span>
+								<span class="rounded bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-600">Unggah</span>
+							</div>
+						{/if}
+						{#if !form.butuh_laporan && !form.butuh_analisa}
+							<p class="text-sm text-ink-caption">Tidak ada unggahan yang diwajibkan.</p>
+						{/if}
+					</div>
+					<p class="mt-3 text-xs text-ink-caption">Status: menunggu buka / diatur pada target kelas.</p>
+				</div>
+			{:else}
+				<p class="text-sm text-ink-caption">
+					Preview tidak aktif karena laporan ini belum diaktifkan (centang "Aktifkan laporan besar").
+				</p>
+			{/if}
 		</div>
 	</div>
 
@@ -484,6 +595,7 @@
 				<thead>
 					<tr>
 						<th>Kelas</th>
+						<th>Shift</th>
 						<th>Buka</th>
 						<th>Deadline</th>
 						<th>Batas Telat</th>
@@ -494,6 +606,17 @@
 					{#each targets as t (t.kelas_id)}
 						<tr>
 							<td>{t.kelas?.nama_kelas ?? namaKelas(t.kelas_id)}</td>
+							<td>
+								<select
+									class="input text-sm"
+									bind:value={t.shift}
+									aria-label="Shift untuk window ini"
+								>
+									<option value={null}>Semua</option>
+									<option value={1}>Shift 1</option>
+									<option value={2}>Shift 2</option>
+								</select>
+							</td>
 							<td>
 								<input
 									type="datetime-local"
@@ -577,7 +700,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each filtered as p (p.mahasiswa_id)}
+					{#each visible as p (p.mahasiswa_id)}
 						{@const b = statusBadge(p)}
 						<tr>
 							<td><input type="checkbox" checked={!!selected[p.mahasiswa_id]} onchange={() => toggleSelect(p.mahasiswa_id)} /></td>
@@ -586,6 +709,11 @@
 							<td>{p.nama_kelas}</td>
 							<td>
 								<span class="badge {b.cls}">{b.label}</span>
+								{#if p.status === 'terkumpul' && p.is_late && p.submitted_at}
+									<p class="mt-1 text-xs font-medium text-amber-600">
+										Telat {formatPenalti(p.submitted_at, p.deadline_at)}
+									</p>
+								{/if}
 								{#if p.manual_catatan}
 									<p class="mt-1 text-xs text-ink-caption">{p.manual_catatan}</p>
 								{/if}
@@ -666,6 +794,26 @@
 				</tbody>
 			</table>
 		</div>
+
+		{#if totalHalaman > 1}
+			<div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+				<span class="text-xs text-ink-caption">
+					Halaman {page} dari {totalHalaman} ({filtered.length} baris)
+				</span>
+				<div class="flex items-center gap-1.5">
+					<button
+						class="inline-flex items-center gap-1 rounded-lg bg-surface-soft px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-primary hover:text-white disabled:opacity-40"
+						disabled={page <= 1}
+						onclick={() => gantiHalaman(page - 1)}
+					>← Sebelumnya</button>
+					<button
+						class="inline-flex items-center gap-1 rounded-lg bg-surface-soft px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-primary hover:text-white disabled:opacity-40"
+						disabled={page >= totalHalaman}
+						onclick={() => gantiHalaman(page + 1)}
+					>Berikutnya →</button>
+				</div>
+			</div>
+		{/if}
 	{/if}
 {/if}
 

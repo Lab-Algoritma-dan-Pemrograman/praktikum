@@ -169,6 +169,7 @@ func (uc *LaporanBesarUsecase) SetTargets(laporanID int, req dto.SetTargetReques
 		target := &entity.LaporanBesarTarget{
 			LaporanBesarID: laporanID,
 			KelasID:        t.KelasID,
+			Shift:          t.Shift,
 			BukaAt:         t.BukaAt,
 			DeadlineAt:     t.DeadlineAt,
 			LateUntil:      t.LateUntil,
@@ -203,10 +204,10 @@ func (uc *LaporanBesarUsecase) StatusSaya(userID int) (*dto.LaporanBesarStatusRe
 	}
 	now := time.Now()
 
-	// Window kelas mahasiswa (bila ada).
+	// Window kelas mahasiswa (bila ada). Prioritas target: shift spesifik → fallback semua.
 	if user.KelasID != nil {
 		resp.KelasID = user.KelasID
-		if t, err := uc.repo.FindTarget(l.ID, *user.KelasID); err == nil {
+		if t, err := uc.repo.FindTarget(l.ID, *user.KelasID, user.Shift); err == nil {
 			resp.BukaAt = t.BukaAt
 			d := t.DeadlineAt
 			resp.DeadlineAt = &d
@@ -248,7 +249,7 @@ func (uc *LaporanBesarUsecase) UploadURL(userID int, req dto.UploadURLRequest) (
 	if user.KelasID == nil {
 		return nil, fmt.Errorf("%w: kelas mahasiswa belum diatur", ErrBadRequest)
 	}
-	t, err := uc.repo.FindTarget(l.ID, *user.KelasID)
+	t, err := uc.repo.FindTarget(l.ID, *user.KelasID, user.Shift)
 	if err != nil {
 		return nil, fmt.Errorf("%w: laporan besar belum dibuka untuk kelas Anda", ErrForbidden)
 	}
@@ -262,6 +263,10 @@ func (uc *LaporanBesarUsecase) UploadURL(userID int, req dto.UploadURLRequest) (
 
 	ext := strings.ToLower(strings.TrimSpace(req.Ext))
 	jenis := req.Jenis
+	// Korelasi jenis ↔ ekstensi: laporan wajib PDF, analisa wajib DOCX.
+	if (jenis == "laporan" && ext != "pdf") || (jenis == "analisa" && ext != "docx") {
+		return nil, fmt.Errorf("%w: berkas %s harus .%s", ErrBadRequest, jenis, map[string]string{"laporan": "pdf", "analisa": "docx"}[jenis])
+	}
 	// Path: laporan-besar/<laporanID>/<mhsID>/<jenis>-<unixnano>.<ext>
 	objPath := fmt.Sprintf("%d/%d/%s-%d.%s", l.ID, userID, jenis, now.UnixNano(), ext)
 
@@ -285,7 +290,7 @@ func (uc *LaporanBesarUsecase) Kumpul(userID int, req dto.KumpulRequest) (*entit
 	if user.KelasID == nil {
 		return nil, fmt.Errorf("%w: kelas mahasiswa belum diatur", ErrBadRequest)
 	}
-	t, err := uc.repo.FindTarget(l.ID, *user.KelasID)
+	t, err := uc.repo.FindTarget(l.ID, *user.KelasID, user.Shift)
 	if err != nil {
 		return nil, fmt.Errorf("%w: laporan besar belum dibuka untuk kelas Anda", ErrForbidden)
 	}
@@ -389,7 +394,7 @@ func (uc *LaporanBesarUsecase) BatalkanKumpul(userID int) error {
 		return fmt.Errorf("%w: pengumpulan yang sudah diverifikasi/di-override tidak bisa dibatalkan", ErrForbidden)
 	}
 	if user.KelasID != nil {
-		if t, err := uc.repo.FindTarget(l.ID, *user.KelasID); err == nil {
+		if t, err := uc.repo.FindTarget(l.ID, *user.KelasID, user.Shift); err == nil {
 			if faseWindow(t, time.Now()) == FaseDitutup {
 				return fmt.Errorf("%w: waktu pengumpulan telah ditutup", ErrForbidden)
 			}
@@ -444,6 +449,10 @@ func (uc *LaporanBesarUsecase) ListPengumpulan(laporanID int) ([]dto.Pengumpulan
 		if m.Kelas != nil {
 			nama := m.Kelas.NamaKelas
 			row.NamaKelas = &nama
+			if t, err := uc.repo.FindTarget(laporanID, m.Kelas.ID, m.Shift); err == nil {
+				d := t.DeadlineAt
+				row.DeadlineAt = &d
+			}
 		}
 		if p, ok := byMhs[m.ID]; ok {
 			row.Status = p.Status
@@ -641,7 +650,7 @@ func (uc *LaporanBesarUsecase) DownloadBatch(laporanID int, req dto.DownloadBatc
 // CekGerbangLaporanBesar dipanggil Mulai (ujian praktik). Bila ada laporan besar
 // aktif untuk kelas mahasiswa, wajib status='terkumpul' ATAU ada override_pada.
 // Mengembalikan error bila gerbang tertutup.
-func (uc *LaporanBesarUsecase) CekGerbangLaporanBesar(userID int, kelasID *int) error {
+func (uc *LaporanBesarUsecase) CekGerbangLaporanBesar(userID int, kelasID *int, shift *int) error {
 	if kelasID == nil {
 		return nil // tanpa kelas, tidak ada target → gerbang tidak berlaku
 	}
@@ -649,7 +658,7 @@ func (uc *LaporanBesarUsecase) CekGerbangLaporanBesar(userID int, kelasID *int) 
 	if err != nil || l == nil {
 		return nil // tidak ada laporan besar aktif → gerbang tidak berlaku
 	}
-	if _, err := uc.repo.FindTarget(l.ID, *kelasID); err != nil {
+	if _, err := uc.repo.FindTarget(l.ID, *kelasID, shift); err != nil {
 		return nil // kelas ini tidak ditarget → gerbang tidak berlaku
 	}
 	p, err := uc.repo.FindPengumpulan(l.ID, userID)

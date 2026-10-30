@@ -34,12 +34,14 @@ type LaporanBesar struct {
 
 func (LaporanBesar) TableName() string { return "laporan_besar" }
 
-// LaporanBesarTarget: window pengumpulan per kelas. Buka_at NULL = langsung dibuka;
-// late_until NULL = tanpa window telat (lewat deadline = ditutup).
+// LaporanBesarTarget: window pengumpulan per kelas (dan opsional per shift).
+// Buka_at NULL = langsung dibuka; late_until NULL = tanpa window telat.
+// Shift NULL = berlaku untuk SEMUA shift; shift 1/2 = spesifik per shift.
 type LaporanBesarTarget struct {
 	ID             int        `gorm:"primaryKey;autoIncrement" json:"id"`
 	LaporanBesarID int        `gorm:"not null;uniqueIndex:uq_lapbes_target" json:"laporan_besar_id"`
 	KelasID        int        `gorm:"not null;uniqueIndex:uq_lapbes_target" json:"kelas_id"`
+	Shift          *int       `gorm:"uniqueIndex:uq_lapbes_target" json:"shift"`
 	BukaAt         *time.Time `json:"buka_at"`
 	DeadlineAt     time.Time  `gorm:"not null" json:"deadline_at"`
 	LateUntil      *time.Time `json:"late_until"`

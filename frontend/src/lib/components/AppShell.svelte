@@ -21,6 +21,7 @@
 	const userLinks: NavLink[] = [
 		{ href: '/praktikum/dashboard', label: 'Dashboard', icon: Home },
 		{ href: '/praktikum/sesi', label: 'Daftar Sesi', icon: BookOpen },
+		{ href: '/praktikum/laporan-besar', label: 'Tugas Akhir Praktikum', icon: FileText },
 		{ href: '/praktikum/profil', label: 'Profil', icon: User }
 	];
 	const adminLinks: NavLink[] = [
@@ -30,6 +31,7 @@
 		{ href: '/praktikum/admin/kelas', label: 'Kelas', icon: School },
 		{ href: '/praktikum/admin/jadwal', label: 'Jadwal', icon: Calendar },
 		{ href: '/praktikum/admin/pedoman', label: 'Pedoman', icon: FileText },
+		{ href: '/praktikum/admin/laporan-besar', label: 'Tugas Akhir Praktikum', icon: Book },
 		{ href: '/praktikum/admin/modul', label: 'Modul', icon: Book },
 		{ href: '/praktikum/admin/sesi', label: 'Sesi & Soal', icon: Puzzle },
 		{ href: '/praktikum/admin/aktivasi', label: 'Aktivasi Sesi', icon: Zap },

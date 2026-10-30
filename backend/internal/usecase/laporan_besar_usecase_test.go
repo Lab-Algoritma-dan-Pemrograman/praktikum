@@ -7,6 +7,8 @@ import (
 
 	"lab-ap/internal/entity"
 	"lab-ap/internal/repository/mocks"
+
+	"github.com/stretchr/testify/mock"
 )
 
 func ptrTime(t time.Time) *time.Time { return &t }
@@ -58,7 +60,7 @@ func TestCekGerbangLaporanBesar(t *testing.T) {
 
 	// Tanpa kelas → gerbang tidak berlaku.
 	uc := &LaporanBesarUsecase{repo: &mocks.LaporanBesarRepository{}}
-	if err := uc.CekGerbangLaporanBesar(7, nil); err != nil {
+	if err := uc.CekGerbangLaporanBesar(7, nil, nil); err != nil {
 		t.Fatalf("tanpa kelas harus lolos, dapat %v", err)
 	}
 
@@ -66,28 +68,28 @@ func TestCekGerbangLaporanBesar(t *testing.T) {
 	mNoAktif := &mocks.LaporanBesarRepository{}
 	mNoAktif.On("FindAktif").Return(nil, errors.New("record not found"))
 	ucNo := &LaporanBesarUsecase{repo: mNoAktif}
-	if err := ucNo.CekGerbangLaporanBesar(7, &kelasID); err != nil {
+	if err := ucNo.CekGerbangLaporanBesar(7, &kelasID, nil); err != nil {
 		t.Fatalf("tanpa laporan aktif harus lolos, dapat %v", err)
 	}
 
 	// Laporan aktif + kelas ditarget + pengumpulan terkumpul → lolos.
 	mTerkumpul := &mocks.LaporanBesarRepository{}
 	mTerkumpul.On("FindAktif").Return(&entity.LaporanBesar{ID: 1, IsAktif: true}, nil)
-	mTerkumpul.On("FindTarget", 1, 2).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
+	mTerkumpul.On("FindTarget", 1, 2, mock.Anything).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
 	mTerkumpul.On("FindPengumpulan", 1, 7).Return(
 		&entity.PengumpulanLaporanBesar{Status: string(entity.LaporanTerkumpul)}, nil)
 	ucTerkumpul := &LaporanBesarUsecase{repo: mTerkumpul}
-	if err := ucTerkumpul.CekGerbangLaporanBesar(7, &kelasID); err != nil {
+	if err := ucTerkumpul.CekGerbangLaporanBesar(7, &kelasID, nil); err != nil {
 		t.Fatalf("terkumpul harus lolos, dapat %v", err)
 	}
 
 	// Laporan aktif + kelas ditarget + belum + TANPA override → ditolak ErrBadRequest.
 	mBelum := &mocks.LaporanBesarRepository{}
 	mBelum.On("FindAktif").Return(&entity.LaporanBesar{ID: 1, IsAktif: true}, nil)
-	mBelum.On("FindTarget", 1, 2).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
+	mBelum.On("FindTarget", 1, 2, mock.Anything).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
 	mBelum.On("FindPengumpulan", 1, 7).Return(&entity.PengumpulanLaporanBesar{Status: string(entity.LaporanBelum)}, nil)
 	ucBelum := &LaporanBesarUsecase{repo: mBelum}
-	err := ucBelum.CekGerbangLaporanBesar(7, &kelasID)
+	err := ucBelum.CekGerbangLaporanBesar(7, &kelasID, nil)
 	if !errors.Is(err, ErrBadRequest) {
 		t.Fatalf("belum dikumpulkan harus ErrBadRequest, dapat %v", err)
 	}
@@ -95,10 +97,10 @@ func TestCekGerbangLaporanBesar(t *testing.T) {
 	// Belum ada baris pengumpulan → juga ditolak.
 	mTanpaBaris := &mocks.LaporanBesarRepository{}
 	mTanpaBaris.On("FindAktif").Return(&entity.LaporanBesar{ID: 1, IsAktif: true}, nil)
-	mTanpaBaris.On("FindTarget", 1, 2).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
+	mTanpaBaris.On("FindTarget", 1, 2, mock.Anything).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
 	mTanpaBaris.On("FindPengumpulan", 1, 7).Return(nil, errors.New("record not found"))
 	ucTanpaBaris := &LaporanBesarUsecase{repo: mTanpaBaris}
-	if err := ucTanpaBaris.CekGerbangLaporanBesar(7, &kelasID); !errors.Is(err, ErrBadRequest) {
+	if err := ucTanpaBaris.CekGerbangLaporanBesar(7, &kelasID, nil); !errors.Is(err, ErrBadRequest) {
 		t.Fatalf("tanpa baris harus ErrBadRequest, dapat %v", err)
 	}
 
@@ -106,20 +108,20 @@ func TestCekGerbangLaporanBesar(t *testing.T) {
 	now := time.Now()
 	mOverride := &mocks.LaporanBesarRepository{}
 	mOverride.On("FindAktif").Return(&entity.LaporanBesar{ID: 1, IsAktif: true}, nil)
-	mOverride.On("FindTarget", 1, 2).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
+	mOverride.On("FindTarget", 1, 2, mock.Anything).Return(&entity.LaporanBesarTarget{ID: 9, LaporanBesarID: 1, KelasID: 2}, nil)
 	mOverride.On("FindPengumpulan", 1, 7).Return(
 		&entity.PengumpulanLaporanBesar{Status: string(entity.LaporanBelum), OverridePada: &now}, nil)
 	ucOverride := &LaporanBesarUsecase{repo: mOverride}
-	if err := ucOverride.CekGerbangLaporanBesar(7, &kelasID); err != nil {
+	if err := ucOverride.CekGerbangLaporanBesar(7, &kelasID, nil); err != nil {
 		t.Fatalf("ada override harus lolos, dapat %v", err)
 	}
 
 	// Laporan aktif tapi kelas ini tidak ditarget → gerbang tidak berlaku.
 	mTanpaTarget := &mocks.LaporanBesarRepository{}
 	mTanpaTarget.On("FindAktif").Return(&entity.LaporanBesar{ID: 1, IsAktif: true}, nil)
-	mTanpaTarget.On("FindTarget", 1, 2).Return(nil, errors.New("record not found"))
+	mTanpaTarget.On("FindTarget", 1, 2, mock.Anything).Return(nil, errors.New("record not found"))
 	ucTanpaTarget := &LaporanBesarUsecase{repo: mTanpaTarget}
-	if err := ucTanpaTarget.CekGerbangLaporanBesar(7, &kelasID); err != nil {
+	if err := ucTanpaTarget.CekGerbangLaporanBesar(7, &kelasID, nil); err != nil {
 		t.Fatalf("kelas tanpa target harus lolos, dapat %v", err)
 	}
 }

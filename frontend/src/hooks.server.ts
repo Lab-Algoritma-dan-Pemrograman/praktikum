@@ -4,6 +4,14 @@ import type { Handle } from '@sveltejs/kit';
 // CATATAN: adapter-vercel menulis .vercel/output/config.json TANPA key
 // "headers", jadi `headers` di vercel.json TIDAK berpengaruh di sini —
 // satu-satunya jalur yang benar adalah hooks.server.ts.
+import { dev } from '$app/environment';
+
+let connectSrc = "connect-src 'self' https://api.algohub.web.id https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://esm.sh";
+// Di dev, izinkan backend lokal (localhost:8080) supaya CORS/CSP tidak menghalangi.
+if (dev) {
+	connectSrc = "connect-src 'self' http://localhost:8080 http://localhost:8081 http://127.0.0.1:8080 http://127.0.0.1:8081 https://api.algohub.web.id https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://esm.sh";
+}
+
 const SECURITY_HEADERS: Record<string, string> = {
 	'X-Frame-Options': 'DENY',
 	'X-Content-Type-Options': 'nosniff',
@@ -22,7 +30,7 @@ const SECURITY_HEADERS: Record<string, string> = {
 		"font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net data:",
 		"img-src 'self' data: blob: https://*.supabase.co https://ui-avatars.com",
 		"media-src 'self' blob:",
-		"connect-src 'self' https://api.algohub.web.id https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://esm.sh",
+		connectSrc,
 		"frame-src 'self' https://*.supabase.co https://docs.google.com https://drive.google.com https://maps.google.com https://www.google.com",
 		"frame-ancestors 'none'",
 		"base-uri 'self'",

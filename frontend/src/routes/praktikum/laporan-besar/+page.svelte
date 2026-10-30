@@ -161,6 +161,16 @@
 		return fmt.format(d) + ' WITA';
 	}
 
+	// Penalti keterlambatan (menampilkan 1/7..7/7). Hari penuh = ceil(selisih hari),
+	// dibatasi 1..7. Murni informasi; tidak memengaruhi status.
+	function formatPenalti(submitted: string, deadline: string): string {
+		const s = new Date(submitted).getTime();
+		const d = new Date(deadline).getTime();
+		if (Number.isNaN(s) || Number.isNaN(d)) return '?/7';
+		const telatHari = Math.max(1, Math.min(7, Math.ceil((s - d) / (24 * 60 * 60 * 1000))));
+		return `${telatHari}/7`;
+	}
+
 	// ---- Apakah UI unggah boleh dipakai? ----
 	let terkumpul = $derived(data?.status_saya === 'terkumpul');
 	let manual = $derived(data?.sumber === 'manual');
@@ -197,6 +207,14 @@
 		const extFile = (file.name.split('.').pop() || '').toLowerCase();
 		if (extFile !== extHarap) {
 			uploadErr = `File ${LABEL[j]} harus berekstensi .${extHarap}.`;
+			input.value = '';
+			return;
+		}
+
+		// Batas ukuran unggah: 10 MB (konsisten dengan bucket Supabase).
+		const MAX_UPLOAD = 10 * 1024 * 1024;
+		if (file.size > MAX_UPLOAD) {
+			uploadErr = `File ${LABEL[j]} terlalu besar (${(file.size / 1024 / 1024).toFixed(1)} MB). Maksimal 10 MB.`;
 			input.value = '';
 			return;
 		}
@@ -294,7 +312,7 @@
 			<FileText size={20} />
 		</div>
 		<div>
-			<h1 class="text-2xl font-bold text-ink-heading">Laporan Besar</h1>
+			<h1 class="text-2xl font-bold text-ink-heading">Tugas Akhir Praktikum</h1>
 			<p class="text-sm text-ink-caption">Unggah laporan akhir dan analisa praktikum.</p>
 		</div>
 	</div>
@@ -317,7 +335,19 @@
 							</span>
 						{/if}
 					</div>
-					<p class="mt-2 max-w-2xl text-sm leading-relaxed text-ink-body">{data.deskripsi}</p>
+					<div class="prose prose-sm prose-slate max-w-2xl mt-2 break-words text-ink-body">
+						{@html data.deskripsi || '<span class="text-ink-caption">(tidak ada deskripsi)</span>'}
+					</div>
+					{#if data.status_saya === 'terkumpul' && data.is_late && data.window.deadline_at}
+						<div class="mt-3 inline-flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700 ring-1 ring-amber-200">
+							<Clock size={14} />
+							<span>
+								Kamu mengumpulkan <strong>telat</strong> — keterlambatan
+								{formatPenalti(data.submitted_at!, data.window.deadline_at)}.
+								Hari penuh dihitung dari batas pengumpulan.
+							</span>
+						</div>
+					{/if}
 				</div>
 
 				{#if countdownTarget && (tahap === 'dikumpul' || tahap === 'telat' || tahap === 'belum_dibuka')}
@@ -408,6 +438,10 @@
 			{#if bolehUpload}
 				<section class="space-y-4">
 					<h2 class="text-lg font-bold text-ink-heading">Unggah Dokumen</h2>
+					<p class="text-xs text-ink-caption">
+						Format: laporan <strong>.pdf</strong>, analisa <strong>.docx</strong>. Maksimal
+						<strong>10 MB</strong> per file.
+					</p>
 
 					{#if uploadErr}
 						<div class="flex items-start gap-2 rounded-lg bg-state-error-bg p-3 text-sm text-state-error">
