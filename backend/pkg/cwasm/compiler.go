@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sync"
 	"time"
 )
 
@@ -18,11 +19,39 @@ type Compiler struct {
 	clang   string        // path/binary clang (mis. "clang")
 	sysroot string        // wasi-sysroot (mis. /opt/wasi-sdk/share/wasi-sysroot)
 	timeout time.Duration // batas waktu satu kompilasi
+	maxConc int           // batas compile bersamaan
+	queueTO time.Duration // batas tunggu antrean
+	sem     chan struct{} // pembatas konkurensi
+	once    sync.Once
 }
 
 // New membuat compiler. Nonaktif bila clang/sysroot kosong.
 func New(clang, sysroot string) *Compiler {
-	return &Compiler{clang: clang, sysroot: sysroot, timeout: 10 * time.Second}
+	return &Compiler{
+		clang:   clang,
+		sysroot: sysroot,
+		timeout: 10 * time.Second,
+		maxConc: 4,
+		queueTO: 30 * time.Second,
+	}
+}
+
+// WithLimits: batasi konkurensi dan waktu tunggu antrean (0 = pakai bawaan).
+func (c *Compiler) WithLimits(maxConc int, queueTimeout time.Duration) *Compiler {
+	if maxConc > 0 {
+		c.maxConc = maxConc
+	}
+	if queueTimeout > 0 {
+		c.queueTO = queueTimeout
+	}
+	return c
+}
+
+func (c *Compiler) acquire() chan struct{} {
+	c.once.Do(func() {
+		c.sem = make(chan struct{}, c.maxConc)
+	})
+	return c.sem
 }
 
 // Enabled menandakan compiler dikonfigurasi.
@@ -38,6 +67,17 @@ func (c *Compiler) Compile(source string) ([]byte, string, error) {
 	if !c.Enabled() {
 		return nil, "", fmt.Errorf("compiler C belum dikonfigurasi")
 	}
+
+	// Antrean: batasi jumlah compile bersamaan supaya RAM/CPU server aman
+	// saat puluhan praktikan menekan Run serentak.
+	sem := c.acquire()
+	select {
+	case sem <- struct{}{}:
+		defer func() { <-sem }()
+	case <-time.After(c.queueTO):
+		return nil, "Server sedang sibuk mengompilasi. Coba lagi sebentar.", nil
+	}
+
 	dir, err := os.MkdirTemp("", "cwasm-*")
 	if err != nil {
 		return nil, "", err

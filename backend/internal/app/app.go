@@ -5,6 +5,8 @@
 package app
 
 import (
+	"time"
+
 	"lab-ap/config"
 	"lab-ap/database"
 	"lab-ap/internal/delivery/http/handler"
@@ -40,7 +42,8 @@ func Build(cfg *config.Config) (*gin.Engine, *Deps, error) {
 	sbLaporan := supabase.New(cfg.SupabaseURL, cfg.SupabaseServiceKey, cfg.SupabaseBucketLaporan)
 	oc := ollama.NewClient(cfg)
 	glotClient := glot.New(cfg.GlotURL, cfg.GlotToken)
-	cwasmCompiler := cwasm.New(cfg.CwasmClang, cfg.CwasmSysroot)
+	cwasmCompiler := cwasm.New(cfg.CwasmClang, cfg.CwasmSysroot).
+		WithLimits(cfg.CwasmMaxConcurrent, time.Duration(cfg.CwasmQueueTimeout)*time.Second)
 
 	// ---- Repository ----
 	userRepo := repository.NewUserRepository(db)

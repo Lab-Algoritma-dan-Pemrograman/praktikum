@@ -57,6 +57,11 @@ type Config struct {
 	// Compile C -> wasm32-wasi (clang + wasi-sdk). Kosong = fitur nonaktif.
 	CwasmClang   string
 	CwasmSysroot string
+	// Batas compile C bersamaan + waktu tunggu antrean. Penting saat banyak
+	// praktikan menekan Run serentak: tanpa batas, tiap klik = satu proses
+	// clang native (RAM/CPU server). 0 = pakai bawaan paket cwasm (4 / 30s).
+	CwasmMaxConcurrent int
+	CwasmQueueTimeout  int // detik
 
 	// Parameter hash Firebase Auth (untuk verifikasi password lama saat migrasi).
 	// Kosong = fitur nonaktif (login fallback ke bcrypt saja).
@@ -103,6 +108,8 @@ func Load() *Config {
 		GlotToken:             getEnv("GLOT_TOKEN", ""),
 		CwasmClang:            getEnv("CWASM_CLANG", ""),
 		CwasmSysroot:          getEnv("WASI_SYSROOT", ""),
+		CwasmMaxConcurrent:    getEnvInt("CWASM_MAX_CONCURRENT", 0),
+		CwasmQueueTimeout:     getEnvInt("CWASM_QUEUE_TIMEOUT_SECONDS", 0),
 		FbScryptSignerKey:     getEnv("FB_SCRYPT_SIGNER_KEY", ""),
 		FbScryptSaltSeparator: getEnv("FB_SCRYPT_SALT_SEPARATOR", ""),
 		FbScryptRounds:        getEnvInt("FB_SCRYPT_ROUNDS", 8),
