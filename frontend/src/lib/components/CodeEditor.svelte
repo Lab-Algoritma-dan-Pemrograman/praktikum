@@ -96,11 +96,19 @@
 	let cStdinOffsets: number[] = [];
 
 	function injectStdoutUnbuffering(code: string): string {
-		const mainRegex = /\bmain\s*\([^)]*\)\s*\{/;
-		if (mainRegex.test(code)) {
-			return code.replace(mainRegex, '$&\n    setbuf(stdout, NULL);\n    setbuf(stdin, NULL);');
+		const mainRegex = /\bmain\s*\([^)]*\s*\)\s*\{/;
+		if (!mainRegex.test(code)) return code;
+
+		// setbuf butuh deklarasi dari <stdio.h>. Tanpa include itu, suntikan justru
+		// bikin error ("setbuf was not declared") pada kode pengguna yang sah.
+		const suntikan = mainRegex.test(code)
+			? '$&\n    setbuf(stdout, NULL);\n    setbuf(stdin, NULL);'
+			: '$&';
+
+		if (/#\s*include\s*[<"]stdio\.h[>"]/i.test(code)) {
+			return code.replace(mainRegex, suntikan);
 		}
-		return code;
+		return `#include <stdio.h>\n${code.replace(mainRegex, suntikan)}`;
 	}
 
 	onMount(async () => {
@@ -403,7 +411,11 @@
 	}
 
 	async function executeCCode(accumulatedStdin: string) {
-		if (!term || !$cWorkerStore) return;
+		// Port dikunci ke variabel lokal: 'compile' dan 'run' WAJIB mendarat di
+		// worker yang sama. Tanpa ini, cWorkerStore yang ditimpa worker lain di
+		// tengah proses membuat run dikirim ke worker tanpa modul hasil compile.
+		const port = $cWorkerStore;
+		if (!term || !port) return;
 
 		const responseId = Math.floor(Math.random() * 1000000);
 		let compileOutputBuffer = '';
@@ -415,7 +427,7 @@
 			if (id === 'write') {
 				compileOutputBuffer += data;
 			} else if (id === 'runAsync' && e.data.responseId === responseId) {
-				$cWorkerStore.removeEventListener('message', compileHandler);
+				port.removeEventListener('message', compileHandler);
 
 				if (!data.success) {
 					cStdinMode = false;
@@ -438,7 +450,7 @@
 					if (id2 === 'write') {
 						compileOutputBuffer += data2;
 					} else if (id2 === 'runAsync' && e2.data.responseId === runResponseId) {
-						$cWorkerStore.removeEventListener('message', runHandler);
+						port.removeEventListener('message', runHandler);
 
 						term.clear();
 		outputText = '';
@@ -485,13 +497,13 @@
 					}
 				};
 
-				$cWorkerStore.addEventListener('message', runHandler);
-				$cWorkerStore.postMessage({ id: 'run', responseId: runResponseId, data: accumulatedStdin });
+				port.addEventListener('message', runHandler);
+				port.postMessage({ id: 'run', responseId: runResponseId, data: accumulatedStdin });
 			}
 		};
 
-		$cWorkerStore.addEventListener('message', compileHandler);
-		$cWorkerStore.postMessage({ id: 'compile', responseId, data: injectStdoutUnbuffering(value) });
+		port.addEventListener('message', compileHandler);
+		port.postMessage({ id: 'compile', responseId, data: injectStdoutUnbuffering(value) });
 	}
 
 	async function runServerFallback() {

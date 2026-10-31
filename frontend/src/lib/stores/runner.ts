@@ -7,8 +7,14 @@ export const isPyodideLoadingStore = writable<boolean>(true);
 export const cWorkerStore = writable<MessagePort | null>(null);
 export const isCLoadingStore = writable<boolean>(true);
 
+// Dipanggil dari layout DAN dari CodeEditor. Tanpa penjaga, setiap panggilan
+// membuat set Worker baru dan menimpa cWorkerStore; 'compile' lalu mendarat di
+// worker lama sementara 'run' dikirim ke worker baru -> "Please compile first".
+let runnerStarted = false;
+
 export function initRunner() {
-	if (!browser) return;
+	if (!browser || runnerStarted) return;
+	runnerStarted = true;
 
 	// Load Pyodide Worker
 	isPyodideLoadingStore.set(true);

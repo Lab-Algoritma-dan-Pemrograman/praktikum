@@ -829,9 +829,11 @@ class API {
     await this.ready;
     this.memfs.addFile(input, contents);
     const clang = await this.getModule(this.clangFilename);
+    // Editor memakai main.c: kompilasi sebagai C. Dengan 'c++', idiom C yang
+    // sah (mis. char *p = malloc(10)) jadi error keras, bukan warning.
     return await this.run(clang, 'clang', '-cc1', '-emit-obj',
                           ...this.clangCommonArgs, '-O2', '-o', obj, '-x',
-                          'c++', input);
+                          'c', input);
   }
 
   async compileToAssembly(options) {
