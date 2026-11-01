@@ -144,9 +144,10 @@ func (c *Client) SignedDownloadURL(path string, ttl time.Duration, downloadName 
 	if err := json.Unmarshal(body, &out); err != nil {
 		return "", fmt.Errorf("respons signed download tidak valid: %w", err)
 	}
-	full := c.baseURL + "/storage/v1" + strings.TrimPrefix(out.SignedURL, "/storage/v1")
-	if !strings.HasPrefix(out.SignedURL, "http") && !strings.HasPrefix(out.SignedURL, "/storage/v1") {
-		full = c.baseURL + "/storage/v1" + strings.TrimPrefix(out.SignedURL, "/")
+	// Supabase mengembalikan path relatif ("/object/sign/...") atau absolut.
+	full := out.SignedURL
+	if !strings.HasPrefix(full, "http") {
+		full = c.baseURL + "/storage/v1/" + strings.TrimPrefix(strings.TrimPrefix(full, "/storage/v1"), "/")
 	}
 	if downloadName != "" {
 		sep := "?"
