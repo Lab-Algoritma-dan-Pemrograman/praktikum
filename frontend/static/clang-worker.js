@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-self.importScripts('shared.js?v=7');
+self.importScripts('shared.js?v=8');
 
 let api;
 let port;
@@ -50,6 +50,10 @@ const onAnyMessage = async event => {
   case 'constructor':
     port = event.data.data;
     port.onmessage = onAnyMessage;
+    // SAB untuk blocking stdin (opsional): kalau main-thread mengirim, pakai
+    // mode menunggu input nyata (seperti terminal asli). Tanpa SAB, fallback
+    // ke perilaku lama (EOF saat buffer habis).
+    apiOptions.sab = event.data.sab || null;
     api = new API(apiOptions);
     api.ready.then(() => {
       port.postMessage({ id: 'init_done' });
@@ -141,8 +145,20 @@ const onAnyMessage = async event => {
       if (!currentModule) {
         throw new Error("No compiled module found. Please compile first.");
       }
-      
-      const stdin = event.data.data || '';
+
+      // Default stdin "\n" saat kosong: di sandbox WASM ini stdin non-blocking,
+      // jadi getchar() langsung EOF. Pola `while (getchar() != '\n')` yang umum
+      // di materi jadi infinite loop. Dengan default newline, loop itu keluar
+      // (seperti user menekan Enter). Program yang butuh input berulang tetap
+      // butuh input nyata dari user.
+      // Mode SAB hanya aktif bila main-thread tidak meminta mode legacy (pakai
+      // untuk jalur tanpa terminal interaktif, mis. validasi soal di LessonPage).
+      const sabActive = !!api.memfs.sab && !event.data.legacy;
+      api.memfs.sabActive = sabActive;
+      // PENTING: saat SAB aktif, stdin harus KOSONG (bukan default '\n') —
+      // kalau tidak, program baca newline placeholder lalu selesai tanpa
+      // menunggu input asli dari user.
+      const stdin = event.data.data ?? (sabActive ? '' : '\n');
       api.memfs.setStdinStr(stdin);
       api.memfs.waitingForInput = false; // Reset before run
       
@@ -161,11 +177,13 @@ const onAnyMessage = async event => {
       const len = api.memfs.stdoutLenAtInputRequest || 0;
       let offsets = api.memfs.inputOffsets || [];
       const rawWaiting = api.memfs.waitingForInput || false;
+      const sabBlocked = api.memfs.sabBlocked || false;
       if (rawWaiting && !offsets.includes(len)) {
         offsets = [...offsets, len];
       }
       
-      port.postMessage({id: 'runAsync', responseId, data: { success, error, waitingForInput: rawWaiting, stdoutLenAtInputRequest: len, inputOffsets: offsets }});
+      if (api.memfs) api.memfs.sabActive = false;
+      port.postMessage({id: 'runAsync', responseId, data: { success, error, waitingForInput: rawWaiting, sabBlocked, stdoutLenAtInputRequest: len, inputOffsets: offsets }});
     }
     break;
   }

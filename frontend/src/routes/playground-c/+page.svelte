@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { Play, Square } from 'lucide-svelte';
-	import { api, ApiError } from '$lib/api';
+	import { sendCInput, cancelCInput } from '$lib/cInput';
+	import { cWorkerStore, cWorkerRefStore, initRunner, resetCWorker, isCLoadingStore } from '$lib/stores/runner';
+	import { get } from 'svelte/store';
 
 	type Status = 'init' | 'loading' | 'ready' | 'running' | 'unsupported';
 
@@ -19,26 +21,27 @@ int main(void) {
     int n;
     printf("Masukkan sebuah angka: ");
     scanf("%d", &n);
-    printf("Halo %s, kuadratnya adalah %d\\n", nama, n * n);
+    printf("Halo %s, kuadratnya adalah %d\n", nama, n * n);
     return 0;
 }
 `);
 
-	let worker: Worker | null = null;
-	let meta: Int32Array | null = null;
-	let dataArr: Uint8Array | null = null;
-
-	const DATA_SIZE = 4096;
+	// Timer timeout run C (40 detik, pause saat need-input).
+	let cRunTimer: ReturnType<typeof setTimeout> | undefined;
+	const C_RUN_TIMEOUT_MS = 40000;
 
 	function append(text: string) {
 		output += text;
 	}
 
-	function b64ToArrayBuffer(b64: string): ArrayBuffer {
-		const bin = atob(b64);
-		const bytes = new Uint8Array(bin.length);
-		for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-		return bytes.buffer;
+	function injectStdoutUnbuffering(s: string): string {
+		const mainRegex = /\bmain\s*\([^)]*\s*\)\s*\{/;
+		if (!mainRegex.test(s)) return s;
+		const suntikan = '$&\n    setbuf(stdout, NULL);\n    setbuf(stdin, NULL);';
+		if (/#\s*include\s*[<"]stdio\.h[>"]/i.test(s)) {
+			return s.replace(mainRegex, suntikan);
+		}
+		return `#include <stdio.h>\n${s.replace(mainRegex, suntikan)}`;
 	}
 
 	function setupWorker() {
@@ -47,85 +50,158 @@ int main(void) {
 			status = 'unsupported';
 			return;
 		}
-		const sab = new SharedArrayBuffer(8 + DATA_SIZE);
-		meta = new Int32Array(sab, 0, 2);
-		dataArr = new Uint8Array(sab, 8);
-
 		status = 'loading';
-		worker = new Worker('/c-worker.js', { type: 'module' });
-		worker.onmessage = (e: MessageEvent) => {
-			const m = e.data;
-			if (m.type === 'ready') status = 'ready';
-			else if (m.type === 'out' || m.type === 'err') append(m.data);
-			else if (m.type === 'need-input') {
-				needInput = true;
-				queueMicrotask(() => inputEl?.focus());
-			} else if (m.type === 'done') {
+		// initRunner membuat worker + SAB + retry; kita tunggu port siap.
+		initRunner();
+		const unsub = cWorkerStore.subscribe((port) => {
+			if (port && status === 'loading') {
 				status = 'ready';
-				needInput = false;
-			} else if (m.type === 'fatal') {
-				append('\n[Gagal memuat runtime C: ' + m.data + ']\n');
-				status = 'unsupported';
+				unsub();
 			}
-		};
-		worker.postMessage({ type: 'init', sab });
+		});
+		// Kalau init gagal (retry habis), isLoading jadi false & port tetap null.
+		const unsubLoading = isCLoadingStore.subscribe((loading) => {
+			if (!loading && status === 'loading') {
+				status = 'unsupported';
+				unsubLoading();
+			}
+		});
 	}
 
 	async function run() {
-		if (status !== 'ready' || !worker) return;
+		if (status !== 'ready') return;
+		const port = get(cWorkerStore);
+		if (!port) return;
+
 		output = '';
 		needInput = false;
 		status = 'running';
-		try {
-			const res = await api.post<{ wasm: string; stderr: string }>('/praktikum/compile-c', {
-				source: code
-			});
-			if (!res.wasm) {
-				// Gagal kompilasi: tampilkan pesan clang di terminal.
-				append(res.stderr || 'Kompilasi gagal.');
+
+		const responseId = Math.floor(Math.random() * 1000000);
+		let outBuffer = '';
+
+		const startRunTimer = () => {
+			clearTimeout(cRunTimer);
+			cRunTimer = setTimeout(() => {
+				needInput = false;
+				append('\n[Program tidak merespons dalam 40 detik (kemungkinan infinite loop) — compiler di-reset.]\n');
+				try {
+					get(cWorkerRefStore)?.terminate();
+				} catch { /* abaikan */ }
+				resetCWorker();
 				status = 'ready';
-				return;
+			}, C_RUN_TIMEOUT_MS);
+		};
+		const pauseRunTimer = () => clearTimeout(cRunTimer);
+
+		const needInputHandler = (e: MessageEvent) => {
+			if (e.data && e.data.id === 'need-input') {
+				pauseRunTimer();
+				needInput = true;
+				queueMicrotask(() => inputEl?.focus());
 			}
-			if (res.stderr) append(res.stderr + '\n'); // warning compiler (jika ada)
-			worker.postMessage({ type: 'run', wasm: b64ToArrayBuffer(res.wasm) });
-		} catch (e) {
-			append('\n[' + (e instanceof ApiError ? e.message : String(e)) + ']\n');
-			status = 'ready';
-		}
+		};
+
+		const compileHandler = (e: MessageEvent) => {
+			const { id, data } = e.data;
+			if (id === 'write') {
+				outBuffer += data;
+			} else if (id === 'runAsync' && e.data.responseId === responseId) {
+				port.removeEventListener('message', compileHandler);
+
+				if (!data.success) {
+					port.removeEventListener('message', needInputHandler);
+					append(outBuffer || data.error || 'Kompilasi gagal.');
+					status = 'ready';
+					return;
+				}
+
+				outBuffer = '';
+				const runResponseId = responseId + 1;
+
+				const runHandler = (e2: MessageEvent) => {
+					const { id: id2, data: data2 } = e2.data;
+					if (id2 === 'write') {
+						append(data2);
+						outBuffer += data2;
+					} else if (id2 === 'runAsync' && e2.data.responseId === runResponseId) {
+						port.removeEventListener('message', runHandler);
+						port.removeEventListener('message', needInputHandler);
+
+						if (data2.sabBlocked) {
+							needInput = true;
+							queueMicrotask(() => inputEl?.focus());
+							return;
+						}
+
+						pauseRunTimer();
+						needInput = false;
+
+						if (data2.error) append('\n⚠ ' + data2.error + '\n');
+						if (data2.waitingForInput) {
+							needInput = true;
+							queueMicrotask(() => inputEl?.focus());
+							return;
+						}
+						if (!outBuffer.endsWith('\n') && outBuffer.length > 0) append('\n');
+						append('\n✓ Program selesai!\n');
+						status = 'ready';
+					}
+				};
+
+				port.addEventListener('message', runHandler);
+				startRunTimer();
+				port.postMessage({ id: 'run', responseId: runResponseId, data: '' });
+			}
+		};
+
+		port.addEventListener('message', needInputHandler);
+		port.addEventListener('message', compileHandler);
+		port.postMessage({ id: 'compile', responseId, data: injectStdoutUnbuffering(code), legacy: false });
 	}
 
 	function submitInput() {
-		if (!needInput || !meta || !dataArr) return;
+		if (!needInput) return;
 		const line = inputValue;
 		append(line + '\n'); // echo ke terminal
-		const enc = new TextEncoder().encode(line + '\n');
-		const n = Math.min(enc.length, DATA_SIZE);
-		dataArr.set(enc.subarray(0, n));
-		Atomics.store(meta, 1, n);
-		Atomics.store(meta, 0, 1);
-		Atomics.notify(meta, 0);
+		const ok = sendCInput(line);
+		if (!ok) {
+			needInput = false;
+			append('\n[Mode input interaktif tidak tersedia (SAB mati).]\n');
+		}
 		inputValue = '';
 		needInput = false;
 	}
 
 	function stop() {
-		// Hentikan run yang mungkin sedang Atomics.wait di worker.
-		worker?.terminate();
-		worker = null;
+		// Batalkan worker yang sedang Atomics.wait (mode SAB).
+		cancelCInput();
+		clearTimeout(cRunTimer);
+		// Kalau hang, terminate + reset → re-init.
+		if (status === 'running') {
+			try {
+				get(cWorkerRefStore)?.terminate();
+			} catch { /* abaikan */ }
+			resetCWorker();
+		}
 		needInput = false;
 		status = 'init';
 		setupWorker();
 	}
 
 	onMount(setupWorker);
-	onDestroy(() => worker?.terminate());
+	onDestroy(() => {
+		clearTimeout(cRunTimer);
+		cancelCInput();
+		get(cWorkerRefStore)?.terminate();
+	});
 </script>
 
 <div class="mx-auto max-w-4xl">
 	<h1 class="mb-1 text-2xl font-bold text-ink-heading">Playground C (Live)</h1>
 	<p class="mb-5 text-sm text-ink-caption">
-		Tulis kode C, di-compile ke WebAssembly di server, lalu jalan langsung di browser —
-		termasuk <code>scanf</code> yang interaktif. (Eksperimental / Fase 2)
+		Tulis kode C, di-compile ke WebAssembly langsung di browser (clang-wasm),
+		lalu jalan — termasuk <code>scanf</code> yang interaktif (SAB blocking stdin).
 	</p>
 
 	{#if status === 'unsupported'}

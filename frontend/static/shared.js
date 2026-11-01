@@ -173,6 +173,16 @@ class MemFS {
     this.waitingForInput = false;
     this.stdoutLenAtInputRequest = 0;
     this.inputOffsets = [];
+    // Blocking stdin lewat SharedArrayBuffer: [0]=flag (0=tunggu,1=data,2=cancel)
+    // [1]=panjang data; data mulai offset 8.
+    this.sab = options.sab || null;
+    this.sabMeta = this.sab ? new Int32Array(this.sab, 0, 2) : null;
+    this.sabData = this.sab ? new Uint8Array(this.sab, 8) : null;
+    this.sabMax = this.sab ? this.sab.byteLength - 8 : 0;
+    this.sabActive = false;      // diaktifkan per-run oleh clang-worker
+    this.sabWaiting = false;     // sedang menunggu input dari UI
+    this.sabPending = null;      // sisa input SAB yang belum dibaca
+    this.sabPendingPos = 0;
 
     this.hostMem_ = null;  // Set later when wired up to application.
 
@@ -254,18 +264,86 @@ class MemFS {
     this.hostMem_.check();
     assert(fd === 0);
     let size = 0;
-    
+
+    // 1) Layani sisa input yang sudah tersedia (SAB pending / stdinStr) dulu.
+    if (this.sabPending && this.sabPendingPos < this.sabPending.length) {
+      let avail = this.sabPending.length - this.sabPendingPos;
+      for (let i = 0; i < iovs_len; ++i) {
+        const buf = this.hostMem_.read32(iovs + i * 8);
+        const len_i = this.hostMem_.read32(iovs + i * 8 + 4);
+        const n = Math.min(len_i, avail);
+        if (n <= 0) break;
+        const chunk = new Uint8Array(this.hostMem_.buffer, buf, n);
+        chunk.set(this.sabPending.subarray(this.sabPendingPos, this.sabPendingPos + n));
+        this.sabPendingPos += n;
+        size += n;
+        avail -= n;
+        if (avail === 0) break;
+      }
+      if (this.sabPendingPos >= this.sabPending.length) {
+        this.sabPending = null;
+        this.sabPendingPos = 0;
+      }
+      this.hostMem_.write32(nread, size);
+      return ESUCCESS;
+    }
+
     if (this.stdinStrPos < this.stdinStr.length) {
       this.waitingForInput = false;
       this.stdoutLenAtInputRequest = 0;
     }
 
-    // Detect if we are starting to read a new input line from stdinStr
-    if (this.stdinStrPos < this.stdinStr.length) {
-      const isStartOfLine = this.stdinStrPos === 0 || this.stdinStr[this.stdinStrPos - 1] === '\n';
-      if (isStartOfLine) {
-        if (!this.inputOffsets) this.inputOffsets = [];
-        this.inputOffsets.push((this.stdoutStr || "").length);
+    // 2) Mode blocking SAB: kalau stdin string habis, minta input ke UI lalu
+    // tunggu (Atomics.wait) alih-alih langsung EOF. Ini meniru terminal asli
+    // sehingga pola `while (getchar() != '\n')` tidak menjadi infinite loop.
+    if (this.sab && this.sabMeta && this.sabActive) {
+      if (this.stdinStrPos >= this.stdinStr.length) {
+        if (!this.sabWaiting) {
+          this.sabWaiting = true;
+          try { this.hostWrite(''); } catch { /* abaikan */ }
+          try { port.postMessage({ id: 'need-input' }); } catch { /* abaikan */ }
+        }
+        Atomics.wait(this.sabMeta, 0, 0);
+        const flag = Atomics.load(this.sabMeta, 0);
+        if (flag === 2) {
+          this.sabWaiting = false;
+          this.sabBlocked = false;
+          throw new AbortError('Input dibatalkan');
+        }
+        if (flag === 1) {
+          const len = Atomics.load(this.sabMeta, 1);
+          if (len > 0 && this.sabData) {
+            // Simpan sebagai pending buffer; loop di atas akan melayani.
+            this.sabPending = this.sabData.slice(0, len);
+            this.sabPendingPos = 0;
+            Atomics.store(this.sabMeta, 0, 0);
+            Atomics.store(this.sabMeta, 1, 0);
+            this.sabWaiting = false;
+            // Fallthrough ke layanan pending.
+            let avail = this.sabPending.length;
+            for (let i = 0; i < iovs_len; ++i) {
+              const buf = this.hostMem_.read32(iovs + i * 8);
+              const len_i = this.hostMem_.read32(iovs + i * 8 + 4);
+              const n = Math.min(len_i, avail);
+              if (n <= 0) break;
+              const chunk = new Uint8Array(this.hostMem_.buffer, buf, n);
+              chunk.set(this.sabPending.subarray(0, n));
+              this.sabPendingPos += n;
+              size += n;
+              avail -= n;
+              if (avail === 0) break;
+            }
+            if (this.sabPendingPos >= this.sabPending.length) {
+              this.sabPending = null;
+              this.sabPendingPos = 0;
+            }
+            this.hostMem_.write32(nread, size);
+            return ESUCCESS;
+          }
+          Atomics.store(this.sabMeta, 0, 0);
+          this.sabWaiting = false;
+            this.sabBlocked = false;
+        }
       }
     }
 
@@ -762,6 +840,7 @@ class API {
     this.lldFilename = options.lld || 'lld';
     this.sysrootFilename = options.sysroot || 'sysroot.tar';
     this.showTiming = options.showTiming || false;
+    this.sab = options.sab || null;
 
     this.clangCommonArgs = [
       '-disable-free',
@@ -778,6 +857,7 @@ class API {
       compileStreaming : this.compileStreaming,
       hostWrite : this.hostWrite,
       memfsFilename : options.memfs || 'memfs',
+      sab : this.sab,
     });
     this.ready = this.memfs.ready.then(
         () => { return this.untar(this.memfs, this.sysrootFilename); });
@@ -829,8 +909,6 @@ class API {
     await this.ready;
     this.memfs.addFile(input, contents);
     const clang = await this.getModule(this.clangFilename);
-    // Editor memakai main.c: kompilasi sebagai C. Dengan 'c++', idiom C yang
-    // sah (mis. char *p = malloc(10)) jadi error keras, bukan warning.
     return await this.run(clang, 'clang', '-cc1', '-emit-obj',
                           ...this.clangCommonArgs, '-O2', '-o', obj, '-x',
                           'c', input);
@@ -850,7 +928,7 @@ class API {
     await this.run(clang, 'clang', '-cc1', '-S', ...this.clangCommonArgs,
                           `-triple=${triple}`, '-mllvm',
                           '--x86-asm-syntax=intel', `-O${opt}`,
-                          '-o', output, '-x', 'c++', input);
+                          '-o', output, '-x', 'c', input);
     return this.memfs.getFileContents(output);
   }
 

@@ -38,17 +38,29 @@ const SECURITY_HEADERS: Record<string, string> = {
 	].join('; ')
 };
 
+// Aset WASM/worker statis gak pernah berubah — cache lama biar tiap buka
+// halaman gak unduh ulang clang (31MB) + lld (19MB) + sysroot (9MB).
+const CACHEABLE_STATIC = /^\/(clang|lld|sysroot\.tar|memfs|shared\.js|clang-worker\.js|c-worker\.js|pyodide\.worker\.js|playground-worker\.js)(\?|$)/;
+
 export const handle: Handle = async ({ event, resolve }) => {
 	const response = await resolve(event);
+
+	response.headers.set('X-Hooks-Test', 'hit');  // DEBUG
+	if (CACHEABLE_STATIC.test(event.url.pathname)) {
+		response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+	}
 
 	for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
 		response.headers.set(key, value);
 	}
 
-	// Hanya /playground yang di-isolasi (COOP/COEP) agar SharedArrayBuffer aktif
-	// untuk runner Python interaktif. Halaman lain TIDAK ikut, supaya resource
-	// cross-origin (gambar Supabase, dll) tetap dimuat normal.
-	if (event.url.pathname.startsWith('/playground')) {
+	// Halaman yang memakai CodeEditor C (clang-wasm + SAB interaktif) harus
+	// cross-origin isolated supaya SharedArrayBuffer hidup: /playground,
+	// /playground-c, /praktikum (ruang ujian), /info/praktikum.
+	// COEP credentialless dipilih (bukan require-corp) supaya resource
+	// cross-origin (gambar Supabase, CDN) tetap dimuat tanpa CORP.
+	const SAB_PAGES = ['/playground', '/playground-c', '/praktikum', '/info/praktikum'];
+	if (SAB_PAGES.some((p) => event.url.pathname.startsWith(p))) {
 		response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
 		response.headers.set('Cross-Origin-Embedder-Policy', 'credentialless');
 	}

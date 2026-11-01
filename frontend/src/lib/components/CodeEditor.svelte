@@ -5,11 +5,14 @@
 	import { Play, Square, RefreshCw } from 'lucide-svelte';
 	import {
 		initRunner,
+		resetCWorker,
 		pyodideWorkerStore,
 		isPyodideLoadingStore,
 		cWorkerStore,
+		cWorkerRefStore,
 		isCLoadingStore
 	} from '$lib/stores/runner';
+	import { sendCInput, cancelCInput } from '$lib/cInput';
 
 	let {
 		value = $bindable(''),
@@ -56,11 +59,23 @@
 	// Worker WASM itu berat (clang ~30 MB + lld ~19 MB + sysroot ~9 MB). Jangan
 	// diunduh begitu halaman dibuka — mulai hanya saat pengguna menyentuh editor
 	// atau menekan Run, supaya halaman publik tidak membebani pengunjung.
-	let runnerStarted = false;
+
+	// Indikator loading yang jelas: muncul selama worker belum siap.
+	$effect(() => {
+		if (!runnable) return;
+		const cLoading = $isCLoadingStore;
+		const pyLoading = $isPyodideLoadingStore;
+		if (runLang === 'python') {
+			statusText = pyLoading ? 'Menyiapkan Python (Pyodide)… unduhan pertama bisa ±1 menit.' : '';
+		} else {
+			statusText = cLoading ? 'Menyiapkan compiler C (clang+WASI)… unduhan pertama bisa ±1 menit.' : '';
+		}
+	});
 
 	function ensureRunner() {
-		if (runnerStarted || !browser) return;
-		runnerStarted = true;
+		if (!browser) return;
+		// initRunner() sendiri idempotent (guard module-level `runnerStarted` di
+		// runner.ts). Setelah resetCWorker(), guard itu di-reset → bisa re-init.
 		initRunner();
 	}
 
@@ -69,7 +84,7 @@
 	}
 
 	// Tunggu worker selesai dimuat (unduhan pertama bisa lama) tanpa memblokir UI.
-	function tungguWorker(lang: string, ms = 180000): Promise<boolean> {
+	function tungguWorker(lang: string, ms = 600000): Promise<boolean> {
 		return new Promise((resolve) => {
 			if (workerReady(lang)) return resolve(true);
 			const mulai = Date.now();
@@ -89,11 +104,13 @@
 	let inputBuffer = '';
 	let waitingForInput = $state(false);
 
-	// C iterative input state
+	// C iterative input state (mode SAB: input dikirim via SharedArrayBuffer,
+	// TANPA re-compile — state program lestari antar input).
 	let cStdinMode = false;
-	let cStdinLines: string[] = [];
 	let cStdinBuffer = '';
-	let cStdinOffsets: number[] = [];
+	// Timer timeout run C (40 detik, pause saat need-input).
+	let cRunTimer: ReturnType<typeof setTimeout> | undefined;
+	const C_RUN_TIMEOUT_MS = 40000;
 
 	function injectStdoutUnbuffering(code: string): string {
 		const mainRegex = /\bmain\s*\([^)]*\s*\)\s*\{/;
@@ -113,6 +130,13 @@
 
 	onMount(async () => {
 		if (language === 'python') runLang = 'python';
+
+		// Preload compiler saat halaman dibuka (hanya kalau runnable / login).
+		// Memulai unduhan clang+lld+sysroot segera, bukan saat klik Run — jadi
+		// saat Run ditekan worker sudah siap dan tidak terasa "diam & lama".
+		if (runnable && browser) {
+			ensureRunner();
+		}
 
 		// Initialize Monaco (diunduh dari CDN saat runtime). Kalau CDN/loader
 		// gagal, tampilkan fallback error yang jelas supaya pengguna tahu kenapa
@@ -197,9 +221,13 @@
 			term.open(termEl);
 			fitAddon.fit();
 
+			// Fokus ke terminal supaya ketikan langsung masuk (scanf/getchar)
+			// tanpa harus klik terminal dulu.
+			term.focus();
+
 			wl('\x1b[2mKlik RUN untuk menguji kode Anda...\x1b[0m');
 
-			term.onKey(({ key, domEvent }) => {
+			term.onKey(({ key, domEvent }: { key: string; domEvent: KeyboardEvent }) => {
 				const keyCode = domEvent.keyCode;
 				if (!term || !running) return;
 
@@ -224,10 +252,16 @@
 				} else if (runLang === 'c' && cStdinMode) {
 					if (keyCode === 13) { // Enter
 						w('\r\n');
-						cStdinLines.push(cStdinBuffer);
+						// Kirim baris ini via SAB — worker lanjut TANPA re-compile.
+						const line = cStdinBuffer;
 						cStdinBuffer = '';
-						const accumulatedStdin = cStdinLines.join('\n') + '\n';
-						executeCCode(accumulatedStdin);
+						const ok = sendCInput(line);
+						if (!ok) {
+							// SAB tidak tersedia (tidak cross-origin isolated):
+							// fallback ke mode legacy — run ulang dengan stdin terkumpul.
+							cStdinMode = false;
+							wl('\r\n\x1b[33m⚠ Mode input interaktif tidak tersedia (SAB mati). Jalankan ulang dengan input?');
+						}
 					} else if (keyCode === 8) { // Backspace
 						if (cStdinBuffer.length > 0) {
 							cStdinBuffer = cStdinBuffer.slice(0, -1);
@@ -311,8 +345,8 @@
 		cStdinMode = false;
 		inputBuffer = '';
 		cStdinBuffer = '';
-		cStdinLines = [];
-		cStdinOffsets = [];
+		clearTimeout(cRunTimer);
+		cancelCInput();
 	}
 
 	async function runCode() {
@@ -348,10 +382,9 @@
 		if (runLang === 'python') {
 			runPythonInteractive();
 		} else {
-			cStdinLines = [];
 			cStdinBuffer = '';
-			cStdinOffsets = [];
-			executeCCode('');
+			cStdinMode = false;
+			executeCCode();
 		}
 	}
 
@@ -410,7 +443,7 @@
 		};
 	}
 
-	async function executeCCode(accumulatedStdin: string) {
+	async function executeCCode() {
 		// Port dikunci ke variabel lokal: 'compile' dan 'run' WAJIB mendarat di
 		// worker yang sama. Tanpa ini, cWorkerStore yang ditimpa worker lain di
 		// tengah proses membuat run dikirim ke worker tanpa modul hasil compile.
@@ -419,6 +452,38 @@
 
 		const responseId = Math.floor(Math.random() * 1000000);
 		let compileOutputBuffer = '';
+
+		// Proteksi infinite loop / program gantung: kalau compile+run tidak
+		// selesai dalam 40 detik, terminate worker (satu-satunya cara menghentikan
+		// wasm yang loop sinkron) lalu re-init otomatis.
+		const startRunTimer = () => {
+			clearTimeout(cRunTimer);
+			cRunTimer = setTimeout(() => {
+				cStdinMode = false;
+				wl('\r\n\x1b[1;31m❌ Program tidak merespons dalam 40 detik (kemungkinan infinite loop) — compiler di-reset. Periksa kode Anda.\x1b[0m');
+				// Terminate worker asli + reset store → initializer re-init.
+				try {
+					$cWorkerRefStore?.terminate();
+				} catch { /* abaikan */ }
+				resetCWorker();
+				ensureRunner(); // re-init worker baru (guard module sudah di-reset)
+				running = false;
+			}, C_RUN_TIMEOUT_MS);
+		};
+		const pauseRunTimer = () => clearTimeout(cRunTimer);
+
+		// need-input (SAB): program menunggu input user — BUKAN hang.
+		// Timer timeout dijeda (clearTimeout) supaya user tidak ke-terminate
+		// saat sedang berpikir mengetik input.
+		const needInputHandler = (e: MessageEvent) => {
+			if (e.data && e.data.id === 'need-input') {
+				pauseRunTimer();
+				cStdinMode = true;
+				cStdinBuffer = '';
+				// Fokus ke terminal supaya ketikan masuk ke stdin.
+				try { term.focus(); } catch {}
+			}
+		};
 
 		const compileHandler = (e: MessageEvent) => {
 			const { id, data } = e.data;
@@ -431,8 +496,10 @@
 
 				if (!data.success) {
 					cStdinMode = false;
+					pauseRunTimer();
+					port.removeEventListener('message', needInputHandler);
 					term.clear();
-		outputText = '';
+					outputText = '';
 					wl('❌ \x1b[1;31mCompilation Error:\x1b[0m');
 					w(`\x1b[31m${compileOutputBuffer || data.error || 'Gagal melakukan kompilasi.'}\x1b[0m\r\n`);
 					running = false;
@@ -448,62 +515,54 @@
 					if (!term) return;
 
 					if (id2 === 'write') {
+						// ALIR REALTIME — jangan ditahan ke buffer, biar prompt
+						// printf muncul SEBELUM input diminta.
+						w(data2);
 						compileOutputBuffer += data2;
 					} else if (id2 === 'runAsync' && e2.data.responseId === runResponseId) {
 						port.removeEventListener('message', runHandler);
+						port.removeEventListener('message', needInputHandler);
 
-						term.clear();
-		outputText = '';
-
-						if (data2.waitingForInput && data2.stdoutLenAtInputRequest !== undefined) {
-							const newOffset = data2.stdoutLenAtInputRequest;
-							if (!cStdinOffsets.includes(newOffset)) {
-								cStdinOffsets.push(newOffset);
-							}
+						if (data2.sabBlocked) {
+							// Program masih menunggu input (SAB blocked) — tetap
+							// mode ketik; user mengetik + Enter → sendCInput.
+							cStdinMode = true;
+							cStdinBuffer = '';
+							try { term.focus(); } catch {}
+							return;
 						}
 
-						let out = compileOutputBuffer || '';
-						if (data2.waitingForInput && data2.stdoutLenAtInputRequest !== undefined) {
-							out = out.slice(0, data2.stdoutLenAtInputRequest);
-						}
-
-						let displayOutput = '';
-						let lastOffset = 0;
-						for (let i = 0; i < cStdinOffsets.length; i++) {
-							const offset = cStdinOffsets[i];
-							displayOutput += out.slice(lastOffset, offset);
-							if (i < cStdinLines.length) {
-								displayOutput += cStdinLines[i] + '\n';
-							}
-							lastOffset = offset;
-						}
-						displayOutput += out.slice(lastOffset);
-
-						w(displayOutput);
+						pauseRunTimer();
+						cStdinMode = false;
 
 						if (data2.error) {
 							w(`\r\n\x1b[33m⚠ ${data2.error}\x1b[0m\r\n`);
 						}
-
 						if (data2.waitingForInput) {
+							// Mode SAB tidak berhasil (fallback legacy) — worker
+							// bilang masih menunggu stdin.
 							cStdinMode = true;
 							cStdinBuffer = '';
-						} else {
-							cStdinMode = false;
-							if (!out.endsWith('\n') && out.length > 0) wl('');
-							wl('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
-							running = false;
+							try { term.focus(); } catch {}
+							return;
 						}
+						if (!compileOutputBuffer.endsWith('\n') && compileOutputBuffer.length > 0) wl('');
+						wl('\r\n\x1b[1;32m✓ Program selesai!\x1b[0m');
+						running = false;
 					}
 				};
 
 				port.addEventListener('message', runHandler);
-				port.postMessage({ id: 'run', responseId: runResponseId, data: accumulatedStdin });
+				startRunTimer();
+				port.postMessage({ id: 'run', responseId: runResponseId, data: '' });
 			}
 		};
 
+		port.addEventListener('message', needInputHandler);
 		port.addEventListener('message', compileHandler);
-		port.postMessage({ id: 'compile', responseId, data: injectStdoutUnbuffering(value) });
+		// legacy: false → mode SAB interaktif aktif (kalau SAB tersedia).
+		const code = injectStdoutUnbuffering(value);
+		port.postMessage({ id: 'compile', responseId, data: code, legacy: false });
 	}
 
 	async function runServerFallback() {
@@ -512,7 +571,7 @@
 		// pada pengunjung publik di /info/praktikum.
 		if (!browser || !localStorage.getItem('token')) {
 			statusText = '';
-			wl('\x1b[33m⚠ Compiler belum siap di browser ini. Coba klik Run sekali lagi, atau muat ulang halaman.\x1b[0m');
+			wl('\x1b[33m⚠ Compiler C masih diunduh/diinisialisasi (±60MB). Tunggu sampai status "Menyiapkan compiler C" hilang, lalu klik Run lagi.\x1b[0m');
 			running = false;
 			return;
 		}
@@ -537,6 +596,17 @@
 	}
 
 	function stopCode() {
+		// Batalkan worker yang sedang Atomics.wait (mode SAB).
+		cancelCInput();
+		clearTimeout(cRunTimer);
+		// Kalau program hang (infinite loop), satu-satunya cara = terminate worker.
+		if (runLang === 'c' && running) {
+			try {
+				$cWorkerRefStore?.terminate();
+			} catch { /* abaikan */ }
+			resetCWorker();
+			ensureRunner(); // re-init worker baru (guard module sudah di-reset)
+		}
 		if (term && (term as any).__cleanup) {
 			(term as any).__cleanup();
 			(term as any).__cleanup = null;
@@ -547,6 +617,8 @@
 	}
 
 	onDestroy(() => {
+		clearTimeout(cRunTimer);
+		cancelCInput();
 		resizeObserver?.disconnect();
 		term?.dispose();
 		editor?.dispose();
