@@ -19,12 +19,16 @@ type PengerjaanRepository interface {
 	ListByAktivasiCourse(aktivasiSesiID, courseID int) ([]entity.PengerjaanCourse, error)
 	// MarkSelesaiForCourse: set status selesai utk semua yg belum selesai (mass auto-submit).
 	MarkSelesaiForCourse(aktivasiSesiID, courseID int) error
+	// MarkSelesaiForMahasiswa: set status selesai utk SATU mahasiswa (submit per peserta).
+	MarkSelesaiForMahasiswa(mahasiswaID, aktivasiSesiID, courseID int) error
 	// ResetForCourse: lepas kunci pengerjaan seluruh peserta (status kembali
 	// belum_dikerjakan, waktu_mulai/selesai dikosongkan). Dipakai saat course
 	// DIBUKA ULANG: tanpa ini peserta tetap read-only di ruang ujian walau
 	// course sudah is_open=true (gejala "tidak bisa mengetik").
 	// Mengembalikan jumlah baris terdampak. total_nilai/keaktifan TIDAK diubah.
 	ResetForCourse(aktivasiSesiID, courseID int) (int64, error)
+	// ResetForMahasiswa: lepas kunci SATU mahasiswa (buka kunci per peserta).
+	ResetForMahasiswa(mahasiswaID, aktivasiSesiID, courseID int) (int64, error)
 	ProgressSummary(aktivasiSesiID, courseID int) (ProgressSummary, error)
 	// FindExpired mengambil pengerjaan yang sedang berjalan & sudah lewat deadline (untuk sweeper).
 	FindExpired() ([]ExpiredPengerjaan, error)
@@ -131,10 +135,34 @@ func (r *pengerjaanRepository) MarkSelesaiForCourse(aktivasiSesiID, courseID int
 		Updates(map[string]interface{}{"status": entity.StatusSelesai, "waktu_selesai": gorm.Expr("NOW()")}).Error
 }
 
+// MarkSelesaiForMahasiswa: submit SATU peserta (per peserta). Hanya mengubah
+// baris pengerjaan peserta tsb; peserta lain tidak tersentuh.
+func (r *pengerjaanRepository) MarkSelesaiForMahasiswa(mahasiswaID, aktivasiSesiID, courseID int) error {
+	return r.db.Model(&entity.PengerjaanCourse{}).
+		Where("mahasiswa_id = ? AND aktivasi_sesi_id = ? AND course_id = ? AND status <> ?",
+			mahasiswaID, aktivasiSesiID, courseID, entity.StatusSelesai).
+		Updates(map[string]interface{}{"status": entity.StatusSelesai, "waktu_selesai": gorm.Expr("NOW()")}).Error
+}
+
 // ResetForCourse melepas kunci seluruh peserta satu course (buka ulang ujian).
 func (r *pengerjaanRepository) ResetForCourse(aktivasiSesiID, courseID int) (int64, error) {
 	res := r.db.Model(&entity.PengerjaanCourse{}).
 		Where("aktivasi_sesi_id = ? AND course_id = ? AND status <> ?", aktivasiSesiID, courseID, entity.StatusBelum).
+		Updates(map[string]interface{}{
+			"status":        entity.StatusBelum,
+			"waktu_mulai":   nil,
+			"waktu_selesai": nil,
+		})
+	return res.RowsAffected, res.Error
+}
+
+// ResetForMahasiswa: lepas kunci SATU peserta (per peserta). status kembali
+// belum_dikerjakan, waktu_mulai/selesai dikosongkan. total_nilai/keaktifan
+// TIDAK diubah.
+func (r *pengerjaanRepository) ResetForMahasiswa(mahasiswaID, aktivasiSesiID, courseID int) (int64, error) {
+	res := r.db.Model(&entity.PengerjaanCourse{}).
+		Where("mahasiswa_id = ? AND aktivasi_sesi_id = ? AND course_id = ? AND status <> ?",
+			mahasiswaID, aktivasiSesiID, courseID, entity.StatusBelum).
 		Updates(map[string]interface{}{
 			"status":        entity.StatusBelum,
 			"waktu_mulai":   nil,

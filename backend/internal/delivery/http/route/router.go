@@ -260,6 +260,7 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		admin.GET("/aktivasi/:id/peserta", h.Aktivasi.Peserta)
 		admin.DELETE("/aktivasi/:id/susulan/:mahasiswaId", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.RemoveSusulan)
 		admin.POST("/aktivasi-course/buka-tutup", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.BukaTutupCourse)
+		admin.POST("/aktivasi-course/buka-tutup-peserta", middleware.RequirePermission(konfRepo, "aktivasi", "write"), h.Aktivasi.BukaTutupPeserta)
 
 		// Penilaian
 		admin.GET("/penilaian/rekap", h.Penilaian.Rekap)

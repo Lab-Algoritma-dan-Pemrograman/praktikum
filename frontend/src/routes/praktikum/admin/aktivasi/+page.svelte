@@ -156,6 +156,64 @@
 		} catch (e) { err = (e as Error).message; }
 	}
 
+	// ===== Buka/Tutup per Peserta (terpilih) =====
+
+	// Set mahasiswa_id yang dicentang (berlaku lintas course).
+	let checkedPeserta = $state<Set<number>>(new Set());
+
+	function togglePeserta(mhsId: number) {
+		const next = new Set(checkedPeserta);
+		if (next.has(mhsId)) next.delete(mhsId); else next.add(mhsId);
+		checkedPeserta = next;
+	}
+
+	// Peserta yang dicentang UNTUK SATU COURSE (filter by course_id).
+	function checkedForCourse(ac: AktivasiCourse): Peserta[] {
+		return pesertaList.filter((p) => p.course_id === ac.course_id && checkedPeserta.has(p.mahasiswa_id));
+	}
+
+	function allCheckedForCourse(ac: AktivasiCourse): boolean {
+		const peserta = pesertaList.filter((p) => p.course_id === ac.course_id);
+		return peserta.length > 0 && peserta.every((p) => checkedPeserta.has(p.mahasiswa_id));
+	}
+
+	function toggleAllCourse(ac: AktivasiCourse) {
+		const peserta = pesertaList.filter((p) => p.course_id === ac.course_id);
+		const next = new Set(checkedPeserta);
+		if (allCheckedForCourse(ac)) {
+			for (const p of peserta) next.delete(p.mahasiswa_id);
+		} else {
+			for (const p of peserta) next.add(p.mahasiswa_id);
+		}
+		checkedPeserta = next;
+	}
+
+	async function aksiPeserta(ac: AktivasiCourse, aksi: 'unlock' | 'submit') {
+		const terpilih = checkedForCourse(ac);
+		if (terpilih.length === 0 || !selected) return;
+		err = ''; msg = '';
+		const isUnlock = aksi === 'unlock';
+		if (!await confirmAction({
+			title: isUnlock ? `Buka Kunci ${terpilih.length} Peserta?` : `Tutup ${terpilih.length} Peserta?`,
+			message: isUnlock
+				? 'Peserta terpilih direset ke "belum dikerjakan" supaya bisa mengetik & mengerjakan ulang. Isi jawaban TIDAK dihapus. Peserta lain tidak terpengaruh.'
+				: 'Peserta terpilih di-submit otomatis dan ditandai selesai. Peserta lain tidak terpengaruh.'
+		})) return;
+		try {
+			await api.post('/api/admin/aktivasi-course/buka-tutup-peserta', {
+				aktivasi_course_id: ac.id,
+				mahasiswa_ids: terpilih.map((p) => p.mahasiswa_id),
+				aksi: aksi
+			});
+			msg = isUnlock ? `Kunci ${terpilih.length} peserta dilepas.` : `${terpilih.length} peserta ditutup (auto-submit).`;
+			// Bersihkan centang untuk course ini.
+			const next = new Set(checkedPeserta);
+			for (const p of terpilih) next.delete(p.mahasiswa_id);
+			checkedPeserta = next;
+			await selectAktivasi(selected);
+		} catch (e) { err = (e as Error).message; }
+	}
+
 	async function addSusulan() {
 		if (!selected) return;
 		err = ''; msg = '';
@@ -406,6 +464,18 @@
 									class="btn-outline py-1.5 text-xs font-bold text-primary border-primary/30 hover:bg-primary hover:text-white"
 									onclick={() => unlockCourse(ac)}
 								>Buka Kunci Peserta</button>
+								<div class="flex items-center gap-1.5 mt-1 pt-2 border-t border-slate-200/70 w-full justify-end">
+									<button
+										class="btn-outline py-1 px-2.5 text-[11px] font-bold text-state-warning border-state-warning/30 hover:bg-state-warning-bg"
+										disabled={checkedForCourse(ac).length === 0}
+										onclick={() => aksiPeserta(ac, 'unlock')}
+									>Buka Kunci {checkedForCourse(ac).length > 0 ? `(${checkedForCourse(ac).length})` : ''}</button>
+									<button
+										class="btn-outline py-1 px-2.5 text-[11px] font-bold text-state-error border-state-error/30 hover:bg-state-error-bg"
+										disabled={checkedForCourse(ac).length === 0}
+										onclick={() => aksiPeserta(ac, 'submit')}
+									>Tutup {checkedForCourse(ac).length > 0 ? `(${checkedForCourse(ac).length})` : ''}</button>
+								</div>
 							</div>
 						</div>
 					{/each}
@@ -433,11 +503,20 @@
 					<div class="overflow-x-auto border border-slate-200 rounded-xl bg-white">
 						<table class="w-full text-sm">
 							<thead>
-								<tr class="text-left text-slate-400 bg-slate-50/70 border-b border-slate-200"><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Nama</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">NIM</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Course</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Status</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Mulai</th></tr>
+								<tr class="text-left text-slate-400 bg-slate-50/70 border-b border-slate-200"><th class="py-2.5 px-3 font-bold text-xs uppercase tracking-wider w-10">Pilih</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Nama</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">NIM</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Course</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Status</th><th class="py-2.5 px-4 font-bold text-xs uppercase tracking-wider">Mulai</th></tr>
 							</thead>
 							<tbody>
 								{#each pesertaList as p}
 									<tr class="border-t border-slate-100 hover:bg-slate-50/50">
+										<td class="py-2 px-3">
+											<input
+												type="checkbox"
+												class="h-4 w-4 accent-[#8A1538] cursor-pointer"
+												checked={checkedPeserta.has(p.mahasiswa_id)}
+												onchange={() => togglePeserta(p.mahasiswa_id)}
+												aria-label={`Pilih ${p.nama}`}
+											/>
+										</td>
 										<td class="py-2 px-4 font-semibold text-slate-700">{p.nama}</td>
 										<td class="font-mono text-xs px-4 font-bold text-slate-500">{p.nim}</td>
 										<td class="px-4 font-medium text-slate-700">{p.judul_course}</td>

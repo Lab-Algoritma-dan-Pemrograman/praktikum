@@ -167,19 +167,19 @@ func (_m *LaporanBesarRepository) FindTarget(laporanID int, kelasID int, shift *
 
 	var r0 *entity.LaporanBesarTarget
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int, int) (*entity.LaporanBesarTarget, error)); ok {
-		return rf(laporanID, kelasID)
+	if rf, ok := ret.Get(0).(func(int, int, *int) (*entity.LaporanBesarTarget, error)); ok {
+		return rf(laporanID, kelasID, shift)
 	}
-	if rf, ok := ret.Get(0).(func(int, int) *entity.LaporanBesarTarget); ok {
-		r0 = rf(laporanID, kelasID)
+	if rf, ok := ret.Get(0).(func(int, int, *int) *entity.LaporanBesarTarget); ok {
+		r0 = rf(laporanID, kelasID, shift)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.LaporanBesarTarget)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(laporanID, kelasID)
+	if rf, ok := ret.Get(1).(func(int, int, *int) error); ok {
+		r1 = rf(laporanID, kelasID, shift)
 	} else {
 		r1 = ret.Error(1)
 	}

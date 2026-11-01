@@ -276,6 +276,41 @@ func (uc *AktivasiUsecase) BukaTutupCourse(req dto.BukaTutupCourseRequest) (*ent
 	return ac, nil
 }
 
+// BukaTutupPeserta mengubah status pengerjaan + submit UNTUK PESERTA TERPILIH
+// saja. Tidak menyentuh is_open course (gerbang global tetap). Aksi:
+//   - "unlock": lepas kunci — status -> belum_dikerjakan, waktu_mulai/selesai
+//     nil, is_submitted jawaban -> false (isi jawaban tidak dihapus).
+//   - "submit": tutup — status -> selesai, waktu_selesai NOW, auto-submit
+//     jawaban peserta tsb.
+// Mengembalikan jumlah peserta yang berhasil diproses.
+func (uc *AktivasiUsecase) BukaTutupPeserta(req dto.BukaTutupPesertaRequest) (int, error) {
+	ac, err := uc.aktivasi.FindCourseByID(req.AktivasiCourseID)
+	if err != nil {
+		return 0, ErrNotFound
+	}
+	proses := 0
+	for _, mid := range req.MahasiswaIDs {
+		if req.Aksi == "unlock" {
+			if _, err := uc.pengerjaan.ResetForMahasiswa(mid, ac.AktivasiSesiID, ac.CourseID); err != nil {
+				return proses, err
+			}
+			if _, err := uc.jawaban.UnmarkSubmittedForMahasiswaCourse(mid, ac.AktivasiSesiID, ac.CourseID); err != nil {
+				return proses, err
+			}
+			proses++
+		} else { // submit
+			if err := uc.pengerjaan.MarkSelesaiForMahasiswa(mid, ac.AktivasiSesiID, ac.CourseID); err != nil {
+				return proses, err
+			}
+			if _, err := uc.jawaban.MarkSubmittedForMahasiswaCourse(mid, ac.AktivasiSesiID, ac.CourseID); err != nil {
+				return proses, err
+			}
+			proses++
+		}
+	}
+	return proses, nil
+}
+
 // ---- Susulan ----
 
 func (uc *AktivasiUsecase) AddSusulan(req dto.SusulanRequest) error {

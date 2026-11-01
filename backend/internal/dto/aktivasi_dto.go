@@ -20,6 +20,15 @@ type BukaTutupCourseRequest struct {
 	UnlockOnly       bool `json:"unlock_only"`
 }
 
+// BukaTutupPesertaRequest: aksi per peserta (tidak menyentuh is_open course).
+// Aksi: "unlock" (lepas kunci, reset status pengerjaan) atau "submit"
+// (tutup: auto-submit + tandai selesai).
+type BukaTutupPesertaRequest struct {
+	AktivasiCourseID int    `json:"aktivasi_course_id" binding:"required"`
+	MahasiswaIDs     []int  `json:"mahasiswa_ids" binding:"required,min=1,dive,gt=0"`
+	Aksi             string `json:"aksi" binding:"required,oneof=unlock submit"`
+}
+
 // SusulanRequest: daftarkan mahasiswa susulan ke aktivasi.
 // AktivasiSesiID diambil dari path param.
 type SusulanRequest struct {

@@ -231,6 +231,52 @@ func (_m *PengerjaanRepository) MarkSelesaiForCourse(aktivasiSesiID int, courseI
 	return r0
 }
 
+// MarkSelesaiForMahasiswa provides a mock function with given fields: mahasiswaID, aktivasiSesiID, courseID
+func (_m *PengerjaanRepository) MarkSelesaiForMahasiswa(mahasiswaID int, aktivasiSesiID int, courseID int) error {
+	ret := _m.Called(mahasiswaID, aktivasiSesiID, courseID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for MarkSelesaiForMahasiswa")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(int, int, int) error); ok {
+		r0 = rf(mahasiswaID, aktivasiSesiID, courseID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ProgressSummary provides a mock function with given fields: aktivasiSesiID, courseID
+func (_m *PengerjaanRepository) ProgressSummary(aktivasiSesiID int, courseID int) (repository.ProgressSummary, error) {
+	ret := _m.Called(aktivasiSesiID, courseID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ProgressSummary")
+	}
+
+	var r0 repository.ProgressSummary
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int, int) (repository.ProgressSummary, error)); ok {
+		return rf(aktivasiSesiID, courseID)
+	}
+	if rf, ok := ret.Get(0).(func(int, int) repository.ProgressSummary); ok {
+		r0 = rf(aktivasiSesiID, courseID)
+	} else {
+		r0 = ret.Get(0).(repository.ProgressSummary)
+	}
+
+	if rf, ok := ret.Get(1).(func(int, int) error); ok {
+		r1 = rf(aktivasiSesiID, courseID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ResetForCourse provides a mock function with given fields: aktivasiSesiID, courseID
 func (_m *PengerjaanRepository) ResetForCourse(aktivasiSesiID int, courseID int) (int64, error) {
 	ret := _m.Called(aktivasiSesiID, courseID)
@@ -259,27 +305,27 @@ func (_m *PengerjaanRepository) ResetForCourse(aktivasiSesiID int, courseID int)
 	return r0, r1
 }
 
-// ProgressSummary provides a mock function with given fields: aktivasiSesiID, courseID
-func (_m *PengerjaanRepository) ProgressSummary(aktivasiSesiID int, courseID int) (repository.ProgressSummary, error) {
-	ret := _m.Called(aktivasiSesiID, courseID)
+// ResetForMahasiswa provides a mock function with given fields: mahasiswaID, aktivasiSesiID, courseID
+func (_m *PengerjaanRepository) ResetForMahasiswa(mahasiswaID int, aktivasiSesiID int, courseID int) (int64, error) {
+	ret := _m.Called(mahasiswaID, aktivasiSesiID, courseID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for ProgressSummary")
+		panic("no return value specified for ResetForMahasiswa")
 	}
 
-	var r0 repository.ProgressSummary
+	var r0 int64
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int, int) (repository.ProgressSummary, error)); ok {
-		return rf(aktivasiSesiID, courseID)
+	if rf, ok := ret.Get(0).(func(int, int, int) (int64, error)); ok {
+		return rf(mahasiswaID, aktivasiSesiID, courseID)
 	}
-	if rf, ok := ret.Get(0).(func(int, int) repository.ProgressSummary); ok {
-		r0 = rf(aktivasiSesiID, courseID)
+	if rf, ok := ret.Get(0).(func(int, int, int) int64); ok {
+		r0 = rf(mahasiswaID, aktivasiSesiID, courseID)
 	} else {
-		r0 = ret.Get(0).(repository.ProgressSummary)
+		r0 = ret.Get(0).(int64)
 	}
 
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(aktivasiSesiID, courseID)
+	if rf, ok := ret.Get(1).(func(int, int, int) error); ok {
+		r1 = rf(mahasiswaID, aktivasiSesiID, courseID)
 	} else {
 		r1 = ret.Error(1)
 	}

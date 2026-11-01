@@ -125,6 +125,43 @@ func (h *AktivasiHandler) BukaTutupCourse(c *gin.Context) {
 	response.OK(c, http.StatusOK, msg, res)
 }
 
+// BukaTutupPeserta POST /api/admin/aktivasi-course/buka-tutup-peserta
+// @Summary Buka/Tutup Course per Peserta
+// @Description Mengubah status pengerjaan + submit HANYA untuk peserta terpilih
+// @ (tidak menyentuh is_open course). Aksi: unlock (lepas kunci) / submit (tutup).
+// @Tags Admin - Aktivasi
+// @Security bearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.BukaTutupPesertaRequest true "Payload Buka Tutup Peserta"
+// @Success 200 {object} response.Envelope{data=object}
+// @Router /admin/aktivasi-course/buka-tutup-peserta [post]
+func (h *AktivasiHandler) BukaTutupPeserta(c *gin.Context) {
+	var req dto.BukaTutupPesertaRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Fail(c, http.StatusBadRequest, "Input tidak valid", err.Error())
+		return
+	}
+	jumlah, err := h.uc.BukaTutupPeserta(req)
+	if err != nil {
+		mapError(c, err)
+		return
+	}
+	msg := "Kunci peserta dilepas."
+	action := "BUKA_KUNCI_PESERTA"
+	if req.Aksi == "submit" {
+		msg = "Peserta ditutup (auto-submit)."
+		action = "TUTUP_PESERTA"
+	}
+	if h.auditLog != nil {
+		_ = h.auditLog.LogAction(middleware.UserID(c), "", action,
+			fmt.Sprintf("aktivasi_course_id=%d jumlah_peserta=%d aksi=%s",
+				req.AktivasiCourseID, jumlah, req.Aksi),
+			clientIP(c), c.Request.UserAgent())
+	}
+	response.OK(c, http.StatusOK, msg, map[string]any{"diproses": jumlah})
+}
+
 // AddSusulan POST /api/admin/aktivasi/:id/susulan
 // @Summary Tambah Peserta Susulan
 // @Description Menambahkan mahasiswa sebagai peserta susulan ke suatu aktivasi sesi
