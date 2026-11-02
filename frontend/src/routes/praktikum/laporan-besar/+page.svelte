@@ -16,22 +16,28 @@
 		X
 	} from 'lucide-svelte';
 
-	// ---- Tipe sesuai kontrak backend 'Laporan Besar' ----
+	// ---- Tipe sesuai kontrak backend 'Laporan Besar' (flat) ----
 	interface LaporanBesar {
-		id: number;
+		laporan_besar_id: number;
 		judul: string;
 		deskripsi: string;
 		butuh_laporan: boolean;
 		butuh_analisa: boolean;
-		saya_berlaku: boolean;
-		window: { buka_at: string | null; deadline_at: string | null; late_until: string | null };
-		status_saya: 'belum' | 'terkumpul';
-		sumber: string;
-		is_late: boolean;
+		kelas_id: number | null;
+		buka_at: string | null;
+		deadline_at: string | null;
+		late_until: string | null;
+		fase: 'belum_dibuka' | 'dibuka' | 'telat' | 'ditutup';
+		terlambat: boolean;
+		sisa_detik: number;
+		bisa_kumpul: boolean;
+		status: 'belum' | 'terkumpul';
+		sumber: string | null;
+		laporan_path: string | null;
+		analisa_path: string | null;
 		submitted_at: string | null;
-		laporan_url: string | null;
-		analisa_url: string | null;
-		dikunci: boolean;
+		override_pada: string | null;
+		override_alasan: string | null;
 	}
 
 	interface UploadUrlRes {
@@ -76,11 +82,11 @@
 		try {
 			data = await api.get<LaporanBesar>('/api/praktikum/laporan-besar');
 			// Selaraskan status slot dengan file yang sudah ada di server.
-			if (data.laporan_url) {
+			if (data.laporan_path) {
 				slot.laporan = 'done';
 				paths.laporan = '__tersimpan__';
 			}
-			if (data.analisa_url) {
+			if (data.analisa_path) {
 				slot.analisa = 'done';
 				paths.analisa = '__tersimpan__';
 			}
@@ -93,35 +99,21 @@
 
 	onMount(load);
 
-	// ---- Status window: Belum dibuka / Sedang dikumpul / TELAT / Ditutup ----
-	type Tahap = 'belum_dibuka' | 'dikumpul' | 'telat' | 'ditutup';
+	// ---- Status window: server-authoritative (fase) ----
+	type Tahap = 'belum_dibuka' | 'dibuka' | 'telat' | 'ditutup';
 
-	let tahap = $state<Tahap>('dikumpul');
-
-	function hitungTahap(w: LaporanBesar['window']): Tahap {
-		const now = Date.now();
-		const buka = w.buka_at ? new Date(w.buka_at).getTime() : null;
-		const deadline = w.deadline_at ? new Date(w.deadline_at).getTime() : null;
-		const late = w.late_until ? new Date(w.late_until).getTime() : null;
-
-		if (buka && now < buka) return 'belum_dibuka';
-		if (deadline && now > deadline) {
-			if (late && now <= late) return 'telat';
-			return 'ditutup';
-		}
-		return 'dikumpul';
-	}
+	let tahap = $state<Tahap>('dibuka');
 
 	$effect(() => {
-		if (data) tahap = hitungTahap(data.window);
+		if (data) tahap = data.fase;
 	});
 
 	// Hitung mundur mengarah ke deadline (atau late_until bila sedang telat).
 	let countdownTarget = $derived.by(() => {
 		if (!data) return null;
-		if (tahap === 'telat') return data.window.late_until;
-		if (tahap === 'belum_dibuka') return data.window.buka_at;
-		if (tahap === 'dikumpul') return data.window.deadline_at;
+		if (tahap === 'telat') return data.late_until;
+		if (tahap === 'belum_dibuka') return data.buka_at;
+		if (tahap === 'dibuka') return data.deadline_at;
 		return null;
 	});
 
@@ -138,7 +130,7 @@
 	let tahapBadgeClass = $derived(
 		tahap === 'belum_dibuka'
 			? 'bg-slate-100 text-slate-500 border-slate-200'
-			: tahap === 'dikumpul'
+			: tahap === 'dibuka'
 				? 'bg-state-success-bg text-state-success border-emerald-200'
 				: tahap === 'telat'
 					? 'bg-state-warning-bg text-state-warning border-amber-200'
@@ -172,14 +164,19 @@
 	}
 
 	// ---- Apakah UI unggah boleh dipakai? ----
-	let terkumpul = $derived(data?.status_saya === 'terkumpul');
+	let terkumpul = $derived(data?.status === 'terkumpul');
 	let manual = $derived(data?.sumber === 'manual');
-	let terkunci = $derived(tahap === 'belum_dibuka' || tahap === 'ditutup' || !!data?.dikunci);
+	// Override = gerbang dibuka paksa oleh admin (ujian praktikum), bukan milik kontrak ini.
+	let terkunci = $derived(tahap === 'belum_dibuka' || tahap === 'ditutup');
+	// Kelas tidak ditarget / laporan besar belum dibuka untuk kelas ini.
+	let sayaBerlaku = $derived(
+		!!data && data.kelas_id != null && (data.buka_at != null || data.deadline_at != null)
+	);
 	// Bila sudah terkumpul: boleh unggah ulang HANYA bila belum ditutup,
 	// belum diverifikasi manual, dan belum dikunci.
 	let bolehUpload = $derived(
-		tahap === 'dikumpul' || tahap === 'telat'
-			? !terkumpul || (!manual && !terkunci)
+		sayaBerlaku && !terkunci && data?.bisa_kumpul
+			? !terkumpul || !manual
 			: false
 	);
 
@@ -329,28 +326,28 @@
 					<div class="flex items-center gap-3">
 						<h2 class="text-lg font-bold text-ink-heading">{data.judul}</h2>
 						<span class="badge border {tahapBadgeClass}">{tahapLabel}</span>
-						{#if data.status_saya === 'terkumpul'}
+						{#if data.status === 'terkumpul'}
 							<span class="badge border bg-state-success-bg text-state-success border-emerald-200">
-								{data.is_late ? 'Terkumpul (telat)' : manual ? 'Terkumpul (manual — via MS Teams)' : 'Terkumpul'}
+								{data.terlambat ? 'Terkumpul (telat)' : manual ? 'Terkumpul (manual — via MS Teams)' : 'Terkumpul'}
 							</span>
 						{/if}
 					</div>
 					<div class="prose prose-sm prose-slate max-w-2xl mt-2 break-words text-ink-body">
 						{@html data.deskripsi || '<span class="text-ink-caption">(tidak ada deskripsi)</span>'}
 					</div>
-					{#if data.status_saya === 'terkumpul' && data.is_late && data.window.deadline_at}
+					{#if data.status === 'terkumpul' && data.terlambat && data.deadline_at}
 						<div class="mt-3 inline-flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700 ring-1 ring-amber-200">
 							<Clock size={14} />
 							<span>
 								Kamu mengumpulkan <strong>telat</strong> — keterlambatan
-								{formatPenalti(data.submitted_at!, data.window.deadline_at)}.
+								{formatPenalti(data.submitted_at!, data.deadline_at)}.
 								Hari penuh dihitung dari batas pengumpulan.
 							</span>
 						</div>
 					{/if}
 				</div>
 
-				{#if countdownTarget && (tahap === 'dikumpul' || tahap === 'telat' || tahap === 'belum_dibuka')}
+				{#if countdownTarget && (tahap === 'dibuka' || tahap === 'telat' || tahap === 'belum_dibuka')}
 					<div class="flex flex-col items-end gap-1">
 						<span class="text-xs text-ink-caption">
 							{tahap === 'belum_dibuka'
@@ -368,23 +365,23 @@
 			<div class="mt-5 grid gap-3 sm:grid-cols-3">
 				<div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-sm">
 					<p class="text-xs text-ink-caption">Dibuka</p>
-					<p class="font-semibold text-ink-heading">{fmtTanggal(data.window.buka_at)}</p>
+					<p class="font-semibold text-ink-heading">{fmtTanggal(data.buka_at)}</p>
 				</div>
 				<div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-sm">
 					<p class="text-xs text-ink-caption">Batas Pengumpulan</p>
-					<p class="font-semibold text-ink-heading">{fmtTanggal(data.window.deadline_at)}</p>
+					<p class="font-semibold text-ink-heading">{fmtTanggal(data.deadline_at)}</p>
 				</div>
 				<div class="rounded-xl border border-slate-100 bg-slate-50/50 px-4 py-3 text-sm">
 					<p class="text-xs text-ink-caption">Batas Toleransi Keterlambatan</p>
 					<p class="font-semibold text-ink-heading">
-						{data.window.late_until ? fmtTanggal(data.window.late_until) : 'Tidak ada'}
+						{data.late_until ? fmtTanggal(data.late_until) : 'Tidak ada'}
 					</p>
 				</div>
 			</div>
 		</section>
 
 		<!-- Tidak berlaku untuk mahasiswa ini -->
-		{#if !data.saya_berlaku}
+		{#if !sayaBerlaku}
 			<div class="card flex items-start gap-3 border-l-4 border-l-blue-400">
 				<span class="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-state-info-bg text-state-info">
 					<Info size={18} />
@@ -584,7 +581,7 @@
 						</div>
 					</div>
 
-					{#if data.status_saya === 'terkumpul'}
+					{#if data.status === 'terkumpul'}
 						<div class="mt-4 border-t border-slate-100 pt-4">
 							<p class="text-xs text-ink-caption">
 								<span class="inline-flex items-center gap-1.5">
