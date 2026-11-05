@@ -13,8 +13,8 @@ export const cWorkerRefStore = writable<Worker | null>(null);
 export const cSabStore = writable<SharedArrayBuffer | null>(null);
 export const isCLoadingStore = writable<boolean>(true);
 
-// Query version untuk memaksa browser mengambil worker baru (cache immutable).
-const CLANG_WORKER_VERSION = 'v=8';
+// Versikan URL saat kode/header worker berubah; cache CDN lama bisa belum punya COEP.
+const WORKER_VERSION = 'v=10';
 const SAB_SIZE = 4096; // cukup untuk satu baris input C
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 1500;
@@ -32,7 +32,7 @@ export function initRunner() {
 	isPyodideLoadingStore.set(true);
 	try {
 		console.log('Initializing Pyodide Worker from static path...');
-		const worker = new Worker('/pyodide.worker.js');
+		const worker = new Worker(`/pyodide.worker.js?${WORKER_VERSION}`);
 		worker.onmessage = (e) => {
 			if (e.data.type === 'INIT_DONE') {
 				console.log('Pyodide Worker initialized successfully');
@@ -67,7 +67,7 @@ export function initRunner() {
 		console.log(`Initializing Clang WASM Worker from static path (attempt ${attempt + 1})...`);
 		let worker: Worker;
 		try {
-			worker = new Worker(`/clang-worker.js?${CLANG_WORKER_VERSION}`);
+			worker = new Worker(`/clang-worker.js?${WORKER_VERSION}`);
 		} catch (e) {
 			console.error('Failed to construct Clang Worker:', e);
 			isCLoadingStore.set(false);
