@@ -1,17 +1,35 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "sveltekit-1",
+  "regions": ["sin1"],
+  "installCommand": "bun install --frozen-lockfile",
+  "buildCommand": "bun run build",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://labap-backend.vercel.app/api/$1"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "Permissions-Policy", "value": "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdn.jsdelivr.net blob:; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net data:; img-src 'self' data: blob: https://*.supabase.co https://ui-avatars.com; media-src 'self' blob:; connect-src 'self' https://api.algohub.web.id https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://elearning.algohub.web.id; frame-src 'self' https://docs.google.com https://drive.google.com https://maps.google.com https://www.google.com; frame-ancestors 'self' https://siakad.algohub.web.id;"
-        }
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/(clang-worker\\.js|pyodide\\.worker\\.js|c-worker\\.js|playground-worker\\.js|shared\\.js)",
+      "headers": [
+        { "key": "Cross-Origin-Embedder-Policy", "value": "credentialless" },
+        { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/(clang|lld|memfs|sysroot\\.tar)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
   ]

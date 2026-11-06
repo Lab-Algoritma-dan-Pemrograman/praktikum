@@ -34,3 +34,5 @@ tools-rekap-nilai/
 
 # Bun-only: cegah npm lockfile liar
 package-lock.json
+
+.vercel

@@ -1,15 +1,22 @@
 import type { Handle } from '@sveltejs/kit';
 
-// MEDIUM-05: header keamanan untuk algohub.web.id (praktikum frontend).
-// CATATAN: adapter-vercel menulis .vercel/output/config.json TANPA key
-// "headers", jadi `headers` di vercel.json TIDAK berpengaruh di sini —
-// satu-satunya jalur yang benar adalah hooks.server.ts.
+// Header halaman dinamis disetel di hook ini. Header worker statis wajib
+// disetel terpisah di vercel.json karena aset tidak melewati hook SvelteKit.
 import { dev } from '$app/environment';
+import { env } from '$env/dynamic/public';
 
 let connectSrc = "connect-src 'self' https://api.algohub.web.id https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://esm.sh";
 // Di dev, izinkan backend lokal (localhost:8080) supaya CORS/CSP tidak menghalangi.
 if (dev) {
 	connectSrc = "connect-src 'self' http://localhost:8080 http://localhost:8081 http://127.0.0.1:8080 http://127.0.0.1:8081 https://api.algohub.web.id https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net https://esm.sh";
+}
+
+// Izinkan origin API yang dikonfigurasi, termasuk URL Vercel sebelum DNS pindah.
+if (env.PUBLIC_API_BASE_URL) {
+	const apiURL = new URL(env.PUBLIC_API_BASE_URL);
+	if (apiURL.protocol === 'https:' || (dev && apiURL.protocol === 'http:')) {
+		connectSrc += ` ${apiURL.origin}`;
+	}
 }
 
 const SECURITY_HEADERS: Record<string, string> = {

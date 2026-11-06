@@ -38,9 +38,14 @@ func main() {
 	}
 
 	// ---- Background sweeper (hanya untuk server lokal/persisten) ----
-	// Di serverless (Vercel) sweeper digantikan endpoint cron + cron-job.org.
+	// Vercel Functions dapat dihentikan saat idle. Auto-submit di Vercel harus
+	// dipicu scheduler lewat endpoint cron, bukan mengandalkan goroutine ini.
 	stop := make(chan struct{})
-	startSweeper(deps.JawabanUC, cfg.SweeperInterval, stop)
+	if os.Getenv("VERCEL") == "" {
+		startSweeper(deps.JawabanUC, cfg.SweeperInterval, stop)
+	} else {
+		log.Println("[sweeper] Vercel: gunakan scheduler untuk /api/cron/auto-submit")
+	}
 
 	srv := &http.Server{Addr: ":" + cfg.AppPort, Handler: r}
 

@@ -1,0 +1,10 @@
+# Container adalah satu-satunya runtime HTTP. Jangan biarkan entrypoint
+# serverless lama membuat fungsi /api/index yang mengambil namespace /api/*.
+api/
+.env
+.env.*
+.vercel/
+.git/
+bin/
+backups/
+*.log

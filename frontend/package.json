@@ -29,7 +29,8 @@
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3",
     "vite": "^5.4.10",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.8",
+    "@sveltejs/adapter-node": "^5.5.7"
   },
   "dependencies": {
     "@aarkue/tiptap-math-extension": "^1.4.0",
