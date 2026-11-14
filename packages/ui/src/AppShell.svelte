@@ -101,6 +101,13 @@
       </div>{/if}
   {:else}
     <main class="content">
+      <img
+        class="lab-wordmark"
+        src="/logo-lab.png"
+        alt="Laboratorium Algoritma dan Pemrograman"
+        width="480"
+        height="165"
+      />
       <p class="eyebrow">IDENTITY / SINGLE SIGN-ON</p>
       <h1>{appName}</h1>
       <p class="description">{description}</p>
@@ -165,6 +172,12 @@
     color: inherit;
     font-weight: 700;
     text-decoration: none;
+  }
+  .lab-wordmark {
+    display: block;
+    width: clamp(9rem, 26vw, 13rem);
+    height: auto;
+    margin: 0 0 1.5rem;
   }
   .brand-mark {
     display: grid;
