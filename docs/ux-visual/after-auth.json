@@ -1,0 +1,770 @@
+{
+  "loginOk": true,
+  "email": "koordinator@example.test",
+  "results": {
+    "portal": {
+      "url": "http://portal.localhost:5173/",
+      "mobile": {
+        "title": "Algohub — Belajar, Praktikum, dan Layanan Laboratorium",
+        "url": "http://portal.localhost:5173/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Belajar, praktik, dan kelola lab dalam satu identi"
+          },
+          {
+            "level": 2,
+            "text": "Berpindah layanan tanpa kehilangan konteks."
+          },
+          {
+            "level": 3,
+            "text": "SIAKAD & layanan lab"
+          },
+          {
+            "level": 3,
+            "text": "E-learning interaktif"
+          },
+          {
+            "level": 3,
+            "text": "Praktikum terarah"
+          },
+          {
+            "level": 3,
+            "text": "Operasional terpusat"
+          },
+          {
+            "level": 2,
+            "text": "Sederhana untuk pengguna, ketat pada akses."
+          },
+          {
+            "level": 3,
+            "text": "Masuk satu kali"
+          },
+          {
+            "level": 3,
+            "text": "Buka ruang yang relevan"
+          },
+          {
+            "level": 3,
+            "text": "Kerjakan dengan konteks utuh"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 6070,
+        "smallTargets": [
+          {
+            "text": "Design direction: 8B Burrow",
+            "size": "157x20",
+            "top": 6862
+          }
+        ],
+        "offscreen": [
+          {
+            "text": "Layanan",
+            "left": 304,
+            "right": 422
+          },
+          {
+            "text": "Cara kerja",
+            "left": 304,
+            "right": 422
+          },
+          {
+            "text": "Informasi",
+            "left": 304,
+            "right": 422
+          },
+          {
+            "text": "FAQ",
+            "left": 304,
+            "right": 422
+          },
+          {
+            "text": "Masuk ke Algohub",
+            "left": 304,
+            "right": 422
+          }
+        ],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "Algohub — Belajar, Praktikum, dan Layanan Laboratorium",
+        "url": "http://portal.localhost:5173/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Belajar, praktik, dan kelola lab dalam satu identi"
+          },
+          {
+            "level": 2,
+            "text": "Berpindah layanan tanpa kehilangan konteks."
+          },
+          {
+            "level": 3,
+            "text": "SIAKAD & layanan lab"
+          },
+          {
+            "level": 3,
+            "text": "E-learning interaktif"
+          },
+          {
+            "level": 3,
+            "text": "Praktikum terarah"
+          },
+          {
+            "level": 3,
+            "text": "Operasional terpusat"
+          },
+          {
+            "level": 2,
+            "text": "Sederhana untuk pengguna, ketat pada akses."
+          },
+          {
+            "level": 3,
+            "text": "Masuk satu kali"
+          },
+          {
+            "level": 3,
+            "text": "Buka ruang yang relevan"
+          },
+          {
+            "level": 3,
+            "text": "Kerjakan dengan konteks utuh"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 4129,
+        "smallTargets": [
+          {
+            "text": "Design direction: 8B Burrow",
+            "size": "157x20",
+            "top": 5101
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "Algohub — Belajar, Praktikum, dan Layanan Laboratorium",
+        "url": "http://portal.localhost:5173/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Belajar, praktik, dan kelola lab dalam satu identi"
+          },
+          {
+            "level": 2,
+            "text": "Berpindah layanan tanpa kehilangan konteks."
+          },
+          {
+            "level": 3,
+            "text": "SIAKAD & layanan lab"
+          },
+          {
+            "level": 3,
+            "text": "E-learning interaktif"
+          },
+          {
+            "level": 3,
+            "text": "Praktikum terarah"
+          },
+          {
+            "level": 3,
+            "text": "Operasional terpusat"
+          },
+          {
+            "level": 2,
+            "text": "Sederhana untuk pengguna, ketat pada akses."
+          },
+          {
+            "level": 3,
+            "text": "Masuk satu kali"
+          },
+          {
+            "level": 3,
+            "text": "Buka ruang yang relevan"
+          },
+          {
+            "level": 3,
+            "text": "Kerjakan dengan konteks utuh"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 4572,
+        "smallTargets": [
+          {
+            "text": "Design direction: 8B Burrow",
+            "size": "157x20",
+            "top": 5301
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    },
+    "siakad": {
+      "url": "http://siakad.localhost:5176/",
+      "mobile": {
+        "title": "Algohub — SIAKAD",
+        "url": "http://siakad.localhost:5176/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "SIAKAD"
+          },
+          {
+            "level": 2,
+            "text": "Kelas, jadwal, dan notifikasi saya"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "Algohub — SIAKAD",
+        "url": "http://siakad.localhost:5176/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "SIAKAD"
+          },
+          {
+            "level": 2,
+            "text": "Kelas, jadwal, dan notifikasi saya"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "Algohub — SIAKAD",
+        "url": "http://siakad.localhost:5176/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "SIAKAD"
+          },
+          {
+            "level": 2,
+            "text": "Kelas, jadwal, dan notifikasi saya"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    },
+    "elearning": {
+      "url": "http://elearning.localhost:5177/",
+      "mobile": {
+        "title": "Kurikulum E-learning — Algohub",
+        "url": "http://elearning.localhost:5177/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "E-learning"
+          },
+          {
+            "level": 2,
+            "text": "Kurikulum dan progres belajar"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "Kurikulum E-learning — Algohub",
+        "url": "http://elearning.localhost:5177/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "E-learning"
+          },
+          {
+            "level": 2,
+            "text": "Kurikulum dan progres belajar"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "Kurikulum E-learning — Algohub",
+        "url": "http://elearning.localhost:5177/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "E-learning"
+          },
+          {
+            "level": 2,
+            "text": "Kurikulum dan progres belajar"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    },
+    "praktikum": {
+      "url": "http://praktikum.localhost:5178/",
+      "mobile": {
+        "title": "Sesi Praktikum — Algohub",
+        "url": "http://praktikum.localhost:5178/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Praktikum"
+          },
+          {
+            "level": 2,
+            "text": "Sesi praktikum saya"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "Sesi Praktikum — Algohub",
+        "url": "http://praktikum.localhost:5178/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Praktikum"
+          },
+          {
+            "level": 2,
+            "text": "Sesi praktikum saya"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "Sesi Praktikum — Algohub",
+        "url": "http://praktikum.localhost:5178/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Praktikum"
+          },
+          {
+            "level": 2,
+            "text": "Sesi praktikum saya"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 0,
+        "smallTargets": [],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    },
+    "admin": {
+      "url": "http://admin.localhost:5175/",
+      "mobile": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 32
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 61
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 96
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    },
+    "admin/praktikum": {
+      "url": "http://admin.localhost:5175/praktikum",
+      "mobile": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/praktikum",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 32
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/praktikum",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 61
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/praktikum",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 96
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    },
+    "admin/auditlog": {
+      "url": "http://admin.localhost:5175/auditlog",
+      "mobile": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/auditlog",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 32
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/auditlog",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 61
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/auditlog",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 96
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    },
+    "admin/pengaturan": {
+      "url": "http://admin.localhost:5175/pengaturan",
+      "mobile": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/pengaturan",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 32
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "tablet": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/pengaturan",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 61
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      },
+      "desktop": {
+        "title": "401 — Algohub Admin",
+        "url": "http://admin.localhost:5175/pengaturan",
+        "h1Count": 1,
+        "headingSkip": false,
+        "headings": [
+          {
+            "level": 1,
+            "text": "Sesi berakhir atau belum masukAkses tidak diizinka"
+          }
+        ],
+        "horizontalOverflow": false,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "pageScrollPx": 0,
+        "smallTargets": [
+          {
+            "text": "Algohub / Admin",
+            "size": "137x21",
+            "top": 96
+          }
+        ],
+        "offscreen": [],
+        "inputsNoLabel": [],
+        "tiny": 0
+      }
+    }
+  }
+}

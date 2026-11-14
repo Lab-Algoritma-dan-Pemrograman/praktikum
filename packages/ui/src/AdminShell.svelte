@@ -264,8 +264,11 @@
   }
   .brand {
     display: inline-flex;
+    min-height: 44px;
     align-items: center;
     gap: 0.65rem;
+    padding: 0 0.25rem;
+    border-radius: var(--ah-console-radius-control);
     color: var(--ah-console-heading);
     font-weight: 700;
     text-decoration: none;
@@ -418,7 +421,19 @@
     font-size: 0.85rem;
   }
   .breadcrumb a {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    padding: 0 0.2rem;
+    border-radius: var(--ah-console-radius-badge);
     color: var(--ah-console-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .breadcrumb a:hover,
+  .breadcrumb a:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
   }
   .scope-context {
     margin: 0.8rem 0 1.75rem;

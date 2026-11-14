@@ -1,0 +1,313 @@
+{
+  "http://portal.localhost:5173/": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 6918,
+        "horizontalOverflow": false,
+        "pageScrollPx": 6074
+      },
+      "smallTargets": [],
+      "offscreen": [
+        {
+          "text": "Layanan",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Cara kerja",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Informasi",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "FAQ",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Masuk ke Algohub",
+          "left": 304,
+          "right": 422
+        }
+      ],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 5157,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4133
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 5376,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4576
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 5622,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4722
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 30
+    }
+  }
+}

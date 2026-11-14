@@ -1,0 +1,1230 @@
+{
+  "http://portal.localhost:5173/": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 6754,
+        "horizontalOverflow": false,
+        "pageScrollPx": 5910
+      },
+      "smallTargets": [
+        {
+          "text": "Layanan",
+          "size": "330x22"
+        },
+        {
+          "text": "Cara kerja",
+          "size": "330x22"
+        },
+        {
+          "text": "Informasi",
+          "size": "330x22"
+        },
+        {
+          "text": "Masuk",
+          "size": "330x22"
+        },
+        {
+          "text": "Auth Center",
+          "size": "330x22"
+        },
+        {
+          "text": "Bantuan awal",
+          "size": "330x22"
+        },
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [
+        {
+          "text": "Layanan",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Cara kerja",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Informasi",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "FAQ",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Masuk ke Algohub",
+          "left": 304,
+          "right": 422
+        }
+      ],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 3,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 5199,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4175
+      },
+      "smallTargets": [
+        {
+          "text": "Layanan",
+          "size": "128x22"
+        },
+        {
+          "text": "Cara kerja",
+          "size": "128x22"
+        },
+        {
+          "text": "Informasi",
+          "size": "128x22"
+        },
+        {
+          "text": "Masuk",
+          "size": "128x22"
+        },
+        {
+          "text": "Auth Center",
+          "size": "128x22"
+        },
+        {
+          "text": "Bantuan awal",
+          "size": "128x22"
+        },
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 3,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 5601,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4801
+      },
+      "smallTargets": [
+        {
+          "text": "Layanan",
+          "size": "128x22"
+        },
+        {
+          "text": "Cara kerja",
+          "size": "128x22"
+        },
+        {
+          "text": "Informasi",
+          "size": "128x22"
+        },
+        {
+          "text": "Masuk",
+          "size": "128x22"
+        },
+        {
+          "text": "Auth Center",
+          "size": "128x22"
+        },
+        {
+          "text": "Bantuan awal",
+          "size": "128x22"
+        },
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 3,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 5882,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4982
+      },
+      "smallTargets": [
+        {
+          "text": "Layanan",
+          "size": "128x22"
+        },
+        {
+          "text": "Cara kerja",
+          "size": "128x22"
+        },
+        {
+          "text": "Informasi",
+          "size": "128x22"
+        },
+        {
+          "text": "Masuk",
+          "size": "128x22"
+        },
+        {
+          "text": "Auth Center",
+          "size": "128x22"
+        },
+        {
+          "text": "Bantuan awal",
+          "size": "128x22"
+        },
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 3,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 30
+    }
+  },
+  "http://portal.localhost:5173/jadwal": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 2832,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1988
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 2188,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1164
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2178,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1378
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 2216,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1316
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 17
+    }
+  },
+  "http://siakad.localhost:5176/": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kelas & Jadwal",
+          "size": "105x21"
+        },
+        {
+          "text": "Presensi QR",
+          "size": "84x21"
+        },
+        {
+          "text": "Inventaris & Penyewaan",
+          "size": "169x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "SIAKAD"
+        },
+        {
+          "level": 2,
+          "text": "Kelas, jadwal, dan notifikasi saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kelas & Jadwal",
+          "size": "105x21"
+        },
+        {
+          "text": "Presensi QR",
+          "size": "84x21"
+        },
+        {
+          "text": "Inventaris & Penyewaan",
+          "size": "169x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "SIAKAD"
+        },
+        {
+          "level": 2,
+          "text": "Kelas, jadwal, dan notifikasi saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kelas & Jadwal",
+          "size": "105x21"
+        },
+        {
+          "text": "Presensi QR",
+          "size": "84x21"
+        },
+        {
+          "text": "Inventaris & Penyewaan",
+          "size": "169x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "SIAKAD"
+        },
+        {
+          "level": 2,
+          "text": "Kelas, jadwal, dan notifikasi saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kelas & Jadwal",
+          "size": "105x21"
+        },
+        {
+          "text": "Presensi QR",
+          "size": "84x21"
+        },
+        {
+          "text": "Inventaris & Penyewaan",
+          "size": "169x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "SIAKAD"
+        },
+        {
+          "level": 2,
+          "text": "Kelas, jadwal, dan notifikasi saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 12
+    }
+  },
+  "http://elearning.localhost:5177/": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kurikulum",
+          "size": "72x21"
+        },
+        {
+          "text": "Playground",
+          "size": "81x21"
+        },
+        {
+          "text": "Bug Hunt",
+          "size": "67x21"
+        },
+        {
+          "text": "Leaderboard & Achievement",
+          "size": "203x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "E-learning"
+        },
+        {
+          "level": 2,
+          "text": "Kurikulum dan progres belajar"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kurikulum",
+          "size": "72x21"
+        },
+        {
+          "text": "Playground",
+          "size": "81x21"
+        },
+        {
+          "text": "Bug Hunt",
+          "size": "67x21"
+        },
+        {
+          "text": "Leaderboard & Achievement",
+          "size": "203x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "E-learning"
+        },
+        {
+          "level": 2,
+          "text": "Kurikulum dan progres belajar"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kurikulum",
+          "size": "72x21"
+        },
+        {
+          "text": "Playground",
+          "size": "81x21"
+        },
+        {
+          "text": "Bug Hunt",
+          "size": "67x21"
+        },
+        {
+          "text": "Leaderboard & Achievement",
+          "size": "203x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "E-learning"
+        },
+        {
+          "level": 2,
+          "text": "Kurikulum dan progres belajar"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Kurikulum",
+          "size": "72x21"
+        },
+        {
+          "text": "Playground",
+          "size": "81x21"
+        },
+        {
+          "text": "Bug Hunt",
+          "size": "67x21"
+        },
+        {
+          "text": "Leaderboard & Achievement",
+          "size": "203x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "E-learning"
+        },
+        {
+          "level": 2,
+          "text": "Kurikulum dan progres belajar"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 13
+    }
+  },
+  "http://praktikum.localhost:5178/": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Daftar sesi",
+          "size": "74x21"
+        },
+        {
+          "text": "Nilai saya",
+          "size": "67x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Praktikum"
+        },
+        {
+          "level": 2,
+          "text": "Sesi praktikum saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Daftar sesi",
+          "size": "74x21"
+        },
+        {
+          "text": "Nilai saya",
+          "size": "67x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Praktikum"
+        },
+        {
+          "level": 2,
+          "text": "Sesi praktikum saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Daftar sesi",
+          "size": "74x21"
+        },
+        {
+          "text": "Nilai saya",
+          "size": "67x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Praktikum"
+        },
+        {
+          "level": 2,
+          "text": "Sesi praktikum saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Daftar sesi",
+          "size": "74x21"
+        },
+        {
+          "text": "Nilai saya",
+          "size": "67x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Praktikum"
+        },
+        {
+          "level": 2,
+          "text": "Sesi praktikum saya"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 11
+    }
+  },
+  "http://admin.localhost:5175/": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Algohub / Admin",
+          "size": "137x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Sesi berakhir atau belum masukAkses tidak diizinkanHalaman b"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Algohub / Admin",
+          "size": "137x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Sesi berakhir atau belum masukAkses tidak diizinkanHalaman b"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 800,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Algohub / Admin",
+          "size": "137x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Sesi berakhir atau belum masukAkses tidak diizinkanHalaman b"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Algohub / Admin",
+          "size": "137x21"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Sesi berakhir atau belum masukAkses tidak diizinkanHalaman b"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 3
+    }
+  }
+}

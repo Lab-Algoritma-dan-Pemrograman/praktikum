@@ -1,0 +1,635 @@
+{
+  "http://portal.localhost:5173/": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 6914,
+        "horizontalOverflow": false,
+        "pageScrollPx": 6070
+      },
+      "smallTargets": [
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [
+        {
+          "text": "Layanan",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Cara kerja",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Informasi",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "FAQ",
+          "left": 304,
+          "right": 422
+        },
+        {
+          "text": "Masuk ke Algohub",
+          "left": 304,
+          "right": 422
+        }
+      ],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 5153,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4129
+      },
+      "smallTargets": [
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 5372,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4572
+      },
+      "smallTargets": [
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 5618,
+        "horizontalOverflow": false,
+        "pageScrollPx": 4718
+      },
+      "smallTargets": [
+        {
+          "text": "Design direction: 8B Burrow",
+          "size": "157x20"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Belajar, praktik, dan kelola lab dalam satu identitas."
+        },
+        {
+          "level": 2,
+          "text": "Berpindah layanan tanpa kehilangan konteks."
+        },
+        {
+          "level": 3,
+          "text": "SIAKAD & layanan lab"
+        },
+        {
+          "level": 3,
+          "text": "E-learning interaktif"
+        },
+        {
+          "level": 3,
+          "text": "Praktikum terarah"
+        },
+        {
+          "level": 3,
+          "text": "Operasional terpusat"
+        },
+        {
+          "level": 2,
+          "text": "Sederhana untuk pengguna, ketat pada akses."
+        },
+        {
+          "level": 3,
+          "text": "Masuk satu kali"
+        },
+        {
+          "level": 3,
+          "text": "Buka ruang yang relevan"
+        },
+        {
+          "level": 3,
+          "text": "Kerjakan dengan konteks utuh"
+        },
+        {
+          "level": 2,
+          "text": "Temukan ruang yang kamu butuhkan."
+        },
+        {
+          "level": 3,
+          "text": "Latihan kode mendukung belajar, bukan menggantikan penilaian"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 30
+    }
+  },
+  "http://portal.localhost:5173/jadwal": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 2832,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1988
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 2188,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1164
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2178,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1378
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 2216,
+        "horizontalOverflow": false,
+        "pageScrollPx": 1316
+      },
+      "smallTargets": [],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
+        },
+        {
+          "level": 2,
+          "text": "Alur satu pekan"
+        },
+        {
+          "level": 2,
+          "text": "Yang tidak dipublikasikan"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 17
+    }
+  },
+  "http://portal.localhost:5173/bantuan": {
+    "mobile": {
+      "viewport": {
+        "w": 390,
+        "h": 844
+      },
+      "page": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 908,
+        "horizontalOverflow": false,
+        "pageScrollPx": 64
+      },
+      "smallTargets": [
+        {
+          "text": "Privasi",
+          "size": "37x17"
+        },
+        {
+          "text": "Ketentuan",
+          "size": "59x17"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Mulai dari ruang yang sesuai."
+        },
+        {
+          "level": 2,
+          "text": "Informasi tersedia"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "tablet": {
+      "viewport": {
+        "w": 768,
+        "h": 1024
+      },
+      "page": {
+        "scrollWidth": 768,
+        "clientWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "pageScrollPx": 0
+      },
+      "smallTargets": [
+        {
+          "text": "Privasi",
+          "size": "37x17"
+        },
+        {
+          "text": "Ketentuan",
+          "size": "59x17"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Mulai dari ruang yang sesuai."
+        },
+        {
+          "level": 2,
+          "text": "Informasi tersedia"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "desktop": {
+      "viewport": {
+        "w": 1280,
+        "h": 800
+      },
+      "page": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1060,
+        "horizontalOverflow": false,
+        "pageScrollPx": 260
+      },
+      "smallTargets": [
+        {
+          "text": "Privasi",
+          "size": "37x17"
+        },
+        {
+          "text": "Ketentuan",
+          "size": "59x17"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Mulai dari ruang yang sesuai."
+        },
+        {
+          "level": 2,
+          "text": "Informasi tersedia"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "wide": {
+      "viewport": {
+        "w": 1440,
+        "h": 900
+      },
+      "page": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "scrollHeight": 1073,
+        "horizontalOverflow": false,
+        "pageScrollPx": 173
+      },
+      "smallTargets": [
+        {
+          "text": "Privasi",
+          "size": "37x17"
+        },
+        {
+          "text": "Ketentuan",
+          "size": "59x17"
+        }
+      ],
+      "offscreen": [],
+      "imgsNoAlt": 0,
+      "h1Count": 1,
+      "headingSkip": false,
+      "headings": [
+        {
+          "level": 1,
+          "text": "Mulai dari ruang yang sesuai."
+        },
+        {
+          "level": 2,
+          "text": "Informasi tersedia"
+        }
+      ],
+      "tinyTextCount": 0,
+      "inputsNoLabel": []
+    },
+    "keyboard": {
+      "focusableCount": 8
+    }
+  }
+}

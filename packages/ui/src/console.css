@@ -64,6 +64,35 @@ body {
   margin-bottom: 1.25rem;
 }
 
+:where(.siakad, .elearning, .practicum, .identity-page) nav a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: var(--ah-console-radius-control);
+  color: var(--ah-console-accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color var(--ah-motion-fast) ease,
+    border-color var(--ah-motion-fast) ease;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) nav a:hover,
+:where(.siakad, .elearning, .practicum, .identity-page) nav a:focus-visible {
+  border-color: var(--ah-console-line-strong);
+  background: var(--ah-console-accent-hover);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page)
+  nav
+  a[aria-current='page'] {
+  border-color: var(--ah-console-accent);
+  color: var(--ah-console-card);
+  background: var(--ah-console-accent);
+}
+
 :where(.siakad, .elearning, .practicum, .identity-page) button,
 :where(.siakad, .elearning, .practicum, .identity-page) .button {
   display: inline-flex;
