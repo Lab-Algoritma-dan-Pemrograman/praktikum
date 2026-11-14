@@ -15,18 +15,18 @@
     padding: 8rem 0;
   }
   .eyebrow {
-    color: #3b7b78;
+    color: var(--ah-console-accent-ink);
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.12em;
   }
   h1 {
-    color: #102a43;
+    color: var(--ah-console-heading);
     font-size: clamp(2rem, 6vw, 4rem);
     letter-spacing: -0.05em;
   }
   p {
-    color: #58717a;
+    color: var(--ah-console-muted);
     line-height: 1.65;
   }
 </style>

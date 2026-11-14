@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import type { AppIdentityData } from '@algohub/auth-client';
-  import '@algohub/elearning-client/styles.css';
   import {
     ElearningClient,
     permitted,

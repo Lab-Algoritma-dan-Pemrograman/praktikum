@@ -20,16 +20,16 @@
     width: min(38rem, 90vw);
     margin: 0 auto;
     padding: 5rem 0;
-    color: #17324d;
+    color: var(--ah-console-text);
   }
   .eyebrow {
-    color: #326b68;
+    color: var(--ah-console-accent-ink);
     font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.1em;
   }
   h1 {
-    color: #102a43;
+    color: var(--ah-console-heading);
     font-size: clamp(2rem, 6vw, 3.5rem);
     letter-spacing: -0.04em;
   }
@@ -37,7 +37,7 @@
     line-height: 1.65;
   }
   .note {
-    color: #4d6872;
+    color: var(--ah-console-muted);
     font-size: 0.85rem;
   }
   a {
@@ -45,9 +45,9 @@
     min-height: 44px;
     align-items: center;
     padding: 0.7rem 1rem;
-    border-radius: 0.45rem;
-    color: white;
-    background: #245b5a;
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-card);
+    background: var(--ah-console-accent);
     text-decoration: none;
   }
 </style>

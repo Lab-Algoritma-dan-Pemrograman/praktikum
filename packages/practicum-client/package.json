@@ -5,8 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./workspace": "./src/workspace.ts",
-    "./styles.css": "./src/styles.css"
+    "./workspace": "./src/workspace.ts"
   },
   "scripts": {
     "test:unit": "node --experimental-strip-types --test tests/*.test.ts"

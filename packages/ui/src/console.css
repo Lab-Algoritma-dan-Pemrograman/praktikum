@@ -1,0 +1,286 @@
+/* Shared authenticated console primitives; tokens.css holds the values. */
+body {
+  background: var(--ah-console-canvas-gradient);
+  color: var(--ah-console-text);
+}
+
+:where(.siakad, .elearning, .practicum) {
+  max-width: var(--ah-console-max);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 1.25rem;
+  color: var(--ah-console-text);
+  overflow-wrap: anywhere;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .stack > *,
+:where(.siakad, .elearning, .practicum, .identity-page) .grid > *,
+:where(.siakad, .elearning, .practicum, .identity-page) .actions > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) button {
+  overflow-wrap: anywhere;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) h1 {
+  margin-top: 0.5rem;
+  color: var(--ah-console-heading);
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) h2 {
+  color: var(--ah-console-heading);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) h3 {
+  color: var(--ah-console-text);
+  font-size: 1.1rem;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) p {
+  line-height: 1.6;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) a {
+  color: var(--ah-console-accent);
+  overflow-wrap: anywhere;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) nav,
+:where(.siakad, .elearning, .practicum, .identity-page) .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) nav {
+  margin-bottom: 1.25rem;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) button,
+:where(.siakad, .elearning, .practicum, .identity-page) .button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--ah-console-accent);
+  border-radius: var(--ah-console-radius-control);
+  color: var(--ah-console-card);
+  background: var(--ah-console-accent);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--ah-motion-fast) ease,
+    border-color var(--ah-motion-fast) ease;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) button.secondary,
+:where(.siakad, .elearning, .practicum, .identity-page) .button.secondary {
+  color: var(--ah-console-accent);
+  background: var(--ah-console-card);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) button.danger {
+  border-color: var(--ah-console-danger);
+  background: var(--ah-console-danger);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) button:hover,
+:where(.siakad, .elearning, .practicum, .identity-page) .button:hover {
+  border-color: var(--ah-console-accent-strong);
+  background: var(--ah-console-accent-strong);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .button.secondary:hover,
+:where(.siakad, .elearning, .practicum, .identity-page) button.secondary:hover {
+  border-color: var(--ah-console-line-strong);
+  background: var(--ah-console-accent-hover);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) label.check {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page)
+  input:not([type='checkbox']):not([type='radio']),
+:where(.siakad, .elearning, .practicum, .identity-page) select,
+:where(.siakad, .elearning, .practicum, .identity-page) textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.65rem;
+  border: 1px solid var(--ah-console-line-strong);
+  border-radius: var(--ah-console-radius-control);
+  color: var(--ah-console-text);
+  background: var(--ah-console-card);
+  font: inherit;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) textarea.code,
+:where(.siakad, .elearning, .practicum, .identity-page) pre {
+  font-family: var(--ah-font-mono);
+  font-size: 0.9rem;
+  tab-size: 2;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) textarea.code {
+  white-space: pre;
+  overflow-x: auto;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .runner-output {
+  max-height: 20rem;
+  overflow: auto;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .prompt {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) pre {
+  padding: 0.8rem;
+  border-radius: var(--ah-console-radius-badge);
+  background: var(--ah-console-sunken);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--ah-space-4);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .stack {
+  display: grid;
+  gap: var(--ah-space-4);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .panel {
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid var(--ah-console-line);
+  border-radius: var(--ah-console-radius-card);
+  background: var(--ah-console-card);
+  box-shadow: var(--ah-shadow-card);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .notice {
+  padding: 0.85rem;
+  border-left: 4px solid var(--ah-console-warning);
+  background: var(--ah-console-warning-soft);
+  overflow-wrap: anywhere;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .error {
+  border-color: var(--ah-console-danger);
+  background: var(--ah-console-danger-soft);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .success {
+  border-color: var(--ah-console-accent);
+  background: var(--ah-console-accent-soft);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .muted {
+  color: var(--ah-console-muted);
+  font-size: 0.9rem;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--ah-console-radius-badge);
+  color: var(--ah-console-accent-strong);
+  background: var(--ah-console-accent-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .progress-bar {
+  width: 100%;
+  height: 0.6rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--ah-console-line-subtle);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .progress-fill {
+  height: 100%;
+  background: var(--ah-console-accent);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) .table-wrap {
+  overflow-x: auto;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) th,
+:where(.siakad, .elearning, .practicum, .identity-page) td {
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--ah-console-line-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) fieldset {
+  min-width: 0;
+  padding: 0.8rem;
+  border: 1px solid var(--ah-console-line);
+  border-radius: var(--ah-console-radius-control);
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) summary {
+  min-height: 44px;
+  padding: 0.6rem 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+:where(.siakad, .elearning, .practicum, .identity-page) :focus-visible {
+  outline: var(--ah-console-focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  :where(.siakad, .elearning, .practicum) {
+    padding: 0.75rem;
+  }
+
+  :where(.siakad, .elearning, .practicum, .identity-page) .panel {
+    padding: 0.85rem;
+  }
+}

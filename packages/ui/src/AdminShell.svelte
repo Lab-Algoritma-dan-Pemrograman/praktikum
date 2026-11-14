@@ -238,10 +238,6 @@
 </div>
 
 <style>
-  :global(body) {
-    background: #f3f6f7;
-    color: #17324d;
-  }
   .admin-shell {
     min-height: 100vh;
   }
@@ -251,8 +247,8 @@
     top: -5rem;
     left: 1rem;
     padding: 0.8rem 1rem;
-    color: #fff;
-    background: #245b5a;
+    color: var(--ah-console-card);
+    background: var(--ah-console-accent);
   }
   .skip-link:focus {
     top: 0.5rem;
@@ -263,19 +259,19 @@
     gap: 1rem;
     min-height: 4.5rem;
     padding: 0.75rem 1.25rem;
-    border-bottom: 1px solid #d6e1e3;
-    background: #fff;
+    border-bottom: 1px solid var(--ah-console-line-subtle);
+    background: var(--ah-console-card);
   }
   .brand {
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
-    color: #102a43;
+    color: var(--ah-console-heading);
     font-weight: 700;
     text-decoration: none;
   }
   .brand strong {
-    color: #326b68;
+    color: var(--ah-console-accent-ink);
   }
   .brand-mark {
     display: grid;
@@ -283,9 +279,9 @@
     height: 2rem;
     flex-shrink: 0;
     place-items: center;
-    border-radius: 0.35rem;
-    color: #fff;
-    background: #245b5a;
+    border-radius: var(--ah-console-radius-badge);
+    color: var(--ah-console-card);
+    background: var(--ah-console-accent);
   }
   .user-summary {
     display: grid;
@@ -300,17 +296,17 @@
     font-weight: 700;
   }
   .user-role {
-    color: #4d6872;
+    color: var(--ah-console-muted);
     font-size: 0.78rem;
   }
   .menu-button,
   .drawer-close {
     display: none;
     min-height: 44px;
-    border: 1px solid #b4c6c9;
-    border-radius: 0.5rem;
-    color: #17324d;
-    background: #fff;
+    border: 1px solid var(--ah-console-line-strong);
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-text);
+    background: var(--ah-console-card);
     font: inherit;
     cursor: pointer;
   }
@@ -329,35 +325,35 @@
     flex-direction: column;
     gap: 0.8rem;
     padding: 1.25rem;
-    border-right: 1px solid #d6e1e3;
-    background: #fbfcfc;
+    border-right: 1px solid var(--ah-console-line-subtle);
+    background: var(--ah-console-raised);
   }
   summary {
     display: flex;
     align-items: center;
     min-height: 44px;
-    color: #245b5a;
+    color: var(--ah-console-accent);
     font-weight: 800;
     cursor: pointer;
   }
   .app-links {
     display: grid;
     padding: 0.35rem;
-    border: 1px solid #d6e1e3;
-    border-radius: 0.45rem;
-    background: #fff;
+    border: 1px solid var(--ah-console-line-subtle);
+    border-radius: var(--ah-console-radius-control);
+    background: var(--ah-console-card);
   }
   .app-links a {
     min-height: 44px;
     padding: 0.65rem;
-    color: #245b5a;
+    color: var(--ah-console-accent);
     text-decoration: none;
   }
   .app-links a:hover {
-    background: #e7f2f0;
+    background: var(--ah-console-accent-soft);
   }
   .scope-label {
-    color: #4d6872;
+    color: var(--ah-console-muted);
     font-size: 0.8rem;
     font-weight: 700;
   }
@@ -365,16 +361,16 @@
     width: 100%;
     min-height: 44px;
     padding: 0 0.5rem;
-    border: 1px solid #b4c6c9;
-    border-radius: 0.45rem;
-    color: #17324d;
-    background: #fff;
+    border: 1px solid var(--ah-console-line-strong);
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-text);
+    background: var(--ah-console-card);
     font: inherit;
     font-size: 0.85rem;
   }
   #scope-help {
     margin: 0 0 0.5rem;
-    color: #4d6872;
+    color: var(--ah-console-muted);
     font-size: 0.75rem;
     line-height: 1.5;
   }
@@ -385,22 +381,22 @@
   .sidebar nav a {
     min-height: 44px;
     padding: 0.72rem 0.8rem;
-    border-radius: 0.45rem;
-    color: #46616b;
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-muted);
     text-decoration: none;
   }
   .sidebar nav a:hover,
   .sidebar nav a.active {
-    color: #174c4b;
-    background: #e7f2f0;
+    color: var(--ah-console-accent-strong);
+    background: var(--ah-console-accent-soft);
   }
   .logout {
     min-height: 44px;
     margin-top: auto;
-    border: 1px solid #d2a08c;
-    border-radius: 0.45rem;
-    color: #8b452e;
-    background: #fff;
+    border: 1px solid var(--ah-console-danger-line);
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-danger-ink);
+    background: var(--ah-console-card);
     font: inherit;
     cursor: pointer;
   }
@@ -418,23 +414,23 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
-    color: #4d6872;
+    color: var(--ah-console-muted);
     font-size: 0.85rem;
   }
   .breadcrumb a {
-    color: #245b5a;
+    color: var(--ah-console-accent);
   }
   .scope-context {
     margin: 0.8rem 0 1.75rem;
-    color: #4d6872;
+    color: var(--ah-console-muted);
     font-size: 0.8rem;
     overflow-wrap: anywhere;
   }
   .loading {
     padding: 0.8rem 1rem;
-    border-left: 3px solid #245b5a;
-    color: #245b5a;
-    background: #e7f2f0;
+    border-left: 3px solid var(--ah-console-accent);
+    color: var(--ah-console-accent);
+    background: var(--ah-console-accent-soft);
   }
   .backdrop {
     display: none;
@@ -479,7 +475,7 @@
       width: min(16rem, calc(100vw - 1rem));
       overflow-y: auto;
       transition: left 0.18s ease;
-      box-shadow: 8px 0 24px #1839481f;
+      box-shadow: var(--ah-shadow-drawer);
     }
     .sidebar.open {
       left: 0;
@@ -495,7 +491,7 @@
       z-index: 19;
       inset: 0;
       border: 0;
-      background: #102a4366;
+      background: var(--ah-console-scrim);
     }
     .logout {
       flex-shrink: 0;

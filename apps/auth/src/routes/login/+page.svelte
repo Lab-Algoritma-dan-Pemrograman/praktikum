@@ -70,31 +70,31 @@
     width: min(32rem, 90vw);
     margin: 0 auto;
     padding: clamp(2rem, 8vw, 5rem) 0;
-    color: #17324d;
+    color: var(--ah-console-text);
   }
   .brand {
     display: inline-flex;
     min-height: 44px;
     align-items: center;
-    color: #245b5a;
+    color: var(--ah-console-accent);
     font-weight: 800;
     text-decoration: none;
   }
   .eyebrow {
     margin-top: 2rem;
-    color: #326b68;
+    color: var(--ah-console-accent-ink);
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.12em;
   }
   h1 {
-    color: #102a43;
+    color: var(--ah-console-heading);
     font-size: clamp(2rem, 6vw, 3.2rem);
     line-height: 1.08;
     letter-spacing: -0.05em;
   }
   p {
-    color: #4d6872;
+    color: var(--ah-console-muted);
     line-height: 1.65;
   }
   .destination,
@@ -104,10 +104,10 @@
   }
   .error {
     padding: 1rem;
-    border: 1px solid #d2a08c;
-    border-radius: 0.5rem;
-    color: #7d3925;
-    background: #fff5ef;
+    border: 1px solid var(--ah-console-danger-line);
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-danger-ink);
+    background: var(--ah-console-danger-soft);
   }
   .error p {
     margin-bottom: 0;
@@ -125,10 +125,10 @@
     width: 100%;
     min-height: 44px;
     padding: 0.7rem;
-    border: 1px solid #a7bcb9;
-    border-radius: 0.45rem;
-    color: #17324d;
-    background: white;
+    border: 1px solid var(--ah-console-line-strong);
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-text);
+    background: var(--ah-console-card);
     font: inherit;
   }
   button {
@@ -136,16 +136,16 @@
     margin-top: 0.5rem;
     padding: 0.7rem 1rem;
     border: 0;
-    border-radius: 0.45rem;
-    color: white;
-    background: #245b5a;
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-card);
+    background: var(--ah-console-accent);
     font: inherit;
     cursor: pointer;
   }
   .secondary {
-    border: 1px solid #a7bcb9;
-    color: #245b5a;
-    background: white;
+    border: 1px solid var(--ah-console-line-strong);
+    color: var(--ah-console-accent);
+    background: var(--ah-console-card);
   }
   .note {
     font-size: 0.85rem;

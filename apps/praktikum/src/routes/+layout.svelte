@@ -1,6 +1,5 @@
 <script lang="ts">
   import '../app.css';
-  import '@algohub/practicum-client/styles.css';
   import { AppShell } from '@algohub/ui';
   import type { AppIdentityData } from '@algohub/auth-client';
   export let data: AppIdentityData;

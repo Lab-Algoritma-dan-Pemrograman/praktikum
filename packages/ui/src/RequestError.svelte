@@ -33,10 +33,10 @@
   .request-error {
     margin: 1rem 0;
     padding: 1rem;
-    border: 1px solid #dab8a7;
-    border-radius: 0.5rem;
-    color: #7d3925;
-    background: #fff5ef;
+    border: 1px solid var(--ah-console-danger-line);
+    border-radius: var(--ah-console-radius-control);
+    color: var(--ah-console-danger-ink);
+    background: var(--ah-console-danger-soft);
     overflow-wrap: anywhere;
   }
   .request-id {
@@ -47,14 +47,14 @@
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    color: #245b5a;
+    color: var(--ah-console-accent);
     font: inherit;
   }
   button {
     padding: 0.4rem 0.8rem;
-    border: 1px solid #a7bcb9;
-    border-radius: 0.4rem;
-    background: white;
+    border: 1px solid var(--ah-console-line-strong);
+    border-radius: var(--ah-console-radius-control);
+    background: var(--ah-console-card);
     cursor: pointer;
   }
 </style>

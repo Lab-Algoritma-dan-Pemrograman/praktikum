@@ -1,34 +1,101 @@
-/* Algohub shared UI foundation: non-secret tokens only. */
+/* Algohub design tokens and global base. Single source for every app. */
 :root {
-  --ah-ink: #142724;
-  --ah-ink-strong: #10221f;
-  --ah-muted: #5d6964;
-  --ah-muted-on-dark: #b9c7c3;
-  --ah-cream: #f5f0e7;
-  --ah-paper: #fffdf8;
-  --ah-surface: #e8e2d6;
-  --ah-coral: #ee785c;
-  --ah-blue: #7eb7c4;
-  --ah-yellow: #e4bb5e;
-  --ah-green: #62aa8f;
-  --ah-green-ink: #365e56;
-  --ah-danger: #8b452e;
-  --ah-line: #14272426;
-  --ah-line-strong: #14272470;
-  --ah-content-max: 74rem;
+  /* Brand and public surfaces: Burrow direction. */
+  --ah-cream: #f7efe2;
+  --ah-paper: #fffaf1;
+  --ah-surface: #ebe2d3;
+  --ah-ink: #1f0b08;
+  --ah-ink-strong: #150705;
+  --ah-muted: #6a5c53;
+  --ah-muted-on-dark: #cdbdb0;
+  --ah-coral: #f26b45;
+  --ah-blue: #63a4bc;
+  --ah-yellow: #dcb155;
+  --ah-green: #3dac91;
+  --ah-green-ink: #2f6355;
+  --ah-rust: #96503f;
+  --ah-pink: #e2a8d3;
+  --ah-khaki: #8e8565;
+  --ah-line: #1f0b0826;
+  --ah-line-strong: #1f0b0870;
+  --ah-focus-brand: 3px solid var(--ah-ink);
+
+  /* Authenticated console surfaces: calm technical lab. */
+  --ah-console-max: 76rem;
+  --ah-console-canvas: #f3f6f7;
+  --ah-console-canvas-gradient: linear-gradient(
+    180deg,
+    #eaf2f1 0,
+    #f3f6f7 24rem
+  );
+  --ah-console-raised: #fbfcfc;
+  --ah-console-card: #ffffff;
+  --ah-console-sunken: #f1f5f6;
+  --ah-console-heading: #102a43;
+  --ah-console-text: #17324d;
+  --ah-console-muted: #4d6872;
+  --ah-console-accent: #245b5a;
+  --ah-console-accent-strong: #174c4b;
+  --ah-console-accent-ink: #326b68;
+  --ah-console-accent-soft: #e7f2f0;
+  --ah-console-accent-hover: #eef7f5;
+  --ah-console-line: #cbd9dc;
+  --ah-console-line-subtle: #d6e1e3;
+  --ah-console-line-strong: #a7bcb9;
+  --ah-console-warning: #b87327;
+  --ah-console-warning-soft: #fff5e5;
+  --ah-console-danger: #963f32;
+  --ah-console-danger-ink: #8b452e;
+  --ah-console-danger-line: #d2a08c;
+  --ah-console-danger-soft: #fff0ed;
+  --ah-console-scrim: #102a4366;
+  --ah-console-focus-color: #d77a38;
+  --ah-console-focus: 3px solid var(--ah-console-focus-color);
+  --ah-console-radius-badge: 0.35rem;
+  --ah-console-radius-control: 0.45rem;
+  --ah-console-radius-card: 0.65rem;
+  --ah-shadow-card: 0 1px 2px #102a430d;
+  --ah-shadow-float: 0 10px 30px #18394814;
+  --ah-shadow-drawer: 8px 0 24px #1839481f;
+
+  /* Shared scale. */
+  --ah-content-max: 76rem;
   --ah-space-1: 0.25rem;
   --ah-space-2: 0.5rem;
   --ah-space-3: 0.75rem;
   --ah-space-4: 1rem;
   --ah-space-5: 1.5rem;
   --ah-space-6: 2rem;
-  --ah-radius-sm: 0.75rem;
-  --ah-radius-md: 1rem;
+  --ah-radius-sm: 0.875rem;
+  --ah-radius-md: 1.625rem;
   --ah-radius-lg: 2rem;
-  --ah-radius-arch: 1.6rem 1.6rem 0.65rem 0.65rem;
-  --ah-focus: 3px solid var(--ah-coral);
+  --ah-radius-arch: 1.625rem 1.625rem 0.625rem 0.625rem;
+  --ah-font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ah-font-brand:
+    'Google Sans', 'Google Sans Text', Inter, ui-sans-serif, system-ui,
+    -apple-system, 'Segoe UI', sans-serif;
+  --ah-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ah-focus: var(--ah-console-focus);
   --ah-motion-fast: 160ms;
   --ah-motion-standard: 220ms;
+
+  font-family: var(--ah-font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 :focus-visible {

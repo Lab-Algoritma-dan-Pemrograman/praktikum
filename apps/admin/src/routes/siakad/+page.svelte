@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { hasPermission, type AppIdentityData } from '@algohub/auth-client';
-  import '@algohub/siakad-client/styles.css';
   import {
     SiakadClient,
     emptyPage,

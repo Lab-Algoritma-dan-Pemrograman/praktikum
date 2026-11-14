@@ -1,42 +1,16 @@
-:root {
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  --ah-ink: #142724;
-  --ah-muted: #5d6964;
-  --ah-cream: #f5f0e7;
-  --ah-surface: #e8e2d6;
-  --ah-paper: #fffdf8;
-  --ah-coral: #ee785c;
-  --ah-blue: #7eb7c4;
-  --ah-yellow: #e4bb5e;
-  --ah-green: #62aa8f;
-  --ah-green-ink: #365e56;
-  --ah-line: #14272426;
-  --ah-content-max: 74rem;
-  --ah-radius-sm: 0.75rem;
-  --ah-radius-md: 2rem;
-  --ah-radius-lg: 2.5rem;
-}
+@import '@algohub/ui/tokens.css';
 
-html,
-body {
-  min-width: 320px;
-  min-height: 100%;
-  margin: 0;
+:root {
+  font-family: var(--ah-font-brand);
 }
 
 body {
   overflow-x: hidden;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+  color: var(--ah-ink);
+  background: var(--ah-cream);
 }
 
 :focus-visible {
-  outline: 3px solid #d77a38;
+  outline: var(--ah-focus-brand);
   outline-offset: 3px;
 }

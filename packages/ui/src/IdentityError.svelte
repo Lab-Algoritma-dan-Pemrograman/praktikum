@@ -48,22 +48,23 @@
     width: min(44rem, 90vw);
     margin: 0 auto;
     padding: clamp(2rem, 8vw, 6rem) 0;
-    color: #17324d;
+    color: var(--ah-console-text);
     overflow-wrap: anywhere;
   }
   .brand {
-    color: #245b5a;
+    color: var(--ah-console-accent);
     font-weight: 800;
   }
   section {
     margin-top: 3rem;
     padding: clamp(1rem, 4vw, 2rem);
-    border: 1px solid #d6e1e3;
-    border-radius: 0.8rem;
-    background: #fff;
+    border: 1px solid var(--ah-console-line-subtle);
+    border-radius: var(--ah-console-radius-card);
+    background: var(--ah-console-card);
+    box-shadow: var(--ah-shadow-card);
   }
   .code {
-    color: #8b452e;
+    color: var(--ah-console-danger-ink);
     font-size: 0.8rem;
     font-weight: 800;
     letter-spacing: 0.1em;
@@ -85,17 +86,17 @@
     margin: 0.7rem 0.7rem 0 0;
     padding: 0.7rem 1rem;
     border: 0;
-    border-radius: 0.45rem;
+    border-radius: var(--ah-console-radius-control);
     font: inherit;
     text-decoration: none;
     cursor: pointer;
   }
   .button {
-    color: white;
-    background: #245b5a;
+    color: var(--ah-console-card);
+    background: var(--ah-console-accent);
   }
   .secondary {
-    color: #245b5a;
-    background: #eef7f5;
+    color: var(--ah-console-accent);
+    background: var(--ah-console-accent-hover);
   }
 </style>
