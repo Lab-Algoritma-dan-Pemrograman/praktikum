@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { SiteFooter } from '@algohub/ui';
   import type { AppIdentityData, ApplicationLink } from '@algohub/auth-client';
 
   export let data: AppIdentityData;
@@ -341,7 +342,7 @@
 
       <div class="header-actions">
         {#if data.principal}
-          <a class="session-link" href="#workspace">
+          <a class="session-link" href="/workspace">
             <span>{data.principal.user.name}</span>
             <small>Lihat sesi</small>
           </a>
@@ -350,7 +351,7 @@
         {/if}
         <a
           class="button button-small"
-          href={data.principal ? '#workspace' : '/login'}
+          href={data.principal ? '/workspace' : '/login'}
         >
           <span class="button-label"
             >{data.principal ? 'Buka ruang kerja' : 'Mulai sekarang'}</span
@@ -365,7 +366,7 @@
           <a href="#workflow">Cara kerja</a>
           <a href="#information">Informasi</a>
           <a href="#faq">FAQ</a>
-          <a href={data.principal ? '#workspace' : '/login'}>
+          <a href={data.principal ? '/workspace' : '/login'}>
             {data.principal ? 'Buka ruang kerja' : 'Masuk ke Algohub'}
           </a>
         </nav>
@@ -389,7 +390,7 @@
           berpindah-pindah akun.
         </p>
         <div class="hero-actions">
-          <a class="button" href={data.principal ? '#workspace' : '/login'}>
+          <a class="button" href={data.principal ? '/workspace' : '/login'}>
             <span class="button-label"
               >{data.principal
                 ? 'Lanjutkan aktivitas'
@@ -627,7 +628,6 @@
     </section>
 
     <section class="closing" aria-labelledby="closing-title" data-reveal>
-      <div class="closing-shape" aria-hidden="true"></div>
       <p class="kicker">Mulai dari sini</p>
       <h2 id="closing-title">Satu pintu untuk seluruh aktivitas Algohub.</h2>
       <p>
@@ -636,7 +636,7 @@
       </p>
       <a
         class="button button-dark"
-        href={data.principal ? '#workspace' : '/login'}
+        href={data.principal ? '/workspace' : '/login'}
       >
         <span class="button-label"
           >{data.principal ? 'Buka ruang kerja' : 'Masuk ke Algohub'}</span
@@ -645,46 +645,16 @@
     </section>
   </main>
 
-  <footer data-reveal>
-    <div class="footer-brand">
-      <a class="brand" href="/" aria-label="Algohub beranda">
-        <img
-          class="brand-mark"
-          src="/logo-mark.png"
-          alt=""
-          width="55"
-          height="96"
-        />
-        <span class="brand-word"
-          ><span class="wm-algo">Algo</span><span class="wm-hub">Hub</span
-          ></span
-        >
-      </a>
-      <p>Ruang digital untuk pembelajaran dan operasional laboratorium.</p>
-    </div>
-    <nav aria-label="Navigasi footer">
-      <div>
-        <strong>Jelajahi</strong>
-        <a href="#services">Layanan</a>
-        <a href="#workflow">Cara kerja</a>
-        <a href="#information">Informasi</a>
-      </div>
-      <div>
-        <strong>Akun</strong>
-        <a href="/login">Masuk</a>
-        <a href={data.authOrigin}>Auth Center</a>
-        <a href="#faq">Bantuan awal</a>
-      </div>
-    </nav>
-    <p class="copyright">
-      <span>© 2026 Algohub. Sistem akademik dan laboratorium.</span>
-      <a
-        href="https://8b.com/templates/burrow/"
-        target="_blank"
-        rel="noopener noreferrer">Design direction: 8B Burrow</a
-      >
-    </p>
-  </footer>
+  <SiteFooter
+    links={[
+      { href: '#services', label: 'Layanan' },
+      { href: '#workflow', label: 'Cara kerja' },
+      { href: '/jadwal', label: 'Jadwal' },
+      { href: '/asisten', label: 'Asisten' },
+      { href: '/login', label: 'Masuk' }
+    ]}
+    note="Sistem akademik dan laboratorium."
+  />
 </div>
 
 <style>
@@ -736,30 +706,31 @@
     position: fixed;
     inset: 0 0 auto;
     z-index: 40;
-    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--ah-line);
+    background: var(--ah-cream);
   }
 
   .nav-shell {
     position: relative;
     display: flex;
     width: var(--wrap);
-    min-height: 3.5rem;
+    min-height: 4.25rem;
     align-items: center;
     gap: 0.5rem;
     margin: 0 auto;
-    padding: 0.4rem;
-    border: 1px solid var(--ah-line);
-    border-radius: 999px;
-    background: var(--ah-surface);
-    box-shadow: 0 18px 40px -30px rgba(45, 49, 66, 0.6);
+    padding: 0.5rem 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .brand {
     display: inline-flex;
+    min-height: 44px;
     align-items: center;
     gap: 0.65rem;
-    padding: 0.15rem 0.9rem 0.15rem 0.15rem;
-    border-radius: 999px;
+    padding: 0.15rem 0.9rem 0.15rem 0;
     font-size: 1.4rem;
     font-weight: 500;
     letter-spacing: -0.04em;
@@ -1550,7 +1521,7 @@
 
   .workflow-copy h2 {
     max-width: 13ch;
-    font-size: clamp(2rem, 3.6vw, 3.5rem);
+    font-size: clamp(2.125rem, 4.6vw, 4.125rem);
   }
 
   .workflow-copy > p:last-child {
@@ -1810,101 +1781,6 @@
     color: var(--ah-cream);
   }
 
-  .closing-shape {
-    position: absolute;
-    top: -4rem;
-    left: -3rem;
-    width: 12rem;
-    height: 12rem;
-    border-radius: 50%;
-    background: var(--ah-yellow);
-  }
-
-  footer {
-    display: grid;
-    width: var(--wrap);
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 2.5rem;
-    margin: 0 auto;
-    padding: clamp(2rem, 4vw, 3.5rem);
-    border-radius: 2rem 2rem 0 0;
-    color: var(--ah-cream);
-    background: var(--ah-ink);
-  }
-
-  footer > * {
-    min-width: 0;
-  }
-
-  .footer-brand p {
-    max-width: 24rem;
-    color: var(--ah-muted-on-dark);
-    line-height: 1.6;
-  }
-
-  footer .brand-mark {
-    box-sizing: content-box;
-    height: 2rem;
-    padding: 0.35rem;
-    border-radius: 0.45rem;
-    background: var(--ah-cream);
-  }
-
-  footer nav {
-    display: grid;
-    min-width: 0;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1rem, 4vw, 2.5rem);
-  }
-
-  footer nav div {
-    display: grid;
-    align-content: start;
-    gap: 0.75rem;
-  }
-
-  footer nav strong {
-    color: var(--ah-muted-on-dark);
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-
-  footer nav a {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
-    color: var(--ah-cream);
-    font-size: 0.9rem;
-    text-decoration: none;
-  }
-
-  footer nav a:hover,
-  footer nav a:focus-visible {
-    text-decoration: underline;
-    text-underline-offset: 0.3rem;
-  }
-
-  .copyright {
-    display: flex;
-    grid-column: 1 / -1;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin: 0.75rem 0 0;
-    padding-top: 1.25rem;
-    border-top: 1px solid color-mix(in srgb, var(--ah-cream) 24%, transparent);
-    color: var(--ah-muted-on-dark);
-    font-size: 0.8rem;
-  }
-
-  .copyright a {
-    display: inline-flex;
-    min-height: 24px;
-    align-items: center;
-    padding: 0 0.15rem;
-  }
-
   @media (prefers-reduced-motion: no-preference) {
     .hero-copy {
       animation: hero-rise var(--ah-duration-hero) var(--ah-ease-out) backwards;
@@ -2060,10 +1936,6 @@
     .workspace,
     .service-grid,
     .workspace-links,
-    footer {
-      grid-template-columns: 1fr;
-    }
-
     .section {
       padding: 4.5rem 0;
     }
@@ -2119,21 +1991,6 @@
       border-radius: 4rem 4rem 1.5rem 1.5rem;
     }
 
-    .closing-shape {
-      top: -5rem;
-      left: -5rem;
-      width: 10rem;
-      height: 10rem;
-    }
-
-    footer {
-      gap: 2rem;
-      padding: 2rem 1.25rem;
-    }
-
-    footer nav {
-      gap: 1rem;
-    }
   }
 
   @media (max-width: 390px) {
@@ -2145,8 +2002,5 @@
       display: none;
     }
 
-    footer nav {
-      grid-template-columns: 1fr;
-    }
   }
 </style>
