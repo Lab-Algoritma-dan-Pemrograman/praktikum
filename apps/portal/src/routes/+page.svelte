@@ -647,7 +647,7 @@
     padding: 0 1.625rem;
     border: 0;
     border-radius: 1.625rem 1.625rem 0.625rem 0.625rem;
-    color: var(--ah-ink);
+    color: var(--ah-cream);
     background: var(--ah-coral);
     font-size: 1rem;
     font-weight: 500;
@@ -683,7 +683,12 @@
 
   .button-secondary {
     border-radius: 0.625rem 0.625rem 1.625rem 1.625rem;
+    color: var(--ah-ink);
     background: var(--ah-cream);
+  }
+
+  .button-secondary:focus-visible {
+    color: var(--ah-ink);
   }
 
   .button-dark {
@@ -1515,6 +1520,7 @@
     border-radius: clamp(3.5rem, 12vw, 13rem) clamp(3.5rem, 12vw, 13rem) 2rem
       2rem;
     background: var(--ah-coral);
+    color: var(--ah-cream);
     text-align: center;
   }
 
