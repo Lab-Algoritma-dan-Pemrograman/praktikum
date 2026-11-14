@@ -1,11 +1,9 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { PublicNav, SiteFooter } from '@algohub/ui';
+  import { PublicNav, ServicePrismCards, SiteFooter } from '@algohub/ui';
   import type { ApplicationLink } from '@algohub/auth-client';
 
   export let data: { applications: ApplicationLink[]; signedIn: boolean };
-
-
 
   type AppName = ApplicationLink['name'];
 
@@ -14,8 +12,8 @@
     index: string;
     title: string;
     description: string;
-    features: string[];
-    accent: 'blue' | 'yellow' | 'coral' | 'green';
+    color: string;
+    action: string;
   }> = [
     {
       app: 'siakad',
@@ -23,8 +21,8 @@
       title: 'SIAKAD & layanan lab',
       description:
         'Jadwal, kelas, presensi QR, inventaris, dan penyewaan alat dalam alur yang terukur.',
-      features: ['Jadwal & kelas', 'Presensi QR', 'Penyewaan alat'],
-      accent: 'blue'
+      color: '#2B44F5',
+      action: 'Buka SIAKAD'
     },
     {
       app: 'elearning',
@@ -32,8 +30,8 @@
       title: 'E-learning interaktif',
       description:
         'Materi berjenjang, quiz, latihan kode di browser, progres belajar, dan gamifikasi.',
-      features: ['Kurikulum', 'C & Python', 'XP & progres'],
-      accent: 'yellow'
+      color: '#D6F36E',
+      action: 'Buka E-learning'
     },
     {
       app: 'praktikum',
@@ -41,8 +39,8 @@
       title: 'Praktikum terarah',
       description:
         'Sesi berbatas waktu, autosave, submission, serta publikasi nilai melalui review manual.',
-      features: ['Sesi & timer', 'Autosave', 'Review manual'],
-      accent: 'coral'
+      color: '#F2AA8F',
+      action: 'Buka Praktikum'
     },
     {
       app: 'admin',
@@ -50,8 +48,8 @@
       title: 'Operasional terpusat',
       description:
         'Console asisten dan koordinator dengan menu, permission, dan scope sesuai penugasan.',
-      features: ['Scoped access', 'Monitoring', 'Audit'],
-      accent: 'green'
+      color: '#C9C3F7',
+      action: 'Buka Console'
     }
   ];
 
@@ -93,6 +91,15 @@
       description: 'Aktivasi, pengerjaan, submission, dan nilai terpublikasi.'
     }
   ];
+
+  const serviceCards = services.map((service) => ({
+    index: service.index,
+    title: service.title,
+    text: service.description,
+    color: service.color,
+    action: service.action,
+    href: appHref(service.app)
+  }));
 
   function appHref(name: AppName): string {
     const application = data.applications.find((item) => item.name === name);
@@ -211,32 +218,7 @@
         </p>
       </div>
 
-      <div class="service-grid">
-        {#each services as service}
-          <article
-            class="service-panel"
-            class:blue={service.accent === 'blue'}
-            class:yellow={service.accent === 'yellow'}
-            class:coral={service.accent === 'coral'}
-            class:green={service.accent === 'green'}
-            data-reveal
-          >
-            <div class="service-top">
-              <span class="badge">{service.index}</span>
-              <span class="service-shape" aria-hidden="true"></span>
-            </div>
-            <h3>{service.title}</h3>
-            <p>{service.description}</p>
-            <ul>
-              {#each service.features as feature}<li>{feature}</li>{/each}
-            </ul>
-            <a class="service-link" href={appHref(service.app)}>
-              <span>Buka {service.title}</span>
-              <span aria-hidden="true">↗</span>
-            </a>
-          </article>
-        {/each}
-      </div>
+      <ServicePrismCards items={serviceCards} />
     </section>
 
     <section
@@ -424,22 +406,9 @@
     transform: none;
   }
 
-
-
-
-
-
-
   /* Intro: "<>" opens into "<AlgoHub>", then settles on "AlgoHub". */
 
-
-
-
-
-
   /* The "drop": one pill that stretches and slides between items. */
-
-
 
   .button {
     position: relative;
@@ -479,7 +448,6 @@
   .button-label {
     position: relative;
   }
-
 
   .button-secondary {
     border-radius: 0.625rem 0.625rem 1.625rem 1.625rem;
@@ -530,13 +498,6 @@
   .button-dark:focus-visible {
     color: var(--ah-ink);
   }
-
-
-
-
-
-
-
 
   .hero {
     display: grid;
@@ -837,142 +798,6 @@
     color: var(--ah-muted);
     font-size: 1.05rem;
     line-height: 1.6;
-  }
-
-  .service-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(0.9rem, 1.6vw, 1.25rem);
-  }
-
-  .service-panel {
-    display: flex;
-    min-height: 24rem;
-    flex-direction: column;
-    padding: clamp(1.5rem, 3vw, 2.5rem);
-    border-radius: 2rem;
-    color: var(--ah-ink);
-    transition:
-      transform var(--ah-motion-standard) cubic-bezier(0.25, 0.8, 0.25, 1),
-      box-shadow var(--ah-motion-standard) ease;
-  }
-
-  .service-panel:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 0 color-mix(in srgb, var(--ah-ink) 16%, transparent);
-  }
-
-  .service-panel.blue {
-    background: var(--ah-blue);
-  }
-
-  .service-panel.yellow {
-    background: var(--ah-yellow);
-  }
-
-  .service-panel.coral {
-    color: var(--ah-cream);
-    background: var(--ah-rust);
-  }
-
-  .service-panel.coral .service-link {
-    border-top-color: color-mix(in srgb, var(--ah-cream) 35%, transparent);
-  }
-
-  .service-panel.green {
-    background: var(--ah-green);
-  }
-
-  .service-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .badge {
-    display: inline-flex;
-    min-height: 1.875rem;
-    align-items: center;
-    padding: 0 0.875rem;
-    border-radius: 999px;
-    color: var(--ah-cream);
-    background: var(--ah-ink);
-    font-size: 0.8rem;
-    font-weight: 500;
-    line-height: 1;
-  }
-
-  .service-shape {
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: 50% 50% 0 50%;
-    background: var(--ah-cream);
-  }
-
-  .service-panel:nth-child(2) .service-shape {
-    border-radius: 50%;
-  }
-
-  .service-panel:nth-child(3) .service-shape {
-    border-radius: 50% 50% 0.4rem 0.4rem / 55% 55% 0 0;
-  }
-
-  .service-panel:nth-child(4) .service-shape {
-    border-radius: 0;
-    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  }
-
-  .service-panel h3 {
-    max-width: 13ch;
-    margin: auto 0 0.9rem;
-    font-size: clamp(1.7rem, 2.6vw, 2.25rem);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-  }
-
-  .service-panel > p {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.55;
-  }
-
-  .service-panel ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 1.1rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .service-panel li {
-    padding: 0.4rem 0.75rem;
-    border-radius: 999px;
-    background: var(--ah-cream);
-    font-size: 0.8rem;
-    font-weight: 500;
-    line-height: 1.2;
-  }
-
-  .service-link {
-    display: flex;
-    min-height: 3rem;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 1.4rem;
-    padding-top: 0.9rem;
-    border-top: 1.5px solid var(--ah-line-strong);
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-  }
-
-  .service-link:hover span:first-child,
-  .service-link:focus-visible span:first-child {
-    text-decoration: underline;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 0.25rem;
   }
 
   .workflow-band {
@@ -1291,10 +1116,6 @@
   }
 
   @media (min-width: 721px) and (max-width: 960px) {
-
-
-
-
   }
 
   @media (max-width: 900px) {
@@ -1330,7 +1151,6 @@
     .landing {
       --wrap: min(var(--ah-content-max), calc(100% - 1.25rem));
     }
-
 
     .hero {
       gap: 1rem;
@@ -1375,17 +1195,12 @@
       height: 2.1rem;
     }
 
-    .service-grid,
     .section {
       padding: 4.5rem 0;
     }
 
     .section-heading {
       text-align: left;
-    }
-
-    .service-panel {
-      min-height: 21rem;
     }
 
     .workflow-band {

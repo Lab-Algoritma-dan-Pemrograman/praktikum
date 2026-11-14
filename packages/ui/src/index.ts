@@ -13,3 +13,5 @@ export type {
 export { normalizeBrowserTestOutput, warmupPreview } from './browser-preview';
 export { default as SiteFooter } from './SiteFooter.svelte';
 export { default as PublicNav } from './PublicNav.svelte';
+export { default as ServicePrismCards } from './ServicePrismCards.svelte';
+export type { PrismCard } from './prism-cards';

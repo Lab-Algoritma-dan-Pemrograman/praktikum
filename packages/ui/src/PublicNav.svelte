@@ -468,13 +468,18 @@
     position: absolute;
     top: calc(100% + 0.5rem);
     right: 0;
-    left: 0;
-    display: grid;
+    left: auto;
+    display: none;
+    width: min(21rem, calc(100vw - 2rem));
     gap: 0.15rem;
     padding: 0.75rem;
     border-radius: 2rem;
     color: var(--ah-cream);
     background: var(--ah-coral);
+  }
+
+  .mobile-menu[open] nav {
+    display: grid;
   }
 
   .mobile-menu nav a {

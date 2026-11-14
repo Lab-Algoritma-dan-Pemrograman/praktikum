@@ -247,6 +247,23 @@
     white-space: normal;
   }
 
+  @media (max-width: 44rem) {
+    /* Below a phone width the secondary columns go; name, category,
+       updated date and the action stay. */
+    th:nth-child(3),
+    td:nth-child(3),
+    th:nth-child(4),
+    td:nth-child(4) {
+      display: none;
+    }
+
+    th,
+    td {
+      padding: 0.6rem 0.7rem;
+      white-space: normal;
+    }
+  }
+
   .sr-only {
     position: absolute;
     width: 1px;
