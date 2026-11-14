@@ -9,9 +9,12 @@
     sesiPerPekan,
     menit
   } from '../../lib/jadwal-data';
+  import type { SesiJadwal } from '../../lib/jadwal-data';
 
   let pekan = $state(0);
   let hariAktif = $state<number | null>(null);
+  let dipilih = $state<SesiJadwal | null>(null);
+  let dialogEl = $state<HTMLDialogElement | null>(null);
 
   const jamLabels = Array.from(
     { length: JAM_SELESAI - JAM_MULAI },
@@ -34,6 +37,26 @@
   function pilihHari(hari: number) {
     hariAktif = hariAktif === hari ? null : hari;
   }
+
+  function buka(item: SesiJadwal) {
+    dipilih = item;
+  }
+
+  function tutup() {
+    dipilih = null;
+  }
+
+  function gantiPekan(arah: number) {
+    tutup();
+    pekan = Math.min(pekanList.length - 1, Math.max(0, pekan + arah));
+  }
+
+  $effect(() => {
+    const el = dialogEl;
+    if (!el) return;
+    if (dipilih && !el.open) el.showModal();
+    if (!dipilih && el.open) el.close();
+  });
 </script>
 
 <PortalPage
@@ -50,7 +73,7 @@
           type="button"
           aria-label="Pekan sebelumnya"
           disabled={pekan === 0}
-          onclick={() => (pekan = Math.max(0, pekan - 1))}>‹</button
+          onclick={() => gantiPekan(-1)}>‹</button
         >
         <p class="pekan-label">
           <strong>{pekanList[pekan].label}</strong>
@@ -61,8 +84,7 @@
           type="button"
           aria-label="Pekan berikutnya"
           disabled={pekan === pekanList.length - 1}
-          onclick={() => (pekan = Math.min(pekanList.length - 1, pekan + 1))}
-          >›</button
+          onclick={() => gantiPekan(1)}>›</button
         >
       </div>
       <p class="ringkas">
@@ -102,18 +124,23 @@
             class:dimmed={hariAktif !== null && hariAktif !== i + 1}
           >
             {#each perHari[i] as item (item.id)}
-              <article
+              <button
+                type="button"
                 class="event"
+                aria-haspopup="dialog"
+                aria-current={dipilih?.id === item.id ? 'true' : undefined}
                 style="top:{posisi(item.mulai)}px;height:{tinggi(
                   item.mulai,
                   item.selesai
                 )}px"
-                title={`${item.kelas} (${item.kode}) · ${item.ruang} · ${item.asisten}`}
+                onclick={() => buka(item)}
               >
                 <span class="event-bar" aria-hidden="true"></span>
-                <h3 class="event-title">{item.kelas}</h3>
-                <p class="event-meta">{item.kode} · {item.ruang}</p>
-              </article>
+                <span class="event-body">
+                  <span class="event-title">{item.kelas}</span>
+                  <span class="event-meta">{item.kode} · {item.ruang}</span>
+                </span>
+              </button>
             {/each}
           </div>
         {/each}
@@ -142,16 +169,21 @@
           <section class="hari-blok" aria-label={nama}>
             <h3>{nama}, {tanggal[i]}</h3>
             {#each perHari[i] as item (item.id)}
-              <article class="event event-list">
+              <button
+                type="button"
+                class="event event-list"
+                aria-haspopup="dialog"
+                onclick={() => buka(item)}
+              >
                 <span class="event-bar" aria-hidden="true"></span>
-                <div>
-                  <h4 class="event-title">{item.kelas}</h4>
-                  <p class="event-meta">
+                <span class="event-body">
+                  <span class="event-title">{item.kelas}</span>
+                  <span class="event-meta">
                     {item.mulai}–{item.selesai} · {item.ruang}
-                  </p>
-                  <p class="event-meta">{item.kode} · {item.modul}</p>
-                </div>
-              </article>
+                  </span>
+                  <span class="event-meta">{item.kode} · {item.modul}</span>
+                </span>
+              </button>
             {/each}
           </section>
         {/if}
@@ -160,9 +192,51 @@
 
     <ul class="legend">
       <li><span class="dot" aria-hidden="true"></span> Sesi praktikum</li>
+      <li>Klik sesi untuk melihat detail kelas</li>
       <li>Klik nama hari untuk menyorot kolom</li>
       <li>Jadwal personal ada di aplikasi Praktikum setelah masuk</li>
     </ul>
+
+    {#if dipilih}
+      <dialog
+        class="sesi-dialog"
+        bind:this={dialogEl}
+        aria-labelledby="sesi-judul"
+        onclose={() => (dipilih = null)}
+        onclick={(event) => {
+          if (event.target === dialogEl) tutup();
+        }}
+      >
+        <div class="sesi-card">
+          <p class="sesi-eyebrow">
+            {HARI[dipilih.hari - 1]} · {pekanList[pekan].label}
+          </p>
+          <h2 id="sesi-judul" class="sesi-judul">{dipilih.kelas}</h2>
+          <p class="sesi-kode">{dipilih.kode} · {dipilih.modul}</p>
+          <dl class="sesi-fakta">
+            <div>
+              <dt>Jam</dt>
+              <dd>{dipilih.mulai}–{dipilih.selesai}</dd>
+            </div>
+            <div>
+              <dt>Ruang</dt>
+              <dd>{dipilih.ruang}</dd>
+            </div>
+            <div>
+              <dt>Asisten</dt>
+              <dd>{dipilih.asisten}</dd>
+            </div>
+            <div>
+              <dt>Pekan</dt>
+              <dd>Pekan {dipilih.pekan + 1}</dd>
+            </div>
+          </dl>
+          <form method="dialog" class="sesi-aksi">
+            <button type="submit" class="sesi-tutup">Tutup</button>
+          </form>
+        </div>
+      </dialog>
+    {/if}
   </div>
 </PortalPage>
 
@@ -337,9 +411,30 @@
     gap: 0.5rem;
     align-content: center;
     padding: 0.35rem 0.5rem 0.35rem 0;
+    border: 0;
     border-radius: 0.7rem;
     background: var(--ah-surface);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
     overflow: hidden;
+    transition:
+      background-color var(--ah-motion-fast) ease,
+      box-shadow var(--ah-motion-fast) ease;
+  }
+
+  .event:hover {
+    background: color-mix(in srgb, var(--ah-coral) 10%, var(--ah-surface));
+  }
+
+  .event[aria-current='true'] {
+    outline: 2px solid var(--ah-coral);
+    outline-offset: 1px;
+  }
+
+  .event:focus-visible {
+    outline: var(--ah-focus-brand);
+    outline-offset: 1px;
   }
 
   .event-bar {
@@ -349,7 +444,13 @@
     background: var(--ah-coral);
   }
 
+  .event-body {
+    display: grid;
+    min-width: 0;
+  }
+
   .event-title {
+    display: block;
     margin: 0;
     color: var(--ah-ink);
     font-size: 0.78rem;
@@ -359,10 +460,107 @@
   }
 
   .event-meta {
+    display: block;
     margin: 0.1rem 0 0;
     color: var(--ah-muted);
     font-size: 0.7rem;
     line-height: 1.3;
+  }
+
+  /* ---------- session detail ---------- */
+  .sesi-dialog {
+    width: min(24rem, calc(100vw - 2rem));
+    max-width: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 1rem;
+    background: var(--ah-cream);
+    color: var(--ah-ink);
+    box-shadow: var(--ah-shadow-float);
+  }
+
+  .sesi-dialog::backdrop {
+    background: rgb(27 31 42 / 45%);
+  }
+
+  .sesi-card {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    border-top: 4px solid var(--ah-coral);
+    border-radius: 1rem;
+  }
+
+  .sesi-eyebrow {
+    margin: 0;
+    color: var(--ah-coral);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .sesi-judul {
+    margin: 0.15rem 0 0;
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  .sesi-kode {
+    margin: 0;
+    color: var(--ah-muted);
+    font-size: 0.85rem;
+  }
+
+  .sesi-fakta {
+    display: grid;
+    gap: 0;
+    margin: 1rem 0 0;
+  }
+
+  .sesi-fakta > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--ah-line);
+  }
+
+  .sesi-fakta dt {
+    color: var(--ah-muted);
+    font-size: 0.8rem;
+  }
+
+  .sesi-fakta dd {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .sesi-aksi {
+    display: flex;
+    margin: 1rem 0 0;
+  }
+
+  .sesi-tutup {
+    flex: 1;
+    min-height: 44px;
+    border: 0;
+    border-radius: 0.625rem;
+    color: var(--ah-cream);
+    background: var(--ah-ink);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .sesi-tutup:hover,
+  .sesi-tutup:focus-visible {
+    background: var(--ah-ink-strong);
   }
 
   /* ---------- mobile list ---------- */
