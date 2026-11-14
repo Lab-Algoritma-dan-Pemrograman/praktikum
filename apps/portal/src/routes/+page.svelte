@@ -824,17 +824,17 @@
   h1 {
     max-width: 13ch;
     margin: 0;
-    font-size: clamp(2.6rem, 5.7vw, 5.125rem);
-    line-height: 1.02;
-    letter-spacing: -0.035em;
+    font-size: var(--ah-type-display);
+    line-height: var(--ah-leading-display);
+    letter-spacing: var(--ah-tracking-display);
   }
 
   .hero-lead {
     max-width: 34rem;
     margin: 1.6rem 0 0;
     color: var(--ah-muted);
-    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-    line-height: 1.6;
+    font-size: var(--ah-type-lead);
+    line-height: var(--ah-leading-body);
   }
 
   .hero-actions {
@@ -1092,7 +1092,7 @@
   .section {
     width: var(--wrap);
     margin: 0 auto;
-    padding: clamp(3rem, 6vw, 7rem) 0;
+    padding: var(--ah-space-section) 0;
   }
 
   .section-heading {
@@ -1106,9 +1106,9 @@
   .faq-heading h2,
   .closing h2 {
     margin: 0;
-    font-size: clamp(2.1rem, 4.6vw, 4.5rem);
-    line-height: 1.02;
-    letter-spacing: -0.035em;
+    font-size: var(--ah-type-h2);
+    line-height: var(--ah-leading-h2);
+    letter-spacing: var(--ah-tracking-h2);
   }
 
   .section-heading > p:last-child,
@@ -1630,11 +1630,12 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .hero-copy {
-      animation: hero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+      animation: hero-rise var(--ah-duration-hero) var(--ah-ease-out) backwards;
     }
 
     .hero-visual {
-      animation: hero-rise 1.1s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+      animation: hero-rise var(--ah-duration-hero-slow) var(--ah-delay-hero)
+        var(--ah-ease-out) backwards;
     }
 
     @supports (animation-timeline: view()) {
@@ -1649,14 +1650,14 @@
   @keyframes hero-rise {
     from {
       opacity: 0;
-      transform: translateY(26px);
+      transform: translateY(var(--ah-rise));
     }
   }
 
   @keyframes reveal-rise {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(var(--ah-rise));
     }
     to {
       opacity: 1;

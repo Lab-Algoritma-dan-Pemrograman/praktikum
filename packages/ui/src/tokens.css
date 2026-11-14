@@ -20,6 +20,29 @@
   --ah-line-strong: #2d314266;
   --ah-focus-brand: 3px solid var(--ah-coral);
 
+  /* Editorial type scale, reconciled with the Framer exploration.
+     Display/H1 matches what the portal already shipped; H2 leading and
+     tracking are loosened to the exploration's 1.08 / -0.03em. */
+  --ah-type-display: clamp(2.6rem, 5.7vw, 5.125rem);
+  --ah-type-h2: clamp(2.1rem, 4.6vw, 4.5rem);
+  --ah-type-lead: clamp(1.05rem, 1.4vw, 1.2rem);
+  --ah-type-caption: 0.8125rem;
+  --ah-leading-display: 1.02;
+  --ah-leading-h2: 1.08;
+  --ah-leading-body: 1.6;
+  --ah-tracking-display: -0.035em;
+  --ah-tracking-h2: -0.03em;
+
+  /* Motion: one restrained rise, no bounce or overshoot. */
+  --ah-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ah-rise: 30px;
+  --ah-duration-hero: 0.9s;
+  --ah-duration-hero-slow: 1.1s;
+  --ah-delay-hero: 0.1s;
+
+  /* Vertical rhythm for public sections. */
+  --ah-space-section: clamp(3rem, 6vw, 7rem);
+
   /* Authenticated console surfaces: maroon academic lab. */
   --ah-console-max: 76rem;
   --ah-console-canvas: #fdfbf7;
