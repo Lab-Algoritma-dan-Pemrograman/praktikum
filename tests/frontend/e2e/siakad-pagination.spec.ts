@@ -379,7 +379,9 @@ test('siakad admin reaches later schedules, attendance and rentals and preserves
   await edited
     .getByRole('button', { name: 'Validasi presensi Pagination Student' })
     .click();
-  await expect(page.getByRole('status')).toContainText('berhasil divalidasi');
+  await expect(page.locator('.notice[role="status"]')).toContainText(
+    'berhasil divalidasi'
+  );
   expect(requests).toHaveLength(2);
   expect(requests[1]).toEqual(requests[0]);
   await page
@@ -534,7 +536,9 @@ test('siakad validation rebases untouched fields but requires persistent explici
   await expect(validate).toBeEnabled();
   expect(writes).toHaveLength(0);
   await validate.click();
-  await expect(page.getByRole('status')).toContainText('berhasil divalidasi');
+  await expect(page.locator('.notice[role="status"]')).toContainText(
+    'berhasil divalidasi'
+  );
   expect(writes).toHaveLength(1);
   expect(writes[0]).toMatchObject({
     version: 3,

@@ -463,7 +463,7 @@ test('siakad scoped admin forms work outside lab and reject invalid roster IDs b
     await actor.page
       .getByRole('button', { name: 'Buat alat', exact: true })
       .click();
-    await expect(actor.page.getByRole('status')).toContainText(
+    await expect(actor.page.locator('.notice[role="status"]')).toContainText(
       'Item inventaris berhasil disimpan'
     );
     await actor.page
@@ -472,7 +472,7 @@ test('siakad scoped admin forms work outside lab and reject invalid roster IDs b
     await actor.page
       .getByRole('button', { name: 'Simpan alat', exact: true })
       .click();
-    await expect(actor.page.getByRole('status')).toContainText(
+    await expect(actor.page.locator('.notice[role="status"]')).toContainText(
       'Item inventaris berhasil disimpan'
     );
     const items = (await api(actor.page, '/v1/inventory/items')).body.data;

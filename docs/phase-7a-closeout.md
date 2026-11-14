@@ -44,6 +44,10 @@ The final isolated run completed with **146 named tests: 139 passed, 5 expected 
 
 These are automated test-harness locator failures in existing SIAKAD flows, not Portal/public-route failures. They must be fixed and rerun before this phase can claim automated handoff readiness. The failure artifacts remain under `tests/frontend/results/`; no failure is relabeled as pass.
 
+## 2026-11-14 post-closeout locator and heading fix (working session)
+
+Both residual failures were fixed by scoping the ambiguous `getByRole('status')` locators to `.notice[role="status"]` in `siakad.spec.ts` and `siakad-pagination.spec.ts` (13/13 passed in isolation). The rerun then exposed a separate regression that predates this session: commit 3722885 updated the four public portal page headings but updated only `a11y.spec.ts`, leaving `portal-public.spec.ts` asserting the retired headings. That spec was realigned to the live headings and verified 7/7. One intermediate full-suite run recorded a single `browser-preview.spec.ts` failure under concurrent dev-server contention; in isolation it passed 4/4 (2 skips by design), and leftover dev servers were cleared. The final clean run on 2026-11-14 completed **146 named tests: 141 passed, 5 expected skips, 0 failures**, confirming automated handoff readiness on the same scope as this closeout. Human gates (owner decisions, UAT, pilot) remain open as stated above.
+
 
 Automated screenshot inspection covered Portal 320px/1440px and Admin 1024px. The landing retained readable hierarchy, no intentional page clipping, consistent flat-shape language, and reduced-motion readability. Admin desktop shell showed complete sidebar/content boundaries. This is AI/tool inspection evidence only; it is not human visual approval.
 
