@@ -6,7 +6,102 @@
 
   let navEl: HTMLElement;
   let railEl: HTMLElement;
+  let wmEl: HTMLElement;
   let activeHref = '#services';
+
+  // Brand intro: "<>" opens into "<AlgoHub>", then the brackets leave and the
+  // two-tone wordmark stays. One smooth transform via the Web Animations API,
+  // not a typewriter; skipped entirely for reduced motion.
+  onMount(() => {
+    const wm = wmEl;
+    if (!wm || typeof wm.animate !== 'function') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const left = wm.querySelector<HTMLElement>('.wm-br-l');
+    const right = wm.querySelector<HTMLElement>('.wm-br-r');
+    const text = wm.querySelector<HTMLElement>('.wm-text');
+    if (!left || !right || !text) return;
+
+    const box = wm.getBoundingClientRect();
+    const centre = box.left + box.width / 2;
+    const lBox = left.getBoundingClientRect();
+    const rBox = right.getBoundingClientRect();
+    const gap = 5;
+    const dxL = centre - (lBox.left + lBox.width / 2) - gap;
+    const dxR = centre - (rBox.left + rBox.width / 2) + gap;
+    const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
+    const timing: KeyframeAnimationOptions = { duration: 1600, fill: 'both' };
+    const frame = (
+      x: number,
+      opacity: number,
+      offset: number,
+      move: boolean
+    ) => ({
+      transform: `translateX(${x}px)`,
+      opacity,
+      offset,
+      easing: move ? ease : 'linear'
+    });
+
+    const runs = [
+      left.animate(
+        [
+          frame(dxL, 0, 0, false),
+          frame(dxL, 1, 0.1, true),
+          frame(dxL, 1, 0.24, true),
+          frame(0, 1, 0.58, true),
+          frame(0, 1, 0.76, false),
+          frame(-3, 0, 1, true)
+        ],
+        timing
+      ),
+      right.animate(
+        [
+          frame(dxR, 0, 0, false),
+          frame(dxR, 1, 0.1, true),
+          frame(dxR, 1, 0.24, true),
+          frame(0, 1, 0.58, true),
+          frame(0, 1, 0.76, false),
+          frame(3, 0, 1, true)
+        ],
+        timing
+      ),
+      text.animate(
+        [
+          {
+            opacity: 0,
+            transform: 'translateY(3px)',
+            offset: 0,
+            easing: 'linear'
+          },
+          {
+            opacity: 0,
+            transform: 'translateY(3px)',
+            offset: 0.28,
+            easing: ease
+          },
+          {
+            opacity: 1,
+            transform: 'translateY(0)',
+            offset: 0.6,
+            easing: 'linear'
+          },
+          {
+            opacity: 1,
+            transform: 'translateY(0)',
+            offset: 1,
+            easing: 'linear'
+          }
+        ],
+        timing
+      )
+    ];
+
+    void Promise.all(
+      runs.map((run) => run.finished.catch(() => undefined))
+    ).then(() => {
+      for (const run of runs) run.cancel();
+    });
+  });
 
   // Sliding indicator for the public nav: follows hover/focus, otherwise rests
   // on the section currently in view. Pure CSS/JS, no glass or shader.
@@ -222,7 +317,13 @@
           width="55"
           height="96"
         />
-        <span class="brand-word">Algohub</span>
+        <span class="brand-word wm" bind:this={wmEl}
+          ><span class="wm-br wm-br-l" aria-hidden="true">&lt;</span><span
+            class="wm-text"
+            ><span class="wm-algo">Algo</span><span class="wm-hub">Hub</span
+            ></span
+          ><span class="wm-br wm-br-r" aria-hidden="true">&gt;</span></span
+        >
       </a>
 
       <nav
@@ -554,7 +655,10 @@
           width="55"
           height="96"
         />
-        <span class="brand-word">Algohub</span>
+        <span class="brand-word"
+          ><span class="wm-algo">Algo</span><span class="wm-hub">Hub</span
+          ></span
+        >
       </a>
       <p>Ruang digital untuk pembelajaran dan operasional laboratorium.</p>
     </div>
@@ -584,6 +688,15 @@
 </div>
 
 <style>
+  /* Self-hosted Fredoka (SIL OFL) for the wordmark only; no external request. */
+  @font-face {
+    font-family: 'Fredoka';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/fonts/fredoka-500.woff2') format('woff2');
+  }
+
   :global(html) {
     scroll-behavior: smooth;
     scroll-padding-top: 7rem;
@@ -656,6 +769,43 @@
 
   .brand-word {
     padding-top: 0.15rem;
+    font-family: 'Fredoka', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .wm-algo {
+    color: var(--ah-ink);
+  }
+
+  .wm-hub {
+    color: var(--ah-coral);
+  }
+
+  /* Intro: "<>" opens into "<AlgoHub>", then settles on "AlgoHub". */
+  .wm {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    padding-inline: 0.42em;
+  }
+
+  .wm-br {
+    position: absolute;
+    top: 0.15rem;
+    color: var(--ah-coral);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  .wm-br-l {
+    left: 0.04em;
+  }
+
+  .wm-br-r {
+    right: 0.04em;
   }
 
   .brand-mark {
