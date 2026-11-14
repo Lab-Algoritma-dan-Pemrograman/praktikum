@@ -10,3 +10,4 @@ export type {
   PreviewStatus
 } from './browser-preview';
 export { normalizeBrowserTestOutput, warmupPreview } from './browser-preview';
+export { default as SiteFooter } from './SiteFooter.svelte';

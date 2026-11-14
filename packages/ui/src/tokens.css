@@ -1,4 +1,14 @@
 /* Algohub design tokens and global base. Single source for every app. */
+
+/* Self-hosted Fredoka (SIL OFL), used only for the AlgoHub wordmark. */
+@font-face {
+  font-family: 'Fredoka';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/fredoka-500.woff2') format('woff2');
+}
+
 :root {
   /* Brand and public surfaces: academic maroon from the project_ap language. */
   --ah-cream: #fdfbf7;
