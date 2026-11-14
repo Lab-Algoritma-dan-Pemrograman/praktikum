@@ -185,7 +185,8 @@
     background: var(--ah-ink);
   }
 
-  .brand-mark span:nth-child(4) {
+  .brand-mark span:nth-child(3) {
+    border-radius: 50% 0 50% 50%;
     background: var(--ah-blue);
   }
 
@@ -210,7 +211,7 @@
     height: 3.2rem;
     margin-bottom: 1.35rem;
     place-items: center;
-    border-radius: 1rem;
+    border-radius: var(--ah-console-radius-card);
     color: var(--ah-console-accent);
     background: var(--ah-console-accent-soft);
   }
