@@ -1,7 +1,99 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import type { AppIdentityData, ApplicationLink } from '@algohub/auth-client';
 
   export let data: AppIdentityData;
+
+  let navEl: HTMLElement;
+  let railEl: HTMLElement;
+  let activeHref = '#services';
+
+  // Sliding indicator for the public nav: follows hover/focus, otherwise rests
+  // on the section currently in view. Pure CSS/JS, no glass or shader.
+  onMount(() => {
+    if (!navEl || !railEl) return;
+    const links = Array.from(
+      navEl.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')
+    );
+    if (!links.length) return;
+    let hovered: HTMLAnchorElement | null = null;
+
+    const target = () =>
+      hovered ??
+      links.find((link) => link.getAttribute('href') === activeHref) ??
+      links[0];
+
+    const place = () => {
+      const link = target();
+      if (!link) return;
+      const navBox = navEl.getBoundingClientRect();
+      const box = link.getBoundingClientRect();
+      railEl.style.width = `${box.width}px`;
+      railEl.style.transform = `translateX(${box.left - navBox.left}px)`;
+      railEl.style.opacity = '1';
+    };
+
+    const sync = () => {
+      for (const link of links) {
+        if (link.getAttribute('href') === activeHref)
+          link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      }
+      place();
+    };
+
+    const onEnter = (event: Event) => {
+      hovered = event.currentTarget as HTMLAnchorElement;
+      place();
+    };
+    const onLeave = () => {
+      hovered = null;
+      place();
+    };
+
+    for (const link of links) {
+      link.addEventListener('pointerenter', onEnter);
+      link.addEventListener('focus', onEnter);
+      link.addEventListener('pointerleave', onLeave);
+      link.addEventListener('blur', onLeave);
+    }
+
+    const sections = links
+      .map((link) =>
+        document.querySelector(link.getAttribute('href') as string)
+      )
+      .filter((section): section is Element => Boolean(section));
+    const visible = new Map<Element, boolean>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries)
+          visible.set(entry.target, entry.isIntersecting);
+        const first = sections.find((section) => visible.get(section));
+        if (first?.id) activeHref = `#${first.id}`;
+        sync();
+      },
+      { rootMargin: '-45% 0px -45% 0px' }
+    );
+    for (const section of sections) observer.observe(section);
+
+    const onResize = () => place();
+    window.addEventListener('resize', onResize);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      railEl.style.transition = 'none';
+    }
+    requestAnimationFrame(sync);
+
+    return () => {
+      for (const link of links) {
+        link.removeEventListener('pointerenter', onEnter);
+        link.removeEventListener('focus', onEnter);
+        link.removeEventListener('pointerleave', onLeave);
+        link.removeEventListener('blur', onLeave);
+      }
+      observer.disconnect();
+      window.removeEventListener('resize', onResize);
+    };
+  });
 
   type AppName = ApplicationLink['name'];
 
@@ -133,7 +225,13 @@
         <span class="brand-word">Algohub</span>
       </a>
 
-      <nav class="desktop-nav" aria-label="Navigasi landing page">
+      <nav
+        class="desktop-nav"
+        aria-label="Navigasi landing page"
+        bind:this={navEl}
+      >
+        <span class="nav-indicator" aria-hidden="true" bind:this={railEl}
+        ></span>
         <a href="#services">Layanan</a>
         <a href="#workflow">Cara kerja</a>
         <a href="#information">Informasi</a>
@@ -537,8 +635,10 @@
     gap: 0.5rem;
     margin: 0 auto;
     padding: 0.4rem;
+    border: 1px solid var(--ah-line);
     border-radius: 999px;
     background: var(--ah-surface);
+    box-shadow: 0 18px 40px -30px rgba(45, 49, 66, 0.6);
   }
 
   .brand {
@@ -565,14 +665,39 @@
   }
 
   .desktop-nav {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.1rem;
     margin-left: auto;
+    isolation: isolate;
+  }
+
+  /* The "drop": one pill that stretches and slides between items. */
+  .nav-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: var(--ah-cream);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 8px 18px -12px rgba(45, 49, 66, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 0.38s var(--ah-ease-out),
+      width 0.38s var(--ah-ease-out),
+      opacity 0.2s ease;
+    will-change: transform, width;
   }
 
   .desktop-nav a,
   .text-link {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
@@ -583,13 +708,15 @@
     font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
-    transition:
-      color 0.3s ease,
-      background-color 0.3s ease;
+    transition: color 0.3s ease;
   }
 
   .desktop-nav a:hover,
   .desktop-nav a:focus-visible,
+  :global(.desktop-nav a[aria-current='true']) {
+    color: var(--ah-ink);
+  }
+
   .text-link:hover,
   .text-link:focus-visible {
     color: var(--ah-ink);
