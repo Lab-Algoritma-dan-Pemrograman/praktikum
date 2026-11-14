@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import { SiteFooter } from '@algohub/ui';
+  import { PublicNav, SiteFooter } from '@algohub/ui';
 
   let {
     eyebrow,
@@ -18,14 +18,6 @@
     children: import('svelte').Snippet;
   } = $props();
 
-  const links = [
-    { href: '/', label: 'Beranda' },
-    { href: '/jadwal', label: 'Jadwal' },
-    { href: '/berkas', label: 'Berkas' },
-    { href: '/asisten', label: 'Asisten' },
-    { href: '/laporan', label: 'Laporan' },
-    { href: '/modul', label: 'Modul' }
-  ];
 </script>
 
 <svelte:head>
@@ -36,34 +28,7 @@
 <div class="public">
   <a class="skip" href="#content">Lewati ke konten</a>
 
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="brand" href="/" aria-label="Algohub beranda">
-        <img
-          class="brand-mark"
-          src="/logo-mark.png"
-          alt=""
-          width="55"
-          height="96"
-          decoding="async"
-        />
-        <span class="brand-word"
-          ><span class="bw-algo">Algo</span><span class="bw-hub">Hub</span
-          ></span
-        >
-      </a>
-      <nav aria-label="Navigasi portal">
-        {#each links as link (link.href)}
-          <a
-            href={link.href}
-            aria-current={page.url.pathname === link.href ? 'page' : undefined}
-            >{link.label}</a
-          >
-        {/each}
-      </nav>
-      <a class="login" href="/login">Masuk</a>
-    </div>
-  </header>
+  <PublicNav mode="page" currentPath={page.url.pathname} />
 
   <main id="content" class="main">
     <header class="hero">
@@ -128,108 +93,23 @@
     transform: none;
   }
 
-  .topbar {
-    padding: 1.1rem 0 0.5rem;
-  }
 
-  .topbar-inner,
   .main {
     width: min(var(--ah-content-max), calc(100% - 2.5rem));
     margin: 0 auto;
   }
 
-  .topbar-inner {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem 1.25rem;
-    padding-bottom: 1rem;
-    border-bottom: 1.5px solid var(--ah-line);
-  }
 
-  .brand {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    text-decoration: none;
-  }
 
-  .brand-mark {
-    display: block;
-    width: auto;
-    height: 1.7rem;
-  }
 
-  .brand-word {
-    display: inline-flex;
-    align-items: baseline;
-    font-family: 'Fredoka', ui-rounded, 'Segoe UI', system-ui, sans-serif;
-    font-size: 1.22rem;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
 
-  .bw-algo {
-    color: var(--ah-ink);
-  }
 
-  .bw-hub {
-    color: var(--ah-coral);
-  }
 
-  nav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.15rem;
-  }
 
-  nav a {
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-    padding: 0 0.7rem;
-    border-radius: 999px;
-    color: var(--ah-muted);
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-  }
 
-  nav a:hover,
-  nav a:focus-visible {
-    color: var(--ah-ink);
-    background: color-mix(in srgb, var(--ah-rust) 8%, transparent);
-  }
 
-  nav a[aria-current='page'] {
-    color: var(--ah-ink);
-    box-shadow: inset 0 -2px 0 var(--ah-coral);
-  }
 
-  .login {
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-    margin-left: auto;
-    padding: 0 1rem;
-    border-radius: 999px;
-    color: var(--ah-cream);
-    background: var(--ah-coral);
-    font-size: 0.95rem;
-    font-weight: 500;
-    text-decoration: none;
-  }
 
-  .login:hover,
-  .login:focus-visible {
-    background: var(--ah-rust);
-  }
 
   .main {
     flex: 1;
@@ -507,17 +387,7 @@
   }
 
   @media (max-width: 760px) {
-    .topbar-inner nav {
-      order: 3;
-      width: 100%;
-      overflow-x: auto;
-      padding-bottom: 0.25rem;
-      scrollbar-width: thin;
-    }
 
-    .login {
-      margin-left: auto;
-    }
 
     .main :global(.section) {
       grid-template-columns: minmax(0, 1fr);
