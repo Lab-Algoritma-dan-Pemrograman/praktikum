@@ -140,3 +140,27 @@ export LEGACY_BATCH_ID="prod-real-20261115"
 ./legacy-migrate verify    # bandingkan snapshot vs sumber
 ./legacy-migrate apply     # mapping + verifikasi domain dalam satu transaksi
 ```
+
+## Produksi LIVE (2026-11-15)
+
+DNS di Cloudflare (nameserver aktif: `dion/dolly.ns.cloudflare.com`; panel Cloudhost
+sudah stale, bukan zona aktif). Semua domain `verified` di Vercel dan melayani 200:
+
+| Host                       | App       | Status                          |
+| -------------------------- | --------- | ------------------------------- |
+| `algohub.web.id` + `www`   | portal    | 200                             |
+| `auth.algohub.web.id`      | auth      | 200 (`/login` 200)              |
+| `admin.algohub.web.id`     | admin     | 401 tanpa sesi (benar)          |
+| `siakad.algohub.web.id`    | siakad    | 200                             |
+| `elearning.algohub.web.id` | elearning | 200                             |
+| `praktikum.algohub.web.id` | praktikum | 200                             |
+| `api.algohub.web.id`       | backend   | `/healthz` 200, `/readyz` ready |
+
+Uji login produksi (akun probe sementara, lalu dihapus): `POST /v1/auth/password`
+200 + cookie sesi, `/v1/auth/me` 200, `/v1/learning/levels` 200,
+`/v1/learning/leaderboard` 200 berisi data legacy asli (XP 5.575 peringkat 1).
+Data akhir: users 396, auth.users 396, identities 396, role 396, progress 16.576,
+attempts 1.634, `storage.objects` 96, `legacy_preserve.rows` 78.829.
+
+Catatan env: nilai `ALGOHUB_*_ENABLED` harus `true` (default di kode `false`).
+Jangan menyalin nilai env dari project staging lewat API — yang keluar ciphertext.
