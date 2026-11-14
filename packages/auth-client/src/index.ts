@@ -370,7 +370,10 @@ export function canAccessAdminRoute(
   );
 }
 
+export const identityWorkspacePath = '/workspace';
+
 export function safeRelativePath(value: string): string | null {
+  if (value === identityWorkspacePath) return value;
   return adminNavigation.some((item) => item.href === value) ? value : null;
 }
 

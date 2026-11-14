@@ -1990,7 +1990,6 @@
       padding: 4rem 1.25rem 3rem;
       border-radius: 4rem 4rem 1.5rem 1.5rem;
     }
-
   }
 
   @media (max-width: 390px) {
@@ -2001,6 +2000,5 @@
     .information-index {
       display: none;
     }
-
   }
 </style>

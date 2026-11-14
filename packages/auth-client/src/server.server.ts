@@ -13,6 +13,7 @@ import {
   type RequestEvent
 } from '@sveltejs/kit';
 import {
+  identityWorkspacePath,
   safeRelativePath,
   safeReturnTo,
   type AppName,
@@ -912,7 +913,12 @@ export function startAppSSO(event: IdentityEvent): never {
   privateIdentityPage(event);
   const config = identityConfig(event.url);
   const path = safeRelativePath(event.url.searchParams.get('return_to') ?? '/');
-  if (!path || event.url.searchParams.getAll('return_to').length > 1)
+  if (
+    !path ||
+    event.url.searchParams.getAll('return_to').length > 1 ||
+    (path === identityWorkspacePath &&
+      portalOrigin(config) !== config.appOrigin)
+  )
     throw error(422, 'Tujuan login tidak diizinkan.');
   const { verifier, challenge } = pkce();
   const returnTo = `${config.appOrigin}${path}`;
@@ -969,6 +975,19 @@ function centralConfig(event: IdentityEvent): IdentityConfig {
   return config;
 }
 
+function portalOrigin(config: IdentityConfig): string | null {
+  return (
+    applicationLinks(config).find((link) => link.name === 'portal')?.origin ??
+    null
+  );
+}
+
+function workspaceEntry(config: IdentityConfig): string | null {
+  const portal = portalOrigin(config);
+  if (!portal) return null;
+  return `${portal}/api/auth/start?return_to=${encodeURIComponent(identityWorkspacePath)}`;
+}
+
 async function finishCentralLogin(
   event: IdentityEvent,
   pending: PendingLogin
@@ -976,6 +995,8 @@ async function finishCentralLogin(
   const config = centralConfig(event);
   if (!pending.returnTo) {
     event.cookies.delete(AUTH_PENDING, { path: '/', secure: config.secure });
+    const entry = workspaceEntry(config);
+    if (entry) throw redirect(303, entry, { external: config.allowedOrigins });
     throw redirect(303, '/');
   }
   if (!pending.challenge || !challengePattern.test(pending.challenge))

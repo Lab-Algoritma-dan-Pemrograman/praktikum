@@ -180,6 +180,11 @@ test('return paths and origins are explicit allowlists', () => {
     safeReturnTo(`${origins[2]}/profil`, origins),
     `${origins[2]}/profil`
   );
+  assert.equal(safeRelativePath('/workspace'), '/workspace');
+  assert.equal(
+    safeReturnTo(`${origins[0]}/workspace`, origins),
+    `${origins[0]}/workspace`
+  );
   for (const path of [
     '//evil.test',
     '/callback',
@@ -744,6 +749,52 @@ test('central login resumes an existing opaque session instead of requiring pass
   assert.equal(destination.searchParams.has('access_token'), false);
 });
 
+test('workspace return target is only accepted on the portal host', async () => {
+  mock.method(globalThis, 'fetch', async () =>
+    envelope({ code: 'prepared_code', expires_in: 120 })
+  );
+  const portal = event(`/api/auth/start?return_to=%2Fworkspace`, {
+    origin: origins[0],
+    jar: new Map([
+      ['algohub_session', 'portal_session'],
+      ['algohub_csrf', 'portal_csrf']
+    ])
+  });
+  const destination = new URL(await location(() => startAppSSO(portal)));
+  assert.equal(destination.origin, origins[1]);
+  assert.equal(destination.pathname, '/login');
+  assert.equal(
+    new URL(destination.searchParams.get('return_to')!).pathname,
+    '/workspace'
+  );
+  await assert.rejects(
+    async () =>
+      startAppSSO(
+        event('/api/auth/start?return_to=%2Fworkspace', { origin: origins[2] })
+      ),
+    status(422)
+  );
+});
+
+test('central login without a return target hands off to the portal workspace', async () => {
+  const app = event('/login', {
+    origin: origins[1],
+    jar: new Map([
+      ['algohub_session', 'auth_session'],
+      ['algohub_csrf', 'auth_csrf']
+    ])
+  });
+  mock.method(globalThis, 'fetch', async (input: unknown) => {
+    if (String(input).endsWith('/me')) return envelope(principal);
+    throw new Error(`Unexpected upstream call: ${String(input)}`);
+  });
+  const destination = await location(() => centralLoginLoad(app));
+  assert.equal(
+    destination,
+    `${origins[0]}/api/auth/start?return_to=%2Fworkspace`
+  );
+});
+
 test('password login rejects missing pending state and nonce mismatch before sending credentials', async () => {
   const missing = event('/login?/password', {
     origin: origins[1],
@@ -879,7 +930,7 @@ test('OAuth callback uses only cookie-bound PKCE and target, rejecting return_to
         })
       )
     ),
-    '/'
+    `${origins[0]}/api/auth/start?return_to=%2Fworkspace`
   );
   await assert.rejects(
     () =>
