@@ -11,10 +11,23 @@
   const { data }: { data: AppIdentityData & { principal: Principal } } =
     $props();
 
-  const catalogue: Record<string, string> = {
-    elearning: 'Kurikulum, level, XP, dan riwayat belajar.',
-    praktikum: 'Sesi praktikum, soal, jawaban, dan penilaian.',
-    siakad: 'Kelas, jadwal, presensi, dan inventaris.'
+  const catalogue: Record<string, { kicker: string; hint: string }> = {
+    siakad: {
+      kicker: 'Akademik',
+      hint: 'Kelas, jadwal, presensi, dan inventaris.'
+    },
+    elearning: {
+      kicker: 'Pembelajaran',
+      hint: 'Kurikulum, level, XP, dan riwayat belajar.'
+    },
+    praktikum: {
+      kicker: 'Praktikum',
+      hint: 'Sesi praktikum, soal, jawaban, dan penilaian.'
+    },
+    admin: {
+      kicker: 'Operasional',
+      hint: 'Kelola pengguna, permission, dan audit.'
+    }
   };
 
   const hasAdmin = $derived(
@@ -31,7 +44,10 @@
       )
       .map((app) => ({
         ...app,
-        hint: catalogue[app.name] ?? 'Kelola pengguna, permission, dan audit.',
+        kicker: catalogue[app.name]?.kicker ?? 'Operasional',
+        hint:
+          catalogue[app.name]?.hint ??
+          'Kelola pengguna, permission, dan audit.',
         href: `${app.origin}/api/auth/start?return_to=%2F`
       }))
   );
@@ -113,10 +129,30 @@
     <ul class="tiles">
       {#each workspace as app (app.name)}
         <li>
-          <a class="tile" href={app.href}>
-            <span class="tile-label">{app.label}</span>
-            <span class="tile-hint">{app.hint}</span>
-            <span class="tile-go" aria-hidden="true">Buka →</span>
+          <a class="tile" href={app.href} data-app={app.name}>
+            <span class="tile-media" aria-hidden="true"></span>
+            <span class="tile-scrim" aria-hidden="true"></span>
+            <span class="tile-orbit" aria-hidden="true"></span>
+            <span class="tile-kicker">{app.kicker}</span>
+            <span class="tile-body">
+              <span class="tile-title">{app.label}</span>
+              <span class="tile-hint">{app.hint}</span>
+            </span>
+            <span class="tile-go" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                width="22"
+                height="22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.25"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M7 17 17 7" />
+                <path d="M8.5 7H17v8.5" />
+              </svg>
+            </span>
           </a>
         </li>
       {/each}
@@ -270,6 +306,9 @@
   }
 
   .tiles {
+    --tile-pad: 1.25rem;
+    --tile-lime: #c7f19d;
+    --tile-ink: #0f1f10;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
     gap: 1rem;
@@ -278,47 +317,200 @@
     list-style: none;
   }
 
+  .tiles li {
+    display: flex;
+  }
+
+  /* Circle Expand Card: media fills the tile, one lime circle grows on hover. */
   .tile {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    height: 100%;
+    justify-content: space-between;
+    gap: 2.5rem;
+    width: 100%;
+    min-height: 16.5rem;
     box-sizing: border-box;
-    border: 1px solid var(--ah-line);
-    border-radius: var(--ah-radius-md);
-    padding: 1.5rem;
-    background: #fff;
-    color: inherit;
+    padding: var(--tile-pad);
+    border: 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--ah-ink-strong);
     text-decoration: none;
-    transition:
-      transform 160ms var(--ah-ease-out),
-      border-color 160ms var(--ah-ease-out);
+    color: #fff;
+    transition: color 320ms var(--ah-ease-out);
   }
 
-  .tile:hover {
-    transform: translateY(-2px);
-    border-color: var(--ah-ink-strong);
+  .tile-media,
+  .tile-scrim,
+  .tile-orbit {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
   }
 
-  .tile-label {
-    font-size: 1.125rem;
-    font-weight: 800;
+  .tile-media {
+    z-index: 0;
+    background: linear-gradient(150deg, #8a1538 0%, #2d3142 62%, #1b1f2a 100%);
+  }
+
+  .tile-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        120% 90% at 78% 8%,
+        rgba(255, 255, 255, 0.35),
+        transparent 58%
+      ),
+      radial-gradient(
+        80% 70% at 12% 96%,
+        rgba(255, 255, 255, 0.14),
+        transparent 60%
+      );
+    mix-blend-mode: soft-light;
+  }
+
+  /* Dark overlay + bottom text mask, same idea as the reference card. */
+  .tile-scrim {
+    z-index: 0;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0.45) 100%),
+      rgba(0, 0, 0, 0.3);
+    transition: opacity 320ms var(--ah-ease-out);
+  }
+
+  /* The circle sits exactly under the arrow button, then grows to fill. */
+  .tile-orbit {
+    z-index: 1;
+    inset: auto;
+    top: var(--tile-pad);
+    right: var(--tile-pad);
+    width: 3.375rem;
+    height: 3.375rem;
+    border-radius: 999px;
+    background: var(--tile-lime);
+    transform: scale(1);
+    transform-origin: center;
+    transition: transform 520ms var(--ah-ease-out);
+  }
+
+  .tile-kicker {
+    position: relative;
+    z-index: 2;
+    padding-right: 4rem;
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .tile-body {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tile-title {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
     letter-spacing: -0.02em;
-    color: var(--ah-ink-strong);
   }
 
   .tile-hint {
     font-size: 0.9375rem;
-    line-height: 1.55;
-    color: var(--ah-muted);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 320ms var(--ah-ease-out);
   }
 
   .tile-go {
-    margin-top: auto;
-    padding-top: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--ah-ink-strong);
+    position: absolute;
+    z-index: 3;
+    top: var(--tile-pad);
+    right: var(--tile-pad);
+    display: grid;
+    place-items: center;
+    width: 3.375rem;
+    height: 3.375rem;
+    color: var(--tile-ink);
+    transition:
+      transform 320ms var(--ah-ease-out),
+      color 320ms var(--ah-ease-out);
+  }
+
+  .tile:hover,
+  .tile:focus-visible {
+    color: var(--tile-ink);
+  }
+
+  .tile:hover .tile-scrim,
+  .tile:focus-visible .tile-scrim {
+    opacity: 0;
+  }
+
+  .tile:hover .tile-orbit,
+  .tile:focus-visible .tile-orbit {
+    transform: scale(26);
+  }
+
+  .tile:hover .tile-hint,
+  .tile:focus-visible .tile-hint {
+    color: rgba(15, 31, 16, 0.78);
+  }
+
+  .tile:hover .tile-go,
+  .tile:focus-visible .tile-go {
+    transform: rotate(45deg);
+  }
+
+  .tile:focus-visible {
+    outline: var(--ah-focus-brand);
+    outline-offset: 3px;
+  }
+
+  .tile[data-app='siakad'] .tile-media {
+    background: linear-gradient(150deg, #8a1538 0%, #2d3142 62%, #1b1f2a 100%);
+  }
+
+  .tile[data-app='elearning'] .tile-media {
+    background: linear-gradient(150deg, #1f5a75 0%, #26405c 58%, #1b1f2a 100%);
+  }
+
+  .tile[data-app='praktikum'] .tile-media {
+    background: linear-gradient(150deg, #0b6b57 0%, #25453c 58%, #1b1f2a 100%);
+  }
+
+  .tile[data-app='admin'] .tile-media {
+    background: linear-gradient(150deg, #5a3a7a 0%, #33304f 58%, #1b1f2a 100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile,
+    .tile-scrim,
+    .tile-orbit,
+    .tile-go,
+    .tile-hint {
+      transition-duration: 1ms;
+    }
+
+    .tile:hover .tile-orbit,
+    .tile:focus-visible .tile-orbit {
+      transform: scale(1);
+    }
+
+    .tile:hover .tile-go,
+    .tile:focus-visible .tile-go {
+      transform: none;
+    }
   }
 
   .note {
