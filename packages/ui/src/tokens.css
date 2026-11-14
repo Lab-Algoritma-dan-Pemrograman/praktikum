@@ -1,62 +1,64 @@
 /* Algohub design tokens and global base. Single source for every app. */
 :root {
-  /* Brand and public surfaces: Burrow direction. */
-  --ah-cream: #f7efe2;
-  --ah-paper: #fffaf1;
-  --ah-surface: #ebe2d3;
-  --ah-ink: #1f0b08;
-  --ah-ink-strong: #150705;
-  --ah-muted: #6a5c53;
-  --ah-muted-on-dark: #cdbdb0;
-  --ah-coral: #f26b45;
-  --ah-blue: #63a4bc;
-  --ah-yellow: #dcb155;
-  --ah-green: #3dac91;
-  --ah-green-ink: #2f6355;
-  --ah-rust: #96503f;
-  --ah-pink: #e2a8d3;
-  --ah-khaki: #8e8565;
-  --ah-line: #1f0b0826;
-  --ah-line-strong: #1f0b0870;
-  --ah-focus-brand: 3px solid var(--ah-ink);
+  /* Brand and public surfaces: academic maroon from the project_ap language. */
+  --ah-cream: #fdfbf7;
+  --ah-paper: #ffffff;
+  --ah-surface: #f4ebe8;
+  --ah-ink: #2d3142;
+  --ah-ink-strong: #1b1f2a;
+  --ah-muted: #64748b;
+  --ah-muted-on-dark: #ddc9cf;
+  --ah-coral: #b21f47;
+  --ah-blue: #48cae4;
+  --ah-yellow: #ffc300;
+  --ah-green: #06d6a0;
+  --ah-green-ink: #0b6b57;
+  --ah-rust: #8a1538;
+  --ah-pink: #ffafcc;
+  --ah-khaki: #9d4edd;
+  --ah-line: #2d314226;
+  --ah-line-strong: #2d314266;
+  --ah-focus-brand: 3px solid var(--ah-coral);
 
-  /* Authenticated console surfaces: calm technical lab. */
+  /* Authenticated console surfaces: maroon academic lab. */
   --ah-console-max: 76rem;
-  --ah-console-canvas: #f3f6f7;
+  --ah-console-canvas: #fdfbf7;
   --ah-console-canvas-gradient: linear-gradient(
     180deg,
-    #eaf2f1 0,
-    #f3f6f7 24rem
+    #fdf2f4 0,
+    #fdfbf7 24rem
   );
-  --ah-console-raised: #fbfcfc;
+  --ah-console-raised: #fffaf9;
   --ah-console-card: #ffffff;
-  --ah-console-sunken: #f1f5f6;
-  --ah-console-heading: #102a43;
-  --ah-console-text: #17324d;
-  --ah-console-muted: #4d6872;
-  --ah-console-accent: #245b5a;
-  --ah-console-accent-strong: #174c4b;
-  --ah-console-accent-ink: #326b68;
-  --ah-console-accent-soft: #e7f2f0;
-  --ah-console-accent-hover: #eef7f5;
-  --ah-console-line: #cbd9dc;
-  --ah-console-line-subtle: #d6e1e3;
-  --ah-console-line-strong: #a7bcb9;
-  --ah-console-warning: #b87327;
-  --ah-console-warning-soft: #fff5e5;
-  --ah-console-danger: #963f32;
-  --ah-console-danger-ink: #8b452e;
-  --ah-console-danger-line: #d2a08c;
-  --ah-console-danger-soft: #fff0ed;
-  --ah-console-scrim: #102a4366;
-  --ah-console-focus-color: #d77a38;
+  --ah-console-sunken: #f8f0ef;
+  --ah-console-heading: #2d3142;
+  --ah-console-text: #334155;
+  --ah-console-muted: #64748b;
+  --ah-console-accent: #8a1538;
+  --ah-console-accent-strong: #5c0e25;
+  --ah-console-accent-ink: #8a1538;
+  --ah-console-accent-soft: #fdf2f4;
+  --ah-console-accent-hover: #fbe9ee;
+  --ah-console-line: #e9dfe1;
+  --ah-console-line-subtle: #f1e7e9;
+  --ah-console-line-strong: #cdb4b9;
+  --ah-console-warning: #b45309;
+  --ah-console-warning-soft: #fef3c7;
+  --ah-console-danger: #b42318;
+  --ah-console-danger-ink: #a01033;
+  --ah-console-danger-line: #e9aab4;
+  --ah-console-danger-soft: #fde8ec;
+  --ah-console-scrim: #2d314266;
+  --ah-console-focus-color: #8a1538;
   --ah-console-focus: 3px solid var(--ah-console-focus-color);
-  --ah-console-radius-badge: 0.35rem;
-  --ah-console-radius-control: 0.45rem;
-  --ah-console-radius-card: 0.65rem;
-  --ah-shadow-card: 0 1px 2px #102a430d;
-  --ah-shadow-float: 0 10px 30px #18394814;
-  --ah-shadow-drawer: 8px 0 24px #1839481f;
+  --ah-console-radius-badge: 0.375rem;
+  --ah-console-radius-control: 0.75rem;
+  --ah-console-radius-card: 1rem;
+  --ah-shadow-card: 0 2px 8px -2px #2d314214;
+  --ah-shadow-float: 0 10px 30px #8a15381a;
+  --ah-shadow-drawer: 8px 0 24px #2d314224;
+  --ah-shadow-bubbly: 0 4px 0 #5c0e25;
+  --ah-shadow-bubbly-soft: 0 4px 0 #f0e2e5;
 
   /* Shared scale. */
   --ah-content-max: 76rem;

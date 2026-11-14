@@ -114,7 +114,7 @@
     name="description"
     content="Satu pintu untuk layanan akademik, e-learning, praktikum, dan operasional laboratorium Algohub."
   />
-  <meta name="theme-color" content="#f7efe2" />
+  <meta name="theme-color" content="#fdfbf7" />
 </svelte:head>
 
 <div class="landing">
@@ -762,6 +762,7 @@
     padding: 0.75rem;
     border-radius: 2rem;
     background: var(--ah-coral);
+    color: var(--ah-cream);
   }
 
   .mobile-menu nav a {
@@ -769,7 +770,8 @@
     min-height: 3.25rem;
     align-items: center;
     padding: 0.5rem 0.75rem;
-    border-bottom: 1.5px solid #1f0b0833;
+    border-bottom: 1.5px solid
+      color-mix(in srgb, var(--ah-cream) 24%, transparent);
     font-size: clamp(1.35rem, 6vw, 1.9rem);
     font-weight: 500;
     letter-spacing: -0.03em;
@@ -908,7 +910,8 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0 0.4rem;
-    border-bottom: 1px solid #f7efe224;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--ah-cream) 14%, transparent);
     color: var(--ah-muted-on-dark);
   }
 
@@ -944,7 +947,7 @@
     list-style: none;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.78rem;
-    color: #f7efe2cc;
+    color: color-mix(in srgb, var(--ah-cream) 80%, transparent);
   }
 
   .visual-list span {
@@ -1136,6 +1139,14 @@
     padding: clamp(1.5rem, 3vw, 2.5rem);
     border-radius: 2rem;
     color: var(--ah-ink);
+    transition:
+      transform var(--ah-motion-standard) cubic-bezier(0.25, 0.8, 0.25, 1),
+      box-shadow var(--ah-motion-standard) ease;
+  }
+
+  .service-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 0 color-mix(in srgb, var(--ah-ink) 16%, transparent);
   }
 
   .service-panel.blue {
@@ -1147,7 +1158,12 @@
   }
 
   .service-panel.coral {
-    background: var(--ah-coral);
+    color: var(--ah-cream);
+    background: var(--ah-rust);
+  }
+
+  .service-panel.coral .service-link {
+    border-top-color: color-mix(in srgb, var(--ah-cream) 35%, transparent);
   }
 
   .service-panel.green {
@@ -1233,7 +1249,7 @@
     gap: 1rem;
     margin-top: 1.4rem;
     padding-top: 0.9rem;
-    border-top: 1.5px solid #1f0b0866;
+    border-top: 1.5px solid var(--ah-line-strong);
     font-size: 0.95rem;
     font-weight: 500;
     text-decoration: none;
@@ -1285,11 +1301,12 @@
     grid-template-columns: 2.5rem minmax(0, 1fr);
     gap: 1.1rem;
     padding: 1.4rem 0;
-    border-top: 1.5px solid #f7efe23d;
+    border-top: 1.5px solid color-mix(in srgb, var(--ah-cream) 24%, transparent);
   }
 
   .workflow-steps li:last-child {
-    border-bottom: 1.5px solid #f7efe23d;
+    border-bottom: 1.5px solid
+      color-mix(in srgb, var(--ah-cream) 24%, transparent);
   }
 
   .step-index {
@@ -1507,7 +1524,7 @@
   }
 
   .closing .kicker {
-    color: #3f2318;
+    color: var(--ah-cream);
   }
 
   .closing h2 {
@@ -1519,7 +1536,7 @@
   .closing > p {
     max-width: 40rem;
     margin: 1.4rem auto 2rem;
-    color: #3f2318;
+    color: var(--ah-cream);
   }
 
   .closing-shape {
@@ -1605,7 +1622,7 @@
     gap: 1rem;
     margin: 0.75rem 0 0;
     padding-top: 1.25rem;
-    border-top: 1px solid #f7efe23d;
+    border-top: 1px solid color-mix(in srgb, var(--ah-cream) 24%, transparent);
     color: var(--ah-muted-on-dark);
     font-size: 0.8rem;
   }

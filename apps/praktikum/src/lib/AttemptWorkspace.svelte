@@ -307,7 +307,7 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    border-color: #8db1ac;
+    border-color: var(--ah-console-line-strong);
   }
   .countdown {
     font:
