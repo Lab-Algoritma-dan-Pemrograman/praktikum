@@ -108,8 +108,9 @@
   // on the section currently in view. Pure CSS/JS, no glass or shader.
   onMount(() => {
     if (!navEl || !railEl) return;
-    const links = Array.from(
-      navEl.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')
+    const links = Array.from(navEl.querySelectorAll<HTMLAnchorElement>('a'));
+    const anchorLinks = links.filter((link) =>
+      (link.getAttribute('href') ?? '').startsWith('#')
     );
     if (!links.length) return;
     let hovered: HTMLAnchorElement | null = null;
@@ -154,7 +155,7 @@
       link.addEventListener('blur', onLeave);
     }
 
-    const sections = links
+    const sections = anchorLinks
       .map((link) =>
         document.querySelector(link.getAttribute('href') as string)
       )
@@ -325,6 +326,9 @@
         <a href="#services">Layanan</a>
         <a href="#workflow">Cara kerja</a>
         <a href="#information">Informasi</a>
+        <a href="/jadwal">Jadwal</a>
+        <a href="/berkas">Berkas</a>
+        <a href="/asisten">Asisten</a>
         <a href="#faq">FAQ</a>
       </nav>
 
@@ -348,6 +352,9 @@
           <a href="#services">Layanan</a>
           <a href="#workflow">Cara kerja</a>
           <a href="#information">Informasi</a>
+          <a href="/jadwal">Jadwal</a>
+          <a href="/berkas">Berkas</a>
+          <a href="/asisten">Asisten</a>
           <a href="#faq">FAQ</a>
           <a href={data.signedIn ? '/workspace' : '/login'}>
             {data.signedIn ? 'Buka ruang kerja' : 'Masuk ke Algohub'}
@@ -609,6 +616,7 @@
       { href: '#services', label: 'Layanan' },
       { href: '#workflow', label: 'Cara kerja' },
       { href: '/jadwal', label: 'Jadwal' },
+      { href: '/berkas', label: 'Berkas' },
       { href: '/asisten', label: 'Asisten' },
       { href: '/login', label: 'Masuk' }
     ]}

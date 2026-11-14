@@ -21,6 +21,7 @@
   const links = [
     { href: '/', label: 'Beranda' },
     { href: '/jadwal', label: 'Jadwal' },
+    { href: '/berkas', label: 'Berkas' },
     { href: '/asisten', label: 'Asisten' },
     { href: '/laporan', label: 'Laporan' },
     { href: '/modul', label: 'Modul' }
