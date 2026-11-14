@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
+  import { SiteFooter } from '@algohub/ui';
 
   let {
     eyebrow,
@@ -37,10 +38,18 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="/" aria-label="Algohub beranda">
-        <span class="brand-mark" aria-hidden="true"
-          ><span></span><span></span><span></span><span></span></span
+        <img
+          class="brand-mark"
+          src="/logo-mark.png"
+          alt=""
+          width="55"
+          height="96"
+          decoding="async"
+        />
+        <span class="brand-word"
+          ><span class="bw-algo">Algo</span><span class="bw-hub">Hub</span
+          ></span
         >
-        <span class="brand-word">Algohub</span>
       </a>
       <nav aria-label="Navigasi portal">
         {#each links as link (link.href)}
@@ -80,25 +89,15 @@
     {@render children()}
   </main>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <p class="footer-brand">
-        <span class="brand-mark" aria-hidden="true"
-          ><span></span><span></span><span></span><span></span></span
-        >
-        Algohub
-      </p>
-      <nav aria-label="Navigasi footer portal">
-        {#each links as link (link.href)}
-          <a href={link.href}>{link.label}</a>
-        {/each}
-        <a href="/bantuan">Bantuan</a>
-        <a href="/privacy">Privasi</a>
-        <a href="/terms">Ketentuan</a>
-      </nav>
-      <p class="copyright">© 2026 Algohub. Sistem akademik dan laboratorium.</p>
-    </div>
-  </footer>
+  <SiteFooter
+    links={[
+      { href: '/jadwal', label: 'Jadwal' },
+      { href: '/asisten', label: 'Asisten' },
+      { href: '/bantuan', label: 'Bantuan' },
+      { href: '/privacy', label: 'Privasi' }
+    ]}
+    note="Sistem akademik dan laboratorium."
+  />
 </div>
 
 <style>
@@ -133,8 +132,7 @@
   }
 
   .topbar-inner,
-  .main,
-  .footer-inner {
+  .main {
     width: min(var(--ah-content-max), calc(100% - 2.5rem));
     margin: 0 auto;
   }
@@ -150,6 +148,7 @@
 
   .brand {
     display: inline-flex;
+    min-height: 44px;
     align-items: center;
     gap: 0.6rem;
     font-size: 1.25rem;
@@ -159,28 +158,27 @@
   }
 
   .brand-mark {
-    display: grid;
-    width: 2rem;
-    height: 2.3rem;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.14rem;
-    padding: 0.28rem;
-    border-radius: 50% 50% 0.4rem 0.4rem / 60% 60% 0 0;
-    background: var(--ah-rust);
+    display: block;
+    width: auto;
+    height: 1.7rem;
   }
 
-  .brand-mark span {
-    border-radius: 50%;
-    background: var(--ah-cream);
+  .brand-word {
+    display: inline-flex;
+    align-items: baseline;
+    font-family: 'Fredoka', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+    font-size: 1.22rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
   }
 
-  .brand-mark span:nth-child(2) {
-    border-radius: 50% 50% 0 50%;
-    background: var(--ah-ink);
+  .bw-algo {
+    color: var(--ah-ink);
   }
 
-  .brand-mark span:nth-child(4) {
-    background: var(--ah-blue);
+  .bw-hub {
+    color: var(--ah-coral);
   }
 
   nav {
@@ -342,48 +340,6 @@
     margin: 1.25rem 0 0;
     color: var(--ah-muted);
     font-size: clamp(1rem, 1.4vw, 1.1rem);
-  }
-
-  .footer {
-    margin-top: auto;
-    color: var(--ah-cream);
-    background: var(--ah-ink);
-  }
-
-  .footer-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: 1.5rem 2rem;
-    padding: clamp(2rem, 4vw, 3rem) 0;
-  }
-
-  .footer-brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-
-  .footer nav a {
-    color: var(--ah-muted-on-dark);
-  }
-
-  .footer nav a:hover,
-  .footer nav a:focus-visible {
-    color: var(--ah-cream);
-    background: color-mix(in srgb, var(--ah-cream) 12%, transparent);
-  }
-
-  .copyright {
-    grid-column: 1 / -1;
-    margin: 0;
-    padding-top: 1rem;
-    border-top: 1px solid color-mix(in srgb, var(--ah-cream) 20%, transparent);
-    color: var(--ah-muted-on-dark);
-    font-size: 0.8rem;
   }
 
   /* Content primitives shared by the portal sub-pages. */
@@ -578,10 +534,6 @@
 
     .main :global(.items > li > p) {
       grid-column: 1;
-    }
-
-    .footer-inner {
-      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
