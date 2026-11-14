@@ -2,7 +2,27 @@
 
 Batch: `prod-real-20261115` (idempoten, aman dijalankan ulang).
 Sumber: DB legacy `project_ap` (read-only, hanya SELECT) + 96 objek storage.
-Tujuan: staging Supabase `yunznjsfokrpxcqfloic` (DB yang dipakai `api.staging.algohub.web.id`).
+
+- **Staging**: project `yunznjsfokrpxcqfloic` — DB + storage sudah lengkap dan terverifikasi.
+- **Produksi**: project `zngmetvdvsfowerwngma` — DB + storage **sudah terisi** (2026-11-15),
+  sisa deploy aplikasi + pengalihan DNS.
+
+## Angka produksi (terverifikasi 2026-11-15)
+
+| Item                                       | Jumlah                                                 |
+| ------------------------------------------ | ------------------------------------------------------ |
+| migrasi skema                              | `0002`–`0008` (38 tabel public + 3 `legacy_preserve`)  |
+| `legacy_preserve.rows`                     | 78.829 baris / 111 relasi, fingerprint `72f6104801b7…` |
+| `verify`                                   | 111 tabel, 78.829 baris, **0 mismatch**                |
+| users / auth.users / identities / role     | 396 / 396 / 396 / 396                                  |
+| learning progress / profiles               | 16.576 / 396                                           |
+| practicum attempts / answers               | 1.634 / 3.746                                          |
+| academic attendance records                | 657 (+21 overflow)                                     |
+| audit_logs                                 | 24.279                                                 |
+| storage                                    | 96 objek, 34.741.189 byte, sha256 96/96 cocok          |
+| hash password beda                         | **0**                                                  |
+| login GoTrue produksi (akun uji sementara) | 200, lalu akun dihapus                                 |
+| ukuran DB produksi                         | 127 MB                                                 |
 
 ## Hasil yang sudah di staging
 
