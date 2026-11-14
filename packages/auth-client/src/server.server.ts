@@ -1064,12 +1064,23 @@ async function loginForm(
   return { pending, form };
 }
 
+const nimPattern = /^[0-9]{6,24}$/;
+
+function loginEmail(identifier: string, env: Environment): string {
+  const value = identifier.trim().toLowerCase();
+  if (value.includes('@')) return value;
+  const domain = env.ALGOHUB_LOGIN_EMAIL_DOMAIN ?? 'users.algohub.web.id';
+  return nimPattern.test(value) ? `${value}@${domain}` : '';
+}
+
 export async function passwordLogin(event: IdentityEvent) {
   const { pending, form } = await loginForm(event);
-  const email = form.get('email')?.trim() ?? '';
+  const email = loginEmail(form.get('email') ?? '', process.env);
   const password = form.get('password') ?? '';
   if (!email || email.length > 254 || !password || password.length > 1024)
-    return fail(422, { message: 'Isi email dan password yang valid.' });
+    return fail(422, {
+      message: 'Isi email atau NIM, dan password yang valid.'
+    });
   const response = await identityRequest(event, '/v1/auth/password', {
     method: 'POST',
     body: { email, password }

@@ -775,6 +775,49 @@ test('password login rejects missing pending state and nonce mismatch before sen
   await assert.rejects(() => passwordLogin(mismatch), status(403));
 });
 
+test('password login turns a bare NIM into the identity email domain', async () => {
+  const seen: string[] = [];
+  mock.method(globalThis, 'fetch', async (url: unknown, init?: RequestInit) => {
+    if (String(url).includes('/v1/auth/password'))
+      seen.push(
+        String((JSON.parse(String(init?.body)) as { email: string }).email)
+      );
+    return unauthorized();
+  });
+  const login = event('/login', { origin: origins[1] });
+  const { loginToken } = await centralLoginLoad(login);
+  const submit = (identifier: string) =>
+    event('/login?/password', {
+      origin: origins[1],
+      method: 'POST',
+      jar: login.jar,
+      headers: {
+        origin: origins[1],
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        email: identifier,
+        password: 'fixture-password',
+        login_token: loginToken
+      }).toString()
+    });
+  const attempt = async (identifier: string) => {
+    try {
+      await passwordLogin(submit(identifier));
+    } catch {
+      return undefined;
+    }
+  };
+  await attempt(' 202615081 ');
+  await attempt('nama@itpln.ac.id');
+  const invalid = await passwordLogin(submit('bukan-nim'));
+  assert.deepEqual(seen, [
+    '202615081@users.algohub.web.id',
+    'nama@itpln.ac.id'
+  ]);
+  assert.equal(invalid?.status, 422);
+});
+
 test('OAuth callback uses only cookie-bound PKCE and target, rejecting return_to spoofing and replay', async () => {
   process.env.ALGOHUB_ENABLE_FIXTURES = 'false';
   process.env.SUPABASE_URL = 'http://supabase.localhost:9999';

@@ -60,7 +60,7 @@
       <form method="POST" action="?/password">
         <input type="hidden" name="login_token" value={data.loginToken} />
         <div class="field">
-          <label for="email">Email</label>
+          <label for="email">Email atau NIM</label>
           <div class="control">
             <span class="icon" aria-hidden="true">
               <svg
@@ -76,9 +76,10 @@
             <input
               id="email"
               name="email"
-              type="email"
+              type="text"
+              inputmode="email"
               autocomplete="username"
-              placeholder="nama@algohub.web.id"
+              placeholder="nama@algohub.web.id atau NIM"
               required
               maxlength="254"
             />
