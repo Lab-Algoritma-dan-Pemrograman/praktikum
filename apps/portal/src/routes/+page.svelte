@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { SiteFooter } from '@algohub/ui';
-  import type { AppIdentityData, ApplicationLink } from '@algohub/auth-client';
+  import type { ApplicationLink } from '@algohub/auth-client';
 
-  export let data: AppIdentityData;
+  export let data: { applications: ApplicationLink[]; signedIn: boolean };
 
   let navEl: HTMLElement;
   let railEl: HTMLElement;
@@ -282,18 +282,6 @@
     const application = data.applications.find((item) => item.name === name);
     return application ? `${application.origin}/login` : '/login';
   }
-
-  function activeAssignments(): string {
-    const assignments =
-      data.principal?.assignments.filter((item) => item.active) ?? [];
-    return (
-      assignments
-        .map(
-          (item) => `${item.role}${item.division ? ` · ${item.division}` : ''}`
-        )
-        .join(', ') || 'Belum ada penugasan.'
-    );
-  }
 </script>
 
 <svelte:head>
@@ -341,20 +329,15 @@
       </nav>
 
       <div class="header-actions">
-        {#if data.principal}
-          <a class="session-link" href="/workspace">
-            <span>{data.principal.user.name}</span>
-            <small>Lihat sesi</small>
-          </a>
-        {:else}
+        {#if !data.signedIn}
           <a class="text-link" href="/login">Masuk</a>
         {/if}
         <a
           class="button button-small"
-          href={data.principal ? '/workspace' : '/login'}
+          href={data.signedIn ? '/workspace' : '/login'}
         >
           <span class="button-label"
-            >{data.principal ? 'Buka ruang kerja' : 'Mulai sekarang'}</span
+            >{data.signedIn ? 'Buka ruang kerja' : 'Mulai sekarang'}</span
           >
         </a>
       </div>
@@ -366,8 +349,8 @@
           <a href="#workflow">Cara kerja</a>
           <a href="#information">Informasi</a>
           <a href="#faq">FAQ</a>
-          <a href={data.principal ? '/workspace' : '/login'}>
-            {data.principal ? 'Buka ruang kerja' : 'Masuk ke Algohub'}
+          <a href={data.signedIn ? '/workspace' : '/login'}>
+            {data.signedIn ? 'Buka ruang kerja' : 'Masuk ke Algohub'}
           </a>
         </nav>
       </details>
@@ -390,9 +373,9 @@
           berpindah-pindah akun.
         </p>
         <div class="hero-actions">
-          <a class="button" href={data.principal ? '/workspace' : '/login'}>
+          <a class="button" href={data.signedIn ? '/workspace' : '/login'}>
             <span class="button-label"
-              >{data.principal
+              >{data.signedIn
                 ? 'Lanjutkan aktivitas'
                 : 'Masuk ke Algohub'}</span
             >
@@ -451,30 +434,6 @@
         <span class="float-shape float-diamond"></span>
       </div>
     </section>
-
-    {#if data.principal}
-      <section
-        id="workspace"
-        class="workspace"
-        aria-labelledby="workspace-title"
-      >
-        <div>
-          <p class="kicker">Sesi aktif</p>
-          <h2 id="workspace-title">
-            Selamat datang kembali, {data.principal.user.name}.
-          </h2>
-          <p>{activeAssignments()}</p>
-        </div>
-        <div class="workspace-links" aria-label="Aplikasi yang tersedia">
-          {#each data.applications.filter((app) => !['portal', 'auth'].includes(app.name)) as application}
-            <a href={`${application.origin}/login`}>
-              <span>{application.label}</span>
-              <span aria-hidden="true">↗</span>
-            </a>
-          {/each}
-        </div>
-      </section>
-    {/if}
 
     <section
       id="services"
@@ -636,10 +595,10 @@
       </p>
       <a
         class="button button-dark"
-        href={data.principal ? '/workspace' : '/login'}
+        href={data.signedIn ? '/workspace' : '/login'}
       >
         <span class="button-label"
-          >{data.principal ? 'Buka ruang kerja' : 'Masuk ke Algohub'}</span
+          >{data.signedIn ? 'Buka ruang kerja' : 'Masuk ke Algohub'}</span
         >
       </a>
     </section>
@@ -848,28 +807,6 @@
     display: flex;
     align-items: center;
     gap: 0.15rem;
-  }
-
-  .session-link {
-    display: grid;
-    gap: 0.05rem;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    text-decoration: none;
-  }
-
-  .session-link span {
-    max-width: 10rem;
-    overflow: hidden;
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .session-link small {
-    color: var(--ah-muted);
-    font-size: 0.75rem;
   }
 
   .button {
@@ -1292,49 +1229,6 @@
     border-radius: 0;
     background: var(--ah-blue);
     clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-  }
-
-  .workspace {
-    display: grid;
-    width: var(--wrap);
-    grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.85fr);
-    align-items: center;
-    gap: 2rem;
-    margin: 0 auto clamp(2rem, 5vw, 4rem);
-    padding: clamp(1.5rem, 4vw, 2.75rem);
-    border-radius: 2rem;
-    background: var(--ah-surface);
-  }
-
-  .workspace h2 {
-    margin: 0;
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
-    line-height: 1.06;
-    letter-spacing: -0.03em;
-  }
-
-  .workspace p:last-child {
-    margin-bottom: 0;
-    color: var(--ah-muted);
-  }
-
-  .workspace-links {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.5rem;
-  }
-
-  .workspace-links a {
-    display: flex;
-    min-height: 3.25rem;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.8rem 1rem;
-    border-radius: 1rem;
-    background: var(--ah-cream);
-    font-weight: 500;
-    text-decoration: none;
   }
 
   .section {
@@ -1933,9 +1827,7 @@
       height: 2.1rem;
     }
 
-    .workspace,
     .service-grid,
-    .workspace-links,
     .section {
       padding: 4.5rem 0;
     }
