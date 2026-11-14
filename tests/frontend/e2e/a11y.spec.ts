@@ -40,32 +40,32 @@ const pages: PageTarget[] = [
     url: `${hosts.portal}/jadwal`,
     finalOrigin: hosts.portal,
     finalPath: '/jadwal',
-    title: 'Jadwal yang aman untuk dibagikan. — Algohub',
-    heading: 'Jadwal yang aman untuk dibagikan.'
+    title: 'Jadwal praktikum — Algohub',
+    heading: 'Ritme pekan praktikum, dari aktivasi sampai publikasi nilai.'
   },
   {
     name: 'portal-asisten',
     url: `${hosts.portal}/asisten`,
     finalOrigin: hosts.portal,
     finalPath: '/asisten',
-    title: 'Temui tim yang mengelola sesi. — Algohub',
-    heading: 'Temui tim yang mengelola sesi.'
+    title: 'Divisi asisten — Algohub',
+    heading: 'Divisi yang menjalankan laboratorium.'
   },
   {
     name: 'portal-laporan',
     url: `${hosts.portal}/laporan`,
     finalOrigin: hosts.portal,
     finalPath: '/laporan',
-    title: 'Laporan praktikum, dengan akses yang tepat. — Algohub',
-    heading: 'Laporan praktikum, dengan akses yang tepat.'
+    title: 'Panduan laporan — Algohub',
+    heading: 'Laporan yang bisa dinilai, bukan sekadar dikumpulkan.'
   },
   {
     name: 'portal-modul',
     url: `${hosts.portal}/modul`,
     finalOrigin: hosts.portal,
     finalPath: '/modul',
-    title: 'Materi yang siap dipelajari. — Algohub',
-    heading: 'Materi yang siap dipelajari.'
+    title: 'Modul praktikum — Algohub',
+    heading: 'Modul praktikum: apa yang dibagikan dan di mana mengaksesnya.'
   },
   {
     name: 'portal-bantuan',
