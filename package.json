@@ -18,7 +18,7 @@
     "format:check": "prettier --check \"apps/**/*.{js,ts,svelte,json,css}\" \"packages/**/*.{js,ts,svelte,json,css}\"",
     "api:test": "cd backend && go test -count=1 ./...",
     "api:test:race": "cd backend && go test -race -count=1 ./...",
-    "api:build": "cd backend && go build ./cmd/api",
+    "api:build": "cd backend && go build -o bin/api ./cmd/api",
     "api:vet": "cd backend && go vet ./...",
     "api:audit": "cd backend && go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...",
     "openapi:sync": "node scripts/sync-openapi.mjs",
