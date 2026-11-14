@@ -6,12 +6,14 @@
     title,
     lead,
     docTitle = `${eyebrow} — Algohub`,
+    heroPoints = [],
     children
   }: {
     eyebrow: string;
     title: string;
     lead: string;
     docTitle?: string;
+    heroPoints?: string[];
     children: import('svelte').Snippet;
   } = $props();
 
@@ -55,9 +57,25 @@
 
   <main id="content" class="main">
     <header class="hero">
-      <p class="eyebrow">{eyebrow}</p>
-      <h1>{title}</h1>
-      <p class="lead">{lead}</p>
+      <div class="hero-copy">
+        <p class="eyebrow">{eyebrow}</p>
+        <h1>{title}</h1>
+        <p class="lead">{lead}</p>
+      </div>
+      {#if heroPoints.length}
+        <aside class="hero-index" aria-label="Ringkasan halaman">
+          <p class="hero-index-label">Di halaman ini</p>
+          <ol>
+            {#each heroPoints as point, index (point)}
+              <li>
+                <span aria-hidden="true"
+                  >{String(index + 1).padStart(2, '0')}</span
+                >{point}
+              </li>
+            {/each}
+          </ol>
+        </aside>
+      {/if}
     </header>
     {@render children()}
   </main>
@@ -223,7 +241,52 @@
     display: grid;
     min-height: min(30rem, 56vh);
     align-content: center;
+    gap: 2rem;
     padding-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  @media (min-width: 900px) {
+    .hero {
+      grid-template-columns: minmax(0, 1.6fr) minmax(15rem, 1fr);
+      align-items: end;
+    }
+  }
+
+  .hero-index {
+    padding-top: 1rem;
+    border-top: 2px solid var(--ah-coral);
+  }
+
+  .hero-index-label {
+    margin: 0 0 0.75rem;
+    color: var(--ah-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero-index ol {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-index li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .hero-index li span {
+    color: var(--ah-coral);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -231,15 +294,15 @@
       animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
     }
 
-    .hero > .eyebrow {
+    .hero-copy > .eyebrow {
       animation-delay: 0.05s;
     }
 
-    .hero > h1 {
+    .hero-copy > h1 {
       animation-delay: 0.12s;
     }
 
-    .hero > .lead {
+    .hero-copy > .lead {
       animation-delay: 0.2s;
     }
   }

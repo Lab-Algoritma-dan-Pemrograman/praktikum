@@ -7,6 +7,10 @@
 <PortalPage
   eyebrow="Jadwal"
   docTitle="Jadwal praktikum — Algohub"
+  heroPoints={[
+    'Empat tahap di setiap sesi',
+    'Data yang tidak dibuka ke publik'
+  ]}
   title="Ritme pekan praktikum, dari aktivasi sampai publikasi nilai."
   lead="Jadwal personal dan token sesi hanya terbuka setelah masuk. Halaman ini menjelaskan urutan yang berlaku di setiap sesi, tanpa membuka data kelas."
 >

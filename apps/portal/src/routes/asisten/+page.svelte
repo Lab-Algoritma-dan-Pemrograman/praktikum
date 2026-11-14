@@ -6,6 +6,7 @@
 <PortalPage
   eyebrow="Asisten"
   docTitle="Divisi asisten — Algohub"
+  heroPoints={['Enam divisi operasional', 'Kebijakan kontak dan privasi']}
   title="Divisi yang menjalankan laboratorium."
   lead="Struktur asisten dipublikasikan sebagai divisi dan tanggung jawab. Nama, kontak pribadi, dan penugasan internal tidak ditampilkan di halaman publik."
 >

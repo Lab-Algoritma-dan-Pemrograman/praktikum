@@ -7,6 +7,7 @@
 <PortalPage
   eyebrow="Laporan"
   docTitle="Panduan laporan — Algohub"
+  heroPoints={['Sembilan bagian laporan', 'Empat aturan pengumpulan']}
   title="Laporan yang bisa dinilai, bukan sekadar dikumpulkan."
   lead="Struktur baku, aturan pengumpulan, dan batas antara latihan kode di browser dengan nilai akademik yang sah."
 >

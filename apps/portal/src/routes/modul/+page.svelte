@@ -7,6 +7,7 @@
 <PortalPage
   eyebrow="Modul"
   docTitle="Modul praktikum — Algohub"
+  heroPoints={['Empat jenis dokumen', 'Tiga jalur akses modul']}
   title="Modul praktikum: apa yang dibagikan dan di mana mengaksesnya."
   lead="Halaman ini menjelaskan jenis dokumen tiap modul dan cara membukanya. Berkas aslinya tetap berada di aplikasi yang memegang sesi, bukan disalin ke portal publik."
 >
