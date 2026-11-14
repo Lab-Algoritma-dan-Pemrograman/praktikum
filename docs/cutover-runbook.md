@@ -96,3 +96,29 @@ situs lama. Bila perlu mengulang impor di target, `legacy-migrate apply` idempot
 3. Baru setelah stabil: arsipkan `legacy_preserve.rows` ke dump, lalu truncate
    (lihat `docs/migration-status-2026-11-15.md`).
 4. Rotasi ulang kredensial yang pernah muncul di transkrip/chat.
+
+## Hasil deploy produksi (2026-11-15)
+
+Project Vercel: `algohub-v2-portal`, `-auth`, `-admin`, `-siakad`, `-elearning`,
+`-praktikum`, `-api`. Semua `READY`; API produksi `/healthz` 200 dan `/readyz`
+melaporkan `ready` (koneksi ke Supabase produksi berhasil). App mengembalikan 503
+pada URL `*.vercel.app` karena origin gate hanya mengizinkan domain resmi — ini
+perilaku yang diharapkan sebelum DNS dipindahkan.
+
+### Record DNS yang harus dibuat
+
+Ganti record lama (jangan sentuh MX/TXT email):
+
+| Nama                       | Tipe  | Nilai                                 |
+| -------------------------- | ----- | ------------------------------------- |
+| `algohub.web.id`           | A     | `216.198.79.1` dan `64.29.17.1`       |
+| `www.algohub.web.id`       | CNAME | `b29bfc892b421039.vercel-dns-017.com` |
+| `auth.algohub.web.id`      | CNAME | `c4e569dad7e755f8.vercel-dns-017.com` |
+| `admin.algohub.web.id`     | CNAME | `995cdb8c0192bfc7.vercel-dns-017.com` |
+| `siakad.algohub.web.id`    | CNAME | `e9381a5040432c36.vercel-dns-017.com` |
+| `elearning.algohub.web.id` | CNAME | `95733b230f4d56fc.vercel-dns-017.com` |
+| `praktikum.algohub.web.id` | CNAME | `b54579b2dc5cf3ea.vercel-dns-017.com` |
+| `api.algohub.web.id`       | CNAME | `701c6cd40f36bee7.vercel-dns-017.com` |
+
+Alternatif apex bila registrar mendukung ALIAS/ANAME: arahkan ke
+`b29bfc892b421039.vercel-dns-017.com`.
