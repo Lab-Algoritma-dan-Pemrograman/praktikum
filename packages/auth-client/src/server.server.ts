@@ -50,7 +50,7 @@ const AUTH_PENDING = 'algohub_auth_pending';
 const cookieNames = [SESSION_COOKIE, CSRF_COOKIE];
 const productionOrigins = [
   'https://algohub.web.id',
-  'https://staging.algohub.web.id',
+  'https://portal.staging.algohub.web.id',
   ...['auth', 'admin', 'siakad', 'elearning', 'praktikum'].flatMap((name) => [
     `https://${name}.algohub.web.id`,
     `https://${name}.staging.algohub.web.id`
@@ -187,7 +187,7 @@ export function applicationLinks(config: IdentityConfig): ApplicationLink[] {
       const host = new URL(origin).hostname;
       return name === 'portal'
         ? host === 'algohub.web.id' ||
-            host === 'staging.algohub.web.id' ||
+            host === 'portal.staging.algohub.web.id' ||
             (local && host === 'portal.localhost')
         : name === 'auth'
           ? origin === config.authOrigin

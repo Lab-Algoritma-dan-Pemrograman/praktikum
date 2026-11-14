@@ -262,21 +262,24 @@ test('local HTTP and fixture activation fail closed outside isolated local origi
   });
   assert.equal(production.secure, true);
   assert.equal(production.fixtures, false);
-  const staging = identityConfig(new URL('https://staging.algohub.web.id'), {
-    ALGOHUB_ENV: 'staging',
-    ALGOHUB_API_BASE_URL: 'https://api.staging.algohub.web.id',
-    ALGOHUB_AUTH_ORIGIN: 'https://auth.staging.algohub.web.id',
-    ALGOHUB_SSO_ALLOWED_ORIGINS:
-      'https://staging.algohub.web.id,https://auth.staging.algohub.web.id,https://admin.staging.algohub.web.id',
-    ALGOHUB_ALLOWED_ORIGINS:
-      'https://staging.algohub.web.id,https://auth.staging.algohub.web.id,https://admin.staging.algohub.web.id'
-  });
-  assert.equal(staging.appOrigin, 'https://staging.algohub.web.id');
+  const staging = identityConfig(
+    new URL('https://portal.staging.algohub.web.id'),
+    {
+      ALGOHUB_ENV: 'staging',
+      ALGOHUB_API_BASE_URL: 'https://api.staging.algohub.web.id',
+      ALGOHUB_AUTH_ORIGIN: 'https://auth.staging.algohub.web.id',
+      ALGOHUB_SSO_ALLOWED_ORIGINS:
+        'https://portal.staging.algohub.web.id,https://auth.staging.algohub.web.id,https://admin.staging.algohub.web.id',
+      ALGOHUB_ALLOWED_ORIGINS:
+        'https://portal.staging.algohub.web.id,https://auth.staging.algohub.web.id,https://admin.staging.algohub.web.id'
+    }
+  );
+  assert.equal(staging.appOrigin, 'https://portal.staging.algohub.web.id');
   assert.deepEqual(applicationLinks(staging), [
     {
       name: 'portal',
       label: 'Portal',
-      origin: 'https://staging.algohub.web.id'
+      origin: 'https://portal.staging.algohub.web.id'
     },
     {
       name: 'auth',
@@ -291,7 +294,7 @@ test('local HTTP and fixture activation fail closed outside isolated local origi
   ]);
   assert.throws(
     () =>
-      identityConfig(new URL('https://portal.staging.algohub.web.id'), {
+      identityConfig(new URL('https://staging.algohub.web.id'), {
         ALGOHUB_ENV: 'staging',
         ALGOHUB_API_BASE_URL: 'https://api.staging.algohub.web.id',
         ALGOHUB_AUTH_ORIGIN: 'https://auth.staging.algohub.web.id',
