@@ -29,6 +29,19 @@ psql "$LEGACY_DATABASE_URL" -f scripts/prod-audit/legacy-schema-audit.sql \
 Ulangi per database legacy yang ada (SIAKAD, E-learning, Praktikum).
 Buat folder `results/` secara manual bila belum ada.
 
+Untuk memetakan sisi target v2 (staging atau prod target), jalankan juga:
+
+```bash
+psql "$TARGET_DATABASE_URL" -f scripts/prod-audit/target-schema-map.sql \
+  -o scripts/prod-audit/results/target-$(date +%F).txt
+```
+
+`target-schema-map.sql` menampilkan inventaris tabel target, cek kehadiran
+36 tabel yang diharapkan (12 identity + 8 `practicum_*` + 9 `learning_*` +
+8 `academic_*` + `schema_migrations`), dan versi migrasi yang sudah apply
+(tabel `public.schema_migrations`, format name+checksum sesuai
+`backend/migrations/migrate.go`).
+
 ## Jaminan keamanan
 
 - 100% `SELECT` terhadap `information_schema`, `pg_catalog`, dan tabel aplikasi.
