@@ -1,0 +1,192 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+}
+body {
+  background: #f3f6f7;
+  color: #17324d;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+:focus-visible {
+  outline: 3px solid #d77a38;
+  outline-offset: 3px;
+}
+.identity-page {
+  width: min(100%, 68rem);
+}
+.identity-page h1 {
+  margin: 0.4rem 0 1rem;
+  color: #102a43;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+}
+.identity-page h2 {
+  margin: 0 0 1rem;
+  color: #17324d;
+  font-size: 1.3rem;
+}
+.identity-page h3 {
+  color: #17324d;
+  font-size: 1rem;
+}
+.identity-page p {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.identity-page .eyebrow {
+  color: #326b68;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.identity-page .muted {
+  color: #4d6872;
+  font-size: 0.9rem;
+}
+.identity-panel {
+  margin-top: 1.5rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border: 1px solid #d6e1e3;
+  border-radius: 0.7rem;
+  background: #fff;
+}
+.identity-page form,
+.identity-page .form-grid {
+  display: grid;
+  gap: 1rem;
+}
+.identity-page .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.identity-page label {
+  display: grid;
+  gap: 0.4rem;
+  color: #17324d;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.identity-page input,
+.identity-page select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.65rem;
+  border: 1px solid #a7bcb9;
+  border-radius: 0.4rem;
+  color: #17324d;
+  background: #fff;
+  font: inherit;
+}
+.identity-page input[readonly] {
+  background: #f3f6f7;
+}
+.identity-page button,
+.identity-page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid #245b5a;
+  border-radius: 0.45rem;
+  color: #fff;
+  background: #245b5a;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.identity-page button.secondary {
+  color: #245b5a;
+  border-color: #a7bcb9;
+  background: #fff;
+}
+.identity-page button.danger {
+  color: #8b452e;
+  border-color: #d2a08c;
+  background: #fff;
+}
+.identity-page button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.identity-page .actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.identity-page .notice {
+  padding: 0.8rem 1rem;
+  border-left: 3px solid #245b5a;
+  color: #245b5a;
+  background: #e7f2f0;
+}
+.identity-page ul {
+  padding: 0;
+  list-style: none;
+}
+.identity-page li + li {
+  margin-top: 1rem;
+}
+.identity-page .session,
+.identity-page .audit-event {
+  padding: 1rem 0;
+  border-top: 1px solid #d6e1e3;
+  overflow-wrap: anywhere;
+}
+.identity-page .session h3,
+.identity-page .audit-event h2 {
+  margin: 0.3rem 0;
+}
+.identity-page code,
+.identity-page pre {
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.identity-page summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: #245b5a;
+  font-weight: 700;
+  cursor: pointer;
+}
+.identity-page fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid #d6e1e3;
+  border-radius: 0.5rem;
+}
+.identity-page fieldset.editor {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  border: 0;
+}
+.identity-page legend {
+  padding: 0 0.4rem;
+  color: #17324d;
+  font-weight: 700;
+}
+@media (max-width: 900px) {
+  .identity-page .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

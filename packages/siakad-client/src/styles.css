@@ -1,0 +1,189 @@
+.siakad {
+  color: #17324d;
+  max-width: 76rem;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 1.25rem;
+  overflow-wrap: anywhere;
+}
+.siakad .stack > *,
+.siakad .grid > *,
+.siakad .actions > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.siakad button {
+  overflow-wrap: anywhere;
+}
+.siakad h1 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  margin-top: 0.5rem;
+}
+.siakad h2 {
+  font-size: 1.35rem;
+}
+.siakad h3 {
+  font-size: 1.1rem;
+}
+.siakad p {
+  line-height: 1.6;
+}
+.siakad a {
+  color: #245b5a;
+  overflow-wrap: anywhere;
+}
+.siakad nav,
+.siakad .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+}
+.siakad nav {
+  margin-bottom: 1.25rem;
+}
+.siakad button,
+.siakad .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #245b5a;
+  border-radius: 0.4rem;
+  background: #245b5a;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+.siakad button.secondary,
+.siakad .button.secondary {
+  background: white;
+  color: #245b5a;
+}
+.siakad button.danger {
+  background: #963f32;
+  border-color: #963f32;
+}
+.siakad button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.siakad label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+.siakad label.check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+.siakad input:not([type='checkbox']),
+.siakad select,
+.siakad textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid #8b9fa8;
+  border-radius: 0.35rem;
+  padding: 0.65rem;
+  background: white;
+  color: #17324d;
+  font: inherit;
+}
+.siakad pre {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #f1f5f6;
+  padding: 0.8rem;
+  border-radius: 0.35rem;
+}
+.siakad .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+}
+.siakad .stack {
+  display: grid;
+  gap: 1rem;
+}
+.siakad .panel {
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid #cbd9dc;
+  border-radius: 0.65rem;
+  background: white;
+}
+.siakad .notice {
+  padding: 0.85rem;
+  border-left: 4px solid #b87327;
+  background: #fff5e5;
+  overflow-wrap: anywhere;
+}
+.siakad .error {
+  border-color: #a33b31;
+  background: #fff0ed;
+}
+.siakad .success {
+  border-color: #245b5a;
+  background: #e7f2f0;
+}
+.siakad .muted {
+  color: #4d6872;
+  font-size: 0.9rem;
+}
+.siakad .badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.3rem;
+  background: #e7f2f0;
+  color: #174c4b;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.siakad .table-wrap {
+  overflow-x: auto;
+}
+.siakad table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.siakad th,
+.siakad td {
+  text-align: left;
+  padding: 0.7rem;
+  border-bottom: 1px solid #d8e2e4;
+  vertical-align: top;
+}
+.siakad details summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding: 0.6rem 0;
+  font-weight: 600;
+}
+.siakad :focus-visible {
+  outline: 3px solid #b56824;
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .siakad {
+    padding: 0.75rem;
+  }
+  .siakad .panel {
+    padding: 0.85rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .siakad *,
+  .siakad *::before,
+  .siakad *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@algohub/auth-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/server.server.ts"
+  },
+  "scripts": {
+    "test:unit": "node --test tests/*.test.ts"
+  },
+  "peerDependencies": {
+    "@sveltejs/kit": ">=3.0.0"
+  }
+}

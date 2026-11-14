@@ -1,0 +1,1489 @@
+<!doctype html>
+<!--
+  Free website template by 8B: https://8b.com/templates/burrow/
+  Source: https://github.com/8bsite/veterinary-website-template
+  MIT License (code) https://8b.com/ · Photos: Unsplash License, see CREDITS.md · Fonts: Google Fonts (OFL)
+  One HTML file, no build step. Notes for people and AI agents: README.md and AGENTS.md.
+  GSAP build (GSAP, ScrollTrigger, Lenis). The main file, index.html, is the same design without libraries.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Burrow Veterinary — calm, thorough vet care on Lombard Street, Portland</title>
+<meta name="description" content="Burrow Veterinary is a neighbourhood clinic in Portland for dogs, cats, rabbits, birds and reptiles: thirty-minute exams, separate cat and dog sides, prices before treatment and same-day sick visits.">
+<meta name="generator" content="8B Templates">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Burrow Veterinary — calm, thorough vet care on Lombard Street, Portland">
+<meta property="og:description" content="Burrow Veterinary is a neighbourhood clinic in Portland for dogs, cats, rabbits, birds and reptiles: thirty-minute exams, separate cat and dog sides, prices before treatment and same-day sick visits.">
+<meta property="og:image" content="https://your-domain.example/preview.png" data-8b-placeholder="og-image">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'%23f26b45'%2F%3E%3Ctext%20x%3D'32'%20y%3D'45'%20font-family%3D'Arial%2CHelvetica%2Csans-serif'%20font-size%3D'38'%20font-weight%3D'700'%20text-anchor%3D'middle'%20fill%3D'%231f0b08'%3EB%3C%2Ftext%3E%3C%2Fsvg%3E" data-8b-placeholder="favicon">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjIUvQ.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* armenian */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPiIUvaYr.woff2) format('woff2');
+  unicode-range: U+0308, U+0530-058F, U+2010, U+2024, U+25CC, U+FB13-FB17;
+}
+/* bengali */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPiAUvaYr.woff2) format('woff2');
+  unicode-range: U+0951-0952, U+0964-0965, U+0980-09FE, U+1CD0, U+1CD2, U+1CD5-1CD6, U+1CD8, U+1CE1, U+1CEA, U+1CED, U+1CF2, U+1CF5-1CF7, U+200C-200D, U+20B9, U+25CC, U+A8F1, U+11DF0-11DF1;
+}
+/* canadian-aboriginal */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPh0UvaYr.woff2) format('woff2');
+  unicode-range: U+02C7, U+02D8-02D9, U+02DB, U+0307, U+1400-167F, U+18B0-18F5, U+25CC, U+11AB0-11ABF;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPj8UvaYr.woff2) format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjYUvaYr.woff2) format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* devanagari */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjMUvaYr.woff2) format('woff2');
+  unicode-range: U+0900-097F, U+1CD0-1CF4, U+1CF7-1CF9, U+200C-200D, U+20A8, U+20B9, U+20F0, U+25CC, U+A830-A839, U+A8E0-A8FF, U+11B00-11B0A;
+}
+/* ethiopic */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPiMUvaYr.woff2) format('woff2');
+  unicode-range: U+030E, U+1200-1399, U+2D80-2DDE, U+AB01-AB2E, U+1E7E0-1E7E6, U+1E7E8-1E7EB, U+1E7ED-1E7EE, U+1E7F0-1E7FE;
+}
+/* georgian */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPi0UvaYr.woff2) format('woff2');
+  unicode-range: U+0589, U+10A0-10FF, U+1C90-1CBA, U+1CBD-1CBF, U+205A, U+2D00-2D2F, U+2E31;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPj4UvaYr.woff2) format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjEUvaYr.woff2) format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* gujarati */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPikUvaYr.woff2) format('woff2');
+  unicode-range: U+0951-0952, U+0964-0965, U+0A80-0AFF, U+200C-200D, U+20B9, U+25CC, U+A830-A839;
+}
+/* gurmukhi */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPhEUvaYr.woff2) format('woff2');
+  unicode-range: U+0951-0952, U+0964-0965, U+0A01-0A76, U+200C-200D, U+20B9, U+25CC, U+262C, U+A830-A839;
+}
+/* hebrew */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjAUvaYr.woff2) format('woff2');
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+/* khmer */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjkUvaYr.woff2) format('woff2');
+  unicode-range: U+1780-17FF, U+19E0-19FF, U+200C-200D, U+25CC;
+}
+/* lao */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjsUvaYr.woff2) format('woff2');
+  unicode-range: U+0E81-0EDF, U+200C-200D, U+25CC;
+}
+/* malayalam */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPioUvaYr.woff2) format('woff2');
+  unicode-range: U+0307, U+0323, U+0951-0952, U+0964-0965, U+0B83, U+0D00-0D7F, U+1CDA, U+1CF2, U+200C-200D, U+20B9, U+25CC, U+A830-A832;
+}
+/* oriya */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPisUvaYr.woff2) format('woff2');
+  unicode-range: U+0951-0952, U+0964-0965, U+0B01-0B77, U+1CDA, U+1CF2, U+200C-200D, U+20B9, U+25CC;
+}
+/* sinhala */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPi8UvaYr.woff2) format('woff2');
+  unicode-range: U+0964-0965, U+0D81-0DF4, U+1CF2, U+200C-200D, U+25CC, U+111E1-111F4;
+}
+/* symbols */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPlwUvaYr.woff2) format('woff2');
+  unicode-range: U+0001-000C, U+000E-001F, U+007F-009F, U+20DD-20E0, U+20E2-20E4, U+2150-218F, U+2190, U+2192, U+2194-2199, U+21AF, U+21E6-21F0, U+21F3, U+2218-2219, U+2299, U+22C4-22C6, U+2300-243F, U+2440-244A, U+2460-24FF, U+25A0-27BF, U+2800-28FF, U+2921-2922, U+2981, U+29BF, U+29EB, U+2B00-2BFF, U+4DC0-4DFF, U+FFF9-FFFB, U+10140-1018E, U+10190-1019C, U+101A0, U+101D0-101FD, U+102E0-102FB, U+10E60-10E7E, U+1D2C0-1D2D3, U+1D2E0-1D37F, U+1F000-1F0FF, U+1F100-1F1AE, U+1F1E6-1F1FF, U+1F30D-1F30F, U+1F315, U+1F31C, U+1F31E, U+1F320-1F32C, U+1F336, U+1F378, U+1F37D, U+1F382, U+1F393-1F39F, U+1F3A7-1F3A8, U+1F3AC-1F3AF, U+1F3C2, U+1F3C4-1F3C6, U+1F3CA-1F3CE, U+1F3D4-1F3E0, U+1F3ED, U+1F3F1-1F3F3, U+1F3F5-1F3F7, U+1F408, U+1F415, U+1F41F, U+1F426, U+1F43F, U+1F441-1F442, U+1F444, U+1F446-1F449, U+1F44C-1F44E, U+1F453, U+1F46A, U+1F47D, U+1F4A3, U+1F4B0, U+1F4B3, U+1F4B9, U+1F4BB, U+1F4BF, U+1F4C8-1F4CB, U+1F4D6, U+1F4DA, U+1F4DF, U+1F4E3-1F4E6, U+1F4EA-1F4ED, U+1F4F7, U+1F4F9-1F4FB, U+1F4FD-1F4FE, U+1F503, U+1F507-1F50B, U+1F50D, U+1F512-1F513, U+1F53E-1F54A, U+1F54F-1F5FA, U+1F610, U+1F650-1F67F, U+1F687, U+1F68D, U+1F691, U+1F694, U+1F698, U+1F6AD, U+1F6B2, U+1F6B9-1F6BA, U+1F6BC, U+1F6C6-1F6CF, U+1F6D3-1F6D7, U+1F6E0-1F6EA, U+1F6F0-1F6F3, U+1F6F7-1F6FC, U+1F700-1F80B, U+1F810-1F847, U+1F850-1F859, U+1F860-1F887, U+1F890-1F8AD, U+1F8B0-1F8BB, U+1F8C0-1F8C1, U+1F8D0-1F8D8, U+1F900-1F90B, U+1F93B, U+1F946, U+1F984, U+1F996, U+1F9E9, U+1FA00-1FA6F, U+1FA70-1FA7C, U+1FA80-1FAC6, U+1FAC8, U+1FACC-1FADD, U+1FADF-1FAEB, U+1FAEF-1FAFA, U+1FB00-1FBFF;
+}
+/* tamil */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPiQUvaYr.woff2) format('woff2');
+  unicode-range: U+0964-0965, U+0B82-0BFA, U+200C-200D, U+20B9, U+25CC;
+}
+/* telugu */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPi4UvaYr.woff2) format('woff2');
+  unicode-range: U+0951-0952, U+0964-0965, U+0B83, U+0C00-0C7F, U+1CD5-1CD6, U+1CD8, U+1CDA, U+1CF2, U+200C-200D, U+25CC;
+}
+/* thai */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPiYUvaYr.woff2) format('woff2');
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPj0UvaYr.woff2) format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjwUvaYr.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/googlesans/v71/4UasrENHsxJlGDuGo1OIlJfC6l_24rlCK1Yo_Iqcsih3SAyH6cAwhX9RPjIUvQ.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<style data-8b-part="layers">
+@layer tokens, base, atoms, layout, sections, scenes;
+</style>
+<style data-8b-part="tokens">
+@layer tokens {
+:root {
+  --color-1: #f7efe2;
+  --color-2: #1f0b08;
+  --color-3: #ebe2d3;
+  --color-4: #6a5c53;
+  --color-5: #f26b45;
+  --color-6: #63a4bc;
+  --color-7: #dcb155;
+  --color-8: #96503f;
+  --color-9: #3dac91;
+  --color-10: #e2a8d3;
+  --color-11: #8e8565;
+  --font-1: "Google Sans", "Google Sans Fallback", Arial, sans-serif;
+  --radius-1: 32px;
+  --radius-2: 999px;
+  --radius-3: 14px;
+  --radius-4: 220px;
+  --space-1: clamp(96px, 11vw, 168px);
+  --space-2: clamp(16px, 3.2vw, 44px);
+}
+}
+</style>
+<style data-8b-part="base">
+@layer base {
+@font-face { font-family: "Google Sans Fallback"; src: local("Arial"), local("ArialMT"), local("Helvetica"); font-weight: 100 549; size-adjust: 102.5%; ascent-override: 94.6%; descent-override: 28.3%; line-gap-override: 0%; }
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html.lenis, html.lenis body { height: auto; }
+.lenis-stopped { overflow: clip; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+body { margin: 0; background: var(--color-1); color: var(--color-2); overflow-x: clip; }
+img { display: block; max-width: 100%; height: auto; }
+h1, h2, h3, h4, p, ol, ul, dl, dd, figure, blockquote { margin: 0; }
+ol, ul { padding: 0; list-style: none; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--color-2); outline-offset: 3px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.skip { position: fixed; left: 12px; top: 12px; z-index: 60; padding: 10px 16px; background: var(--color-2); color: var(--color-1); border-radius: var(--radius-3); transform: translateY(-160%); }
+.skip:focus-visible { transform: none; }
+}
+</style>
+<style data-8b-part="system">
+@layer atoms {
+.m-text { font-family: var(--font-1); font-size: 17px; font-weight: 400; line-height: 1.55; letter-spacing: 0; text-transform: none; font-style: normal; }
+
+.m-text-2 { font-family: var(--font-1); font-size: clamp(40px, 5.6vw, 84px); font-weight: 500; line-height: 1.02; letter-spacing: -0.035em; text-transform: none; font-style: normal; text-wrap: balance; }
+
+.m-text-3 { font-family: var(--font-1); font-size: clamp(21px, 1.9vw, 26px); font-weight: 500; line-height: 1.16; letter-spacing: -0.02em; text-transform: none; font-style: normal; }
+
+.m-text-4 { font-family: var(--font-1); font-size: 15px; font-weight: 400; line-height: 1.45; letter-spacing: 0; text-transform: none; font-style: normal; color: var(--color-4); }
+
+.m-btn { position: relative; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px; border: 0; border-radius: 26px 26px 10px 10px; background: var(--color-5); color: var(--color-2); font-family: var(--font-1); font-size: 16px; font-weight: 500; line-height: 1; letter-spacing: -0.005em; text-decoration: none; cursor: pointer; }
+.m-btn::before { content: ""; position: absolute; inset: -2px; z-index: -1; background: var(--color-2); border-radius: 50% 50% 0 0 / 70% 70% 0 0; transform: translateY(102%); transition: transform .5s cubic-bezier(.3, .7, .2, 1), border-radius .5s cubic-bezier(.3, .7, .2, 1); }
+.m-btn__label { position: relative; transition: color .3s ease; }
+
+.m-btn-2 { position: relative; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px; border: 0; border-radius: 10px 10px 26px 26px; background: var(--color-3); color: var(--color-2); font-family: var(--font-1); font-size: 16px; font-weight: 500; line-height: 1; letter-spacing: -0.005em; text-decoration: none; cursor: pointer; }
+.m-btn-2::before { content: ""; position: absolute; inset: -2px; z-index: -1; background: var(--color-2); border-radius: 50% 50% 0 0 / 70% 70% 0 0; transform: translateY(102%); transition: transform .5s cubic-bezier(.3, .7, .2, 1), border-radius .5s cubic-bezier(.3, .7, .2, 1); }
+
+.m-btn-3 { position: relative; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; border: 0; border-radius: 26px 26px 10px 10px; background: var(--color-2); color: var(--color-1); font-family: var(--font-1); font-size: 16px; font-weight: 500; line-height: 1; letter-spacing: -0.005em; text-decoration: none; cursor: pointer; }
+.m-btn-3::before { content: ""; position: absolute; inset: -2px; z-index: -1; background: var(--color-1); border-radius: 50% 50% 0 0 / 70% 70% 0 0; transform: translateY(102%); transition: transform .5s cubic-bezier(.3, .7, .2, 1), border-radius .5s cubic-bezier(.3, .7, .2, 1); }
+@media (hover: hover) {
+  .m-btn:hover::before, .m-btn-2:hover::before, .m-btn-3:hover::before { transform: translateY(0); border-radius: 0; }
+  .m-btn:hover .m-btn__label, .m-btn-2:hover .m-btn__label { color: var(--color-1); }
+  .m-btn-3:hover .m-btn__label { color: var(--color-2); }
+}
+
+.m-link { color: inherit; text-decoration: none; background-image: linear-gradient(var(--color-5), var(--color-5)), linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%, 0 100%; background-size: 100% 0, 100% 1px; padding-bottom: 1px; transition: background-size .35s cubic-bezier(.3, .7, .2, 1); }
+
+.m-link-2 { color: inherit; font-family: var(--font-1); font-size: 15px; font-weight: 500; line-height: 1.3; letter-spacing: -0.005em; text-transform: none; font-style: normal; text-decoration: none; background-image: linear-gradient(var(--color-5), var(--color-5)); background-repeat: no-repeat; background-position: 0 100%; background-size: 100% 0; transition: background-size .35s cubic-bezier(.3, .7, .2, 1); }
+@media (hover: hover) {
+  .m-link:hover { background-size: 100% 42%, 100% 1px; }
+  .m-link-2:hover { background-size: 100% 42%; }
+}
+
+.m-badge { display: inline-flex; align-items: center; min-height: 30px; padding: 0 14px; border-radius: var(--radius-2); background: var(--color-1); color: var(--color-2); font-family: var(--font-1); font-size: 14px; font-weight: 500; line-height: 1; letter-spacing: 0; text-transform: none; font-style: normal; }
+
+.m-surface { background: var(--color-3); color: var(--color-2); border-radius: var(--radius-1); }
+
+.m-field { display: grid; gap: 6px; font-family: var(--font-1); }
+.m-field__label { font-size: 14px; font-weight: 500; line-height: 1.2; letter-spacing: 0; }
+.m-field__input { width: 100%; min-height: 50px; padding: 12px 16px; border: 1.5px solid var(--color-2); border-radius: var(--radius-3); background: var(--color-1); color: var(--color-2); font-size: 16px; line-height: 1.3; }
+.m-field__input:focus-visible { outline: 3px solid var(--color-2); outline-offset: 2px; }
+textarea.m-field__input { min-height: 104px; resize: vertical; }
+
+.m-shape { display: inline-block; flex: none; width: var(--m-shape-size, 28px); aspect-ratio: 4 / 5; background: var(--color-2); border-radius: 50% 50% 0 0 / 40% 40% 0 0; }
+.m-shape-2 { display: inline-block; flex: none; width: var(--m-shape-size, 28px); aspect-ratio: 1; background: var(--color-2); border-radius: 50%; }
+.m-shape-3 { display: inline-block; flex: none; width: var(--m-shape-size, 28px); aspect-ratio: 1; background: var(--color-2); }
+.m-shape-4 { display: inline-block; flex: none; width: var(--m-shape-size, 28px); aspect-ratio: 1; background: var(--color-2); border-radius: 0 100% 0 0; }
+.m-shape-5 { display: inline-block; flex: none; width: var(--m-shape-size, 28px); aspect-ratio: 1; background: var(--color-2); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.m-shape-6 { display: inline-block; flex: none; width: var(--m-shape-size, 28px); aspect-ratio: 1; background: var(--color-2); clip-path: polygon(34% 0, 66% 0, 66% 34%, 100% 34%, 100% 66%, 66% 66%, 66% 100%, 34% 100%, 34% 66%, 0 66%, 0 34%, 34% 34%); }
+}
+</style>
+<style data-8b-part="layout">
+@layer layout {
+.wrap { width: min(100% - 2 * var(--space-2), 1216px); margin-inline: auto; }
+.section-head { display: grid; justify-items: center; gap: 22px; text-align: center; }
+.section-head .m-text { max-width: 560px; }
+}
+</style>
+<style data-8b-part="section:navigation">
+@layer sections {
+#navigation { position: fixed; inset: 0 0 auto 0; z-index: 40; display: flex; align-items: center; gap: 16px; padding: 18px var(--space-2); transition: transform .45s cubic-bezier(.3, .7, .2, 1); }
+#navigation[data-hidden="true"] { transform: translateY(-110%); }
+#navigation .nav__logo { display: inline-flex; align-items: center; gap: 10px; margin-right: auto; padding: 8px 14px 8px 8px; border-radius: var(--radius-2); background: var(--color-1); text-decoration: none; }
+#navigation .nav__mark { width: 30px; aspect-ratio: 4 / 5; background: var(--color-5); border-radius: 50% 50% 0 0 / 40% 40% 0 0; }
+#navigation .nav__word { display: grid; font-family: var(--font-1); font-size: 23px; font-weight: 500; line-height: .9; letter-spacing: -0.04em; }
+#navigation .nav__word span { font-size: 12px; font-weight: 500; line-height: 1.2; letter-spacing: .01em; }
+#navigation .nav__menu { display: flex; align-items: center; gap: 4px; padding: 6px; border-radius: var(--radius-2); background: var(--color-3); }
+#navigation .nav__menu .m-link-2 { padding: 12px 14px; border-radius: var(--radius-2); background-position: 50% calc(100% - 9px); background-size: calc(100% - 28px) 0; }
+@media (hover: hover) { #navigation .nav__menu .m-link-2:hover { background-size: calc(100% - 28px) 34%; } }
+#navigation .nav__toggle { display: none; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; border: 0; border-radius: var(--radius-2); background: var(--color-3); color: var(--color-2); font-size: 15px; font-weight: 500; cursor: pointer; }
+#navigation .nav__bars { display: grid; gap: 5px; width: 18px; }
+#navigation .nav__bars i { height: 2px; background: currentColor; border-radius: 2px; transition: transform .35s cubic-bezier(.3, .7, .2, 1); }
+@media (hover: hover) { #navigation .nav__toggle:hover .nav__bars i:first-child { transform: translateX(-4px); } #navigation .nav__toggle:hover .nav__bars i:last-child { transform: translateX(4px); } }
+#navigation .nav__sheet { position: fixed; inset: 0; z-index: 50; display: grid; align-content: space-between; gap: 32px; padding: 96px var(--space-2) 32px; background: var(--color-5); color: var(--color-2); }
+#navigation .nav__sheet[hidden] { display: none; }
+#navigation .nav__sheet-links { display: grid; gap: 4px; }
+#navigation .nav__sheet-links a { font-family: var(--font-1); font-size: 40px; font-weight: 500; line-height: 1.15; letter-spacing: -0.03em; text-decoration: none; }
+#navigation .nav__close { position: absolute; top: 18px; right: var(--space-2); }
+@media (max-width: 900px) {
+  #navigation { padding: 12px var(--space-2); }
+  #navigation .nav__menu, #navigation .nav__cta { display: none; }
+  #navigation .nav__toggle { display: inline-flex; }
+}
+}
+</style>
+<style data-8b-part="section:opening">
+@layer sections {
+#opening { position: relative; isolation: isolate; overflow-x: clip; --door-ry: 80%; }
+#opening .op-first { position: relative; display: flex; flex-direction: column; align-items: center; padding: calc(var(--nav-h, 92px) + clamp(28px, 4vw, 52px)) var(--space-2) 0; }
+#opening .op-intro { position: relative; z-index: 4; display: grid; justify-items: center; gap: 20px; text-align: center; }
+#opening .op-title { font-size: clamp(40px, 5.7vw, 82px); }
+#opening .op-title__line { display: block; }
+#opening .op-lede { max-width: 540px; }
+#opening .op-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 8px; }
+#opening .op-shapes { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+#opening .op-shape { position: absolute; display: block; }
+#opening .op-shape i { display: block; width: 100%; height: 100%; }
+#opening .op-shape--arch { left: calc(50% + clamp(330px, 34vw, 470px)); top: calc(var(--nav-h, 92px) + 38px); width: 84px; height: 54px; }
+#opening .op-shape--arch i { background: var(--color-5); border-radius: 50% 50% 0 0 / var(--door-ry) var(--door-ry) 0 0; }
+#opening .op-shape--circle { left: calc(50% - clamp(400px, 38vw, 540px)); top: calc(var(--nav-h, 92px) + 70px); width: 46px; height: 46px; }
+#opening .op-shape--circle i { background: var(--color-11); border-radius: 50%; }
+#opening .op-shape--plus { left: calc(50% + clamp(360px, 33vw, 470px)); top: calc(var(--nav-h, 92px) + 230px); width: 44px; height: 44px; }
+#opening .op-shape--plus i { --m-shape-size: 100%; background: var(--color-10); }
+#opening .op-shape--diamond { left: calc(50% - clamp(330px, 30vw, 440px)); top: calc(var(--nav-h, 92px) + 250px); width: 40px; height: 40px; }
+#opening .op-shape--diamond i { --m-shape-size: 100%; background: var(--color-6); }
+#opening .op-shape--square { left: calc(50% + clamp(250px, 24vw, 330px)); top: calc(var(--nav-h, 92px) + 300px); width: 30px; height: 30px; }
+#opening .op-shape--square i { --m-shape-size: 100%; background: var(--color-7); }
+#opening .op-photo { position: relative; z-index: 0; width: 100%; max-width: 1216px; margin-top: clamp(36px, 4.5vw, 56px); border-radius: var(--radius-1) var(--radius-4) var(--radius-1) var(--radius-1); overflow: hidden; background: var(--color-3); }
+#opening .op-photo__in { aspect-ratio: 16 / 7.2; overflow: hidden; }
+#opening .op-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 74%; transform: scale(1.08); }
+#opening .op-second { position: relative; display: grid; align-content: center; min-height: 100svh; margin-top: clamp(72px, 9vw, 128px); padding: clamp(150px, 15vw, 220px) var(--space-2) clamp(72px, 8vw, 112px); }
+#opening .op-door { position: absolute; inset: 0; z-index: 0; background: var(--color-5); border-radius: 50% 50% 0 0 / var(--door-ry) var(--door-ry) 0 0; }
+#opening .op-visit { position: relative; z-index: 3; width: min(100%, 1080px); margin: 0 auto; display: grid; justify-items: center; gap: clamp(36px, 4.5vw, 60px); text-align: center; }
+#opening .op-visit__title { max-width: 13ch; font-size: clamp(38px, 4.8vw, 72px); }
+#opening .op-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); width: 100%; text-align: left; }
+#opening .op-step { display: grid; align-content: start; gap: 12px; padding-top: 18px; border-top: 1.5px solid var(--color-2); }
+#opening .op-step__top { display: flex; align-items: center; justify-content: space-between; }
+#opening .op-step__mark { --m-shape-size: 30px; }
+#opening .op-step .m-text { font-size: 16px; }
+@media (max-width: 900px) {
+  #opening { --door-ry: 26%; }
+  #opening .op-title { font-size: 8.6vw; }
+  #opening .op-shape--arch { left: auto; right: calc(var(--space-2) + 2px); top: auto; bottom: calc((100vw - 2 * var(--space-2)) * .85 - 30px); width: 50px; height: 38px; }
+  #opening .op-shape--circle { left: var(--space-2); top: auto; bottom: 24%; width: 30px; height: 30px; }
+  #opening .op-shape--plus { left: calc(var(--space-2) + 14px); right: auto; top: auto; bottom: calc((100vw - 2 * var(--space-2)) * .85 - 48px); width: 26px; height: 26px; }
+  #opening .op-shape--diamond { display: none; }
+  #opening .op-shape--square { display: none; }
+  #opening .op-photo { border-radius: 22px 120px 22px 22px; }
+  #opening .op-photo__in { aspect-ratio: 4 / 3.4; }
+  #opening .op-second { padding-top: 132px; }
+  #opening .op-steps { grid-template-columns: 1fr; }
+}
+@media (min-width: 901px) and (max-width: 1120px) {
+  #opening .op-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #opening .op-intro { animation: op-rise .9s cubic-bezier(.2, .7, .2, 1) backwards; }
+  #opening .op-photo__in { animation: op-open 1.1s cubic-bezier(.2, .7, .2, 1) backwards; }
+  #opening .op-shapes { animation: op-fade .8s .25s ease-out backwards; }
+  #opening .op-photo img { animation: op-pan 7s ease-in-out infinite alternate; }
+  #opening .op-shape--circle i { animation: op-orbit 6s linear infinite; }
+  #opening .op-shape--plus i { animation: op-turn 5s ease-in-out infinite alternate; }
+  #opening .op-shape--diamond i { animation: op-swing 4.4s ease-in-out infinite alternate; }
+  #opening .op-shape--square i { animation: op-tilt 3.8s ease-in-out infinite alternate; }
+  #opening[data-loops="off"] .op-photo img, #opening[data-loops="off"] .op-shape i { animation-play-state: paused; }
+}
+@keyframes op-rise { from { transform: translateY(26px); } }
+@keyframes op-open { from { clip-path: inset(5% 4% 0 4% round 40px); transform: translateY(40px); } to { clip-path: inset(0 0 0 0 round 0px); transform: none; } }
+@keyframes op-fade { from { opacity: 0; transform: translateY(18px); } }
+@keyframes op-pan { from { transform: scale(1.08) translateX(-3%); } to { transform: scale(1.08) translateX(3%); } }
+@keyframes op-orbit { from { transform: rotate(0deg) translateX(30px) rotate(0deg); } to { transform: rotate(360deg) translateX(30px) rotate(-360deg); } }
+@keyframes op-turn { from { transform: translateY(-14px) rotate(-30deg); } to { transform: translateY(14px) rotate(60deg); } }
+@keyframes op-swing { from { transform: translateX(-18px) rotate(-20deg); } to { transform: translateX(18px) rotate(25deg); } }
+@keyframes op-tilt { from { transform: translateY(10px) rotate(-12deg); } to { transform: translateY(-12px) rotate(18deg); } }
+}
+</style>
+<style data-8b-part="section:doors">
+@layer sections {
+#doors { padding: var(--space-1) 0; overflow-x: clip; }
+#doors .dr-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr) minmax(0, 1fr); align-items: center; gap: clamp(20px, 3vw, 48px); }
+#doors .dr-door { position: relative; display: grid; justify-items: center; gap: 16px; }
+#doors .dr-door__frame { width: 100%; aspect-ratio: 3 / 4.3; overflow: hidden; border-radius: 999px 999px var(--radius-3) var(--radius-3); background: var(--color-3); }
+#doors .dr-door__frame img { width: 100%; height: 100%; object-fit: cover; }
+#doors .dr-door--cat img { object-position: 52% 62%; }
+#doors .dr-door--dog img { object-position: 50% 40%; }
+#doors .dr-copy { position: relative; z-index: 0; display: grid; justify-items: center; gap: 20px; text-align: center; }
+#doors .dr-copy .m-text-2 { font-size: clamp(34px, 3.7vw, 54px); max-width: 12ch; }
+#doors .dr-copy > .m-text { max-width: 38ch; }
+#doors .dr-mark { --m-shape-size: 34px; background: var(--color-5); }
+#doors .dr-sides { display: grid; gap: 0; width: 100%; margin-top: 8px; text-align: left; }
+#doors .dr-side { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 4px 14px; padding: 14px 0; border-top: 1.5px solid var(--color-2); }
+#doors .dr-side .m-shape-2, #doors .dr-side .m-shape-3, #doors .dr-side .m-shape-4 { --m-shape-size: 18px; margin-top: 4px; grid-row: span 2; }
+#doors .dr-side:nth-child(1) span:first-child { background: var(--color-7); }
+#doors .dr-side:nth-child(2) span:first-child { background: var(--color-6); }
+#doors .dr-side:nth-child(3) span:first-child { background: var(--color-9); }
+#doors .dr-side .m-text-3 { font-size: 19px; }
+@media (max-width: 900px) {
+  #doors .dr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
+  #doors .dr-copy { grid-column: 1 / -1; grid-row: 2; }
+  #doors .dr-door .m-badge { font-size: 13px; padding: 0 10px; }
+}
+}
+</style>
+<style data-8b-part="section:species">
+@layer sections {
+#species { padding: var(--space-1) 0; overflow-x: clip; }
+#species .sp-stage { position: relative; margin-top: clamp(48px, 6vw, 88px); }
+#species .sp-row { position: relative; display: flex; justify-content: center; align-items: center; }
+#species .sp-panel { position: relative; flex: none; display: grid; justify-items: center; align-content: center; gap: 12px; width: clamp(240px, 23vw, 300px); min-height: clamp(330px, 30vw, 400px); padding: 36px 44px; text-align: center; }
+#species .sp-panel + .sp-panel { margin-left: clamp(-44px, -3vw, -28px); }
+#species .sp-panel--dogs { background: var(--color-6); border-radius: var(--radius-3); }
+#species .sp-panel--cats { z-index: 1; width: clamp(300px, 29vw, 380px); background: var(--color-7); border-radius: 50%; aspect-ratio: 1; min-height: 0; padding: clamp(36px, 4vw, 52px) clamp(48px, 5vw, 64px); gap: 8px; }
+#species .sp-panel--cats .sp-photo { width: clamp(84px, 7.5vw, 104px); }
+#species .sp-panel--small { background: var(--color-8); color: var(--color-1); border-radius: 0 var(--radius-4) 0 0; }
+#species .sp-panel--exotic { background: var(--color-9); border-radius: 999px 999px var(--radius-3) var(--radius-3); padding-top: 64px; }
+#species .sp-photo { width: clamp(96px, 9vw, 124px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--color-3); }
+#species .sp-photo img { width: 100%; height: 100%; object-fit: cover; }
+#species .sp-panel .m-text { font-size: 16px; max-width: 24ch; }
+#species .sp-accent { position: absolute; z-index: 2; pointer-events: none; }
+#species .sp-accent--a { --m-shape-size: 44px; left: 8%; top: -40px; background: var(--color-11); }
+#species .sp-accent--b { --m-shape-size: 46px; right: 10%; top: -54px; background: var(--color-10); }
+#species .sp-accent--c { --m-shape-size: 40px; left: 46%; bottom: -46px; background: var(--color-6); }
+#species .sp-accent--d { --m-shape-size: 38px; right: 4%; bottom: -30px; background: var(--color-5); }
+@media (max-width: 1060px) and (min-width: 721px) {
+  #species .sp-row { flex-wrap: wrap; row-gap: 0; }
+  #species .sp-panel { width: 42%; }
+  #species .sp-panel:nth-child(3) { margin-left: 0; }
+}
+@media (max-width: 720px) {
+  #species .sp-row { flex-direction: column; }
+  #species .sp-panel { width: min(100% - 2 * var(--space-2), 360px); min-height: 0; }
+  #species .sp-panel + .sp-panel { margin-left: 0; margin-top: -26px; }
+  #species .sp-panel--small { padding-top: 48px; }
+}
+}
+</style>
+<style data-8b-part="section:care">
+@layer sections {
+#care { padding: var(--space-1) 0; }
+#care .ca-list { margin-top: clamp(48px, 6vw, 80px); border-bottom: 1.5px solid var(--color-2); }
+#care .ca-row { position: relative; display: grid; grid-template-columns: clamp(170px, 19vw, 250px) minmax(0, 1fr) minmax(150px, 210px); gap: clamp(20px, 3vw, 48px); align-items: center; padding: clamp(22px, 2.6vw, 34px) 0; }
+#care .ca-rule { position: absolute; inset: 0 0 auto 0; height: 1.5px; background: var(--color-2); transform-origin: 0 50%; }
+#care .ca-frame { aspect-ratio: 5 / 4; overflow: hidden; background: var(--color-3); }
+#care .ca-frame img { width: 100%; height: 100%; object-fit: cover; }
+#care .ca-row:nth-child(6n + 1) .ca-frame { border-radius: 50%; aspect-ratio: 1; width: 82%; }
+#care .ca-row:nth-child(6n + 2) .ca-frame { border-radius: 999px 999px 0 0; }
+#care .ca-row:nth-child(6n + 3) .ca-frame { border-radius: 0 var(--radius-4) 0 0; }
+#care .ca-row:nth-child(6n + 4) .ca-frame { border-radius: var(--radius-3); }
+#care .ca-row:nth-child(6n + 5) .ca-frame { border-radius: var(--radius-4) var(--radius-3) var(--radius-4) var(--radius-3); }
+#care .ca-row:nth-child(6n + 6) .ca-frame { border-radius: 0 0 999px 999px; }
+#care .ca-text { display: grid; gap: 10px; }
+#care .ca-text .m-text-3 { font-size: clamp(24px, 2.5vw, 34px); }
+#care .ca-text .m-text { max-width: 52ch; }
+#care .ca-note { display: grid; gap: 8px; justify-items: start; }
+#care .ca-note .m-shape-2, #care .ca-note .m-shape-3, #care .ca-note .m-shape-4, #care .ca-note .m-shape-5, #care .ca-note .m-shape-6, #care .ca-note .m-shape { --m-shape-size: 22px; }
+#care .ca-row:nth-child(6n + 1) .ca-note > span:first-child { background: var(--color-6); }
+#care .ca-row:nth-child(6n + 2) .ca-note > span:first-child { background: var(--color-7); }
+#care .ca-row:nth-child(6n + 3) .ca-note > span:first-child { background: var(--color-8); }
+#care .ca-row:nth-child(6n + 4) .ca-note > span:first-child { background: var(--color-9); }
+#care .ca-row:nth-child(6n + 5) .ca-note > span:first-child { background: var(--color-5); }
+#care .ca-row:nth-child(6n + 6) .ca-note > span:first-child { background: var(--color-10); }
+@media (max-width: 800px) {
+  #care .ca-row { grid-template-columns: 112px minmax(0, 1fr); gap: 14px 18px; align-items: start; }
+  #care .ca-row:nth-child(6n + 1) .ca-frame { width: 100%; }
+  #care .ca-note { grid-column: 2; }
+  #care .ca-note .m-shape-2, #care .ca-note .m-shape-3, #care .ca-note .m-shape-4, #care .ca-note .m-shape-5, #care .ca-note .m-shape-6, #care .ca-note .m-shape { display: none; }
+}
+}
+</style>
+<style data-8b-part="section:team">
+@layer sections {
+#team { padding: var(--space-1) 0; }
+#team .tm-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(18px, 2.4vw, 32px); margin-top: clamp(48px, 6vw, 88px); }
+#team .tm-person { display: grid; align-content: start; gap: 14px; }
+#team .tm-person:nth-child(2n) { margin-top: clamp(40px, 6vw, 88px); }
+#team .tm-frame { aspect-ratio: 4 / 5; overflow: hidden; background: var(--color-3); }
+#team .tm-frame img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
+#team .tm-person:nth-child(4n + 1) .tm-frame { border-radius: 999px 999px var(--radius-3) var(--radius-3); }
+#team .tm-person:nth-child(4n + 2) .tm-frame { border-radius: var(--radius-1) var(--radius-4) var(--radius-1) var(--radius-1); }
+#team .tm-person:nth-child(4n + 3) .tm-frame { border-radius: 50% 50% 50% 50% / 40% 40% 40% 40%; }
+#team .tm-person:nth-child(4n + 4) .tm-frame { border-radius: var(--radius-4) var(--radius-1) var(--radius-1) var(--radius-1); }
+#team .tm-name { display: flex; align-items: center; gap: 10px; }
+#team .tm-name span { --m-shape-size: 16px; }
+#team .tm-person:nth-child(4n + 1) .tm-name span { background: var(--color-5); }
+#team .tm-person:nth-child(4n + 2) .tm-name span { background: var(--color-6); }
+#team .tm-person:nth-child(4n + 3) .tm-name span { background: var(--color-9); }
+#team .tm-person:nth-child(4n + 4) .tm-name span { background: var(--color-7); }
+#team .tm-person .m-text { font-size: 16px; }
+@media (max-width: 900px) {
+  #team .tm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 14px; }
+  #team .tm-person:nth-child(2n) { margin-top: 48px; }
+  #team .tm-person .m-text { font-size: 15px; }
+}
+}
+</style>
+<style data-8b-part="section:patients">
+@layer sections {
+#patients { padding: var(--space-1) 0; overflow-x: clip; }
+#patients .pt-pin { display: grid; grid-template-columns: minmax(0, 1fr); align-content: center; gap: clamp(28px, 4vw, 56px); }
+#patients .pt-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 18px 40px; }
+#patients .pt-head .m-text-2 { max-width: 10ch; }
+#patients .pt-head .m-text { max-width: 40ch; }
+#patients .pt-viewport { min-width: 0; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+#patients .pt-track { display: flex; gap: clamp(14px, 2vw, 28px); width: max-content; padding: 24px var(--space-2) 40px; }
+#patients .pt-card { flex: none; display: grid; align-content: start; gap: 14px; width: clamp(240px, 22vw, 300px); scroll-snap-align: center; }
+#patients .pt-frame { aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius-1); background: var(--color-3); }
+#patients .pt-card:nth-child(3n + 1) .pt-frame { border-radius: var(--radius-1) var(--radius-4) var(--radius-1) var(--radius-1); }
+#patients .pt-card:nth-child(3n + 2) .pt-frame { border-radius: 999px 999px var(--radius-1) var(--radius-1); }
+#patients .pt-card:nth-child(3n + 3) .pt-frame { border-radius: var(--radius-1) var(--radius-1) var(--radius-4) var(--radius-1); }
+#patients .pt-frame img { width: 100%; height: 100%; object-fit: cover; }
+#patients .pt-body { display: grid; gap: 6px; }
+#patients .pt-body .m-text { font-size: 16px; }
+#patients .pt-meta { display: flex; align-items: baseline; gap: 10px; }
+@media (max-width: 720px) {
+  #patients .pt-card { width: 72vw; }
+}
+}
+</style>
+<style data-8b-part="scene-style:patients-track">
+@layer scenes {
+@media (prefers-reduced-motion: no-preference) {
+  #patients[data-track="on"] { padding-block: 0; }
+  #patients[data-track="on"] .pt-pin { min-height: 100svh; padding-block: calc(var(--nav-h, 92px) * .6) 24px; }
+  #patients[data-track="on"] .pt-viewport { overflow: visible; scroll-snap-type: none; }
+  #patients[data-track="on"] .pt-track { padding-inline: calc(50vw - clamp(240px, 22vw, 300px) / 2); }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 720px) {
+  #patients[data-track="on"] .pt-track { padding-inline: 14vw; }
+}
+}
+</style>
+<style data-8b-part="section:prices">
+@layer sections {
+#prices { padding: var(--space-1) 0; background: var(--color-2); color: var(--color-1); }
+#prices :focus-visible { outline-color: var(--color-1); }
+#prices .pr-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(40px, 6vw, 96px); align-items: start; }
+#prices .pr-head { position: relative; display: grid; gap: 24px; }
+#prices .pr-head .m-text-2 { font-size: clamp(40px, 4.8vw, 72px); max-width: 10ch; }
+#prices .pr-head > .m-text { max-width: 40ch; }
+#prices .pr-note { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; margin-top: 12px; padding: 22px 24px; border-radius: var(--radius-1) var(--radius-1) var(--radius-1) var(--radius-3); background: var(--color-5); color: var(--color-2); }
+#prices .pr-note .m-shape-6 { --m-shape-size: 26px; margin-top: 2px; }
+#prices .pr-accent { position: absolute; pointer-events: none; }
+#prices .pr-accent--a { --m-shape-size: 52px; right: 6%; top: 4px; background: var(--color-7); }
+#prices .pr-accent--b { --m-shape-size: 40px; right: 26%; bottom: -70px; background: var(--color-10); }
+#prices .pr-ledger { padding: clamp(10px, 1.6vw, 20px) clamp(20px, 3vw, 40px); }
+#prices .pr-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; align-items: baseline; padding: 18px 0; border-bottom: 1.5px solid var(--color-2); }
+#prices .pr-row:last-child { border-bottom: 0; }
+#prices .pr-row dt { grid-column: 1; }
+#prices .pr-row .m-text-3 { font-size: 20px; }
+#prices .pr-row .m-text-4 { grid-column: 1; }
+#prices .pr-price { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-family: var(--font-1); font-size: 22px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; white-space: nowrap; }
+#prices .pr-price small { font-size: 14px; font-weight: 400; letter-spacing: 0; }
+@media (max-width: 900px) {
+  #prices .pr-grid { grid-template-columns: 1fr; }
+  #prices .pr-accent--b { display: none; }
+}
+}
+</style>
+<style data-8b-part="section:story">
+@layer sections {
+#story { padding: var(--space-1) 0; }
+#story .st-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+#story .st-stage { position: sticky; top: calc(var(--nav-h, 92px) + 16px); }
+#story .st-frame { height: min(78svh, 640px); overflow: hidden; border-radius: var(--radius-4) var(--radius-1) var(--radius-1) var(--radius-1); background: var(--color-3); }
+#story .st-frame img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
+#story .st-text { display: grid; }
+#story .st-text > .m-text-2 { font-size: clamp(40px, 4.6vw, 68px); max-width: 9ch; padding-bottom: 24px; }
+#story .st-step { display: grid; align-content: center; gap: 14px; min-height: 64svh; padding: 32px 0; border-top: 1.5px solid var(--color-2); }
+#story .st-step .m-text-3 { font-size: clamp(26px, 2.6vw, 36px); max-width: 16ch; }
+#story .st-step .m-text { max-width: 42ch; }
+#story .st-step .m-badge { justify-self: start; background: var(--color-3); }
+@media (max-width: 900px) {
+  #story .st-grid { grid-template-columns: 1fr; gap: 0; }
+  #story .st-stage { top: 0; z-index: 1; margin-top: calc(-1 * var(--nav-h, 72px)); padding: calc(var(--nav-h, 72px) + 8px) 0 12px; background: var(--color-1); }
+  #story .st-frame { height: 32svh; border-radius: 120px var(--radius-3) var(--radius-3) var(--radius-3); }
+  #story .st-text { position: relative; z-index: 0; padding-top: 28px; background: var(--color-1); }
+  #story .st-step { min-height: 52svh; align-content: end; }
+}
+}
+</style>
+<style data-8b-part="section:faq">
+@layer sections {
+#faq { padding: var(--space-1) 0; }
+#faq .fq-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+#faq .fq-head { display: grid; gap: 22px; }
+#faq .fq-head .m-text-2 { font-size: clamp(40px, 4.6vw, 68px); max-width: 9ch; }
+#faq .fq-list { border-top: 1.5px solid var(--color-2); }
+#faq .fq-item { border-bottom: 1.5px solid var(--color-2); }
+#faq .fq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 0; cursor: pointer; list-style: none; }
+#faq .fq-item summary::-webkit-details-marker { display: none; }
+#faq .fq-sign { --m-shape-size: 22px; background: var(--color-5); transition: transform .45s cubic-bezier(.3, .7, .2, 1); }
+#faq .fq-item[open] .fq-sign { transform: rotate(45deg); }
+#faq .fq-item .m-text { max-width: 60ch; padding: 0 0 24px; }
+@media (hover: hover) { #faq .fq-item summary:hover .fq-sign { transform: rotate(90deg); } #faq .fq-item[open] summary:hover .fq-sign { transform: rotate(135deg); } }
+@media (max-width: 900px) { #faq .fq-grid { grid-template-columns: 1fr; } }
+}
+</style>
+<style data-8b-part="section:contact">
+@layer sections {
+#contact { padding: var(--space-1) var(--space-2) clamp(40px, 5vw, 72px); }
+#contact .ct-panel { position: relative; max-width: 1280px; margin: 0 auto; padding: clamp(150px, 16vw, 230px) clamp(20px, 5vw, 72px) clamp(40px, 5vw, 72px); background: var(--color-5); color: var(--color-2); border-radius: 50% 50% var(--radius-1) var(--radius-1) / 300px 300px var(--radius-1) var(--radius-1); }
+#contact .ct-head { display: grid; justify-items: center; gap: 18px; text-align: center; margin-bottom: clamp(40px, 5vw, 64px); }
+#contact .ct-head .m-text { max-width: 46ch; }
+#contact .ct-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
+#contact .ct-photo { aspect-ratio: 16 / 10; overflow: hidden; border-radius: 999px 999px var(--radius-3) var(--radius-3); background: var(--color-3); }
+#contact .ct-photo img { width: 100%; height: 100%; object-fit: cover; }
+#contact .ct-facts { display: grid; gap: 0; margin-top: 24px; }
+#contact .ct-fact { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding: 14px 0; border-top: 1.5px solid var(--color-2); }
+#contact .ct-fact dt { font-weight: 500; }
+#contact .ct-hours { display: grid; grid-template-columns: auto auto; gap: 2px 16px; justify-content: start; }
+#contact .ct-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: clamp(20px, 3vw, 36px); border-radius: var(--radius-1); background: var(--color-1); }
+#contact .ct-form .ct-wide { grid-column: 1 / -1; }
+#contact .ct-form .m-text-4 { grid-column: 1 / -1; }
+#contact .ct-form .m-btn-3 { justify-self: start; }
+#contact .ct-status { grid-column: 1 / -1; padding: 14px 16px; border-radius: var(--radius-3); background: var(--color-3); }
+@media (max-width: 900px) {
+  #contact .ct-panel { padding-top: 120px; border-radius: 50% 50% var(--radius-3) var(--radius-3) / 150px 150px var(--radius-3) var(--radius-3); }
+  #contact .ct-grid { grid-template-columns: 1fr; }
+  #contact .ct-form { grid-template-columns: 1fr; padding: 18px; }
+  #contact .ct-fact { grid-template-columns: 1fr; gap: 4px; }
+}
+}
+</style>
+<style data-8b-part="section:footer">
+@layer sections {
+#footer { padding: 0 var(--space-2) var(--space-2); }
+#footer .ft-panel { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.2fr repeat(3, minmax(0, .6fr)); gap: 40px 32px; padding: clamp(40px, 5vw, 64px); border-radius: var(--radius-1) var(--radius-1) var(--radius-1) var(--radius-4); background: var(--color-3); }
+#footer .ft-brand { display: grid; align-content: start; gap: 22px; }
+#footer .ft-brand .m-text-3 { max-width: 18ch; font-size: clamp(24px, 2.4vw, 32px); }
+#footer .ft-col { display: grid; align-content: start; gap: 12px; }
+#footer .ft-col .m-text-4 { margin-bottom: 4px; }
+#footer .ft-col .m-link-2 { justify-self: start; }
+#footer .ft-base { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; padding-top: 28px; border-top: 1.5px solid var(--color-2); }
+#footer .ft-shapes { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; }
+#footer .ft-shapes span:nth-child(1) { background: var(--color-5); }
+#footer .ft-shapes span:nth-child(2) { background: var(--color-6); }
+#footer .ft-shapes span:nth-child(3) { background: var(--color-7); }
+#footer .ft-shapes span:nth-child(4) { background: var(--color-9); }
+@media (max-width: 900px) {
+  #footer .ft-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); border-radius: 24px 24px 24px 120px; }
+  #footer .ft-brand { grid-column: 1 / -1; }
+  #footer .ft-shapes { justify-content: flex-start; }
+}
+}
+</style>
+</head>
+<body class="m-text">
+<a class="skip m-link-2" href="#main">Skip to content</a>
+<!-- navigation: top bar: arch logo and wordmark, section links, Book a visit button; phone menu overlay -->
+<header id="navigation" data-8b-section="navigation">
+  <a class="nav__logo" href="#opening" aria-label="Burrow Veterinary, back to the top">
+    <span class="nav__mark" aria-hidden="true"></span>
+    <span class="nav__word" aria-hidden="true">burrow<span>veterinary</span></span>
+  </a>
+  <nav class="nav__menu" aria-label="Main">
+    <a class="m-link-2" href="#doors">The clinic</a>
+    <a class="m-link-2" href="#care">Care</a>
+    <a class="m-link-2" href="#team">Vets</a>
+    <a class="m-link-2" href="#prices">Prices</a>
+    <a class="m-link-2" href="#contact">Contact</a>
+  </nav>
+  <a class="m-btn nav__cta" href="#contact"><span class="m-btn__label">Book a visit</span></a>
+  <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-sheet"><span class="nav__bars" aria-hidden="true"><i></i><i></i></span><span>Menu</span></button>
+  <div class="nav__sheet" id="nav-sheet" data-lenis-prevent hidden>
+    <nav class="nav__sheet-links" aria-label="Main, mobile">
+      <a href="#doors">The clinic</a>
+      <a href="#care">Care</a>
+      <a href="#team">Vets</a>
+      <a href="#prices">Prices</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="m-btn-3" href="#contact"><span class="m-btn__label">Book a visit</span></a>
+    <button class="nav__toggle nav__close" type="button" aria-label="Close menu"><span class="nav__bars" aria-hidden="true"><i></i><i></i></span><span>Close</span></button>
+  </div>
+</header>
+<main id="main">
+<!-- opening: first screen: headline, two buttons, wide photo and floating shapes; second screen: four numbered steps of a visit on a coral arch (animation: scene:opening-door) -->
+<section id="opening" data-8b-section="opening">
+  <div class="op-first">
+    <div class="op-intro">
+      <h1 class="m-text-2 op-title"><span class="op-title__line">Calm, thorough, kind.</span> <span class="op-title__line">Vet care for every animal.</span></h1>
+      <p class="m-text op-lede">A neighbourhood clinic on North Lombard Street for dogs, cats, rabbits, birds and reptiles. Open six days, with same-day sick visits.</p>
+      <div class="op-actions">
+        <a class="m-btn" href="#contact"><span class="m-btn__label">Book a visit</span></a>
+        <a data-8b-placeholder="phone" class="m-btn-2" href="tel:+15030000000"><span class="m-btn__label">Call 503 000 0000</span></a>
+      </div>
+    </div>
+    <div class="op-shapes" aria-hidden="true">
+      <span class="op-shape op-shape--arch"><i></i></span>
+      <span class="op-shape op-shape--circle"><i></i></span>
+      <span class="op-shape op-shape--plus"><i class="m-shape-6"></i></span>
+      <span class="op-shape op-shape--diamond"><i class="m-shape-5"></i></span>
+      <span class="op-shape op-shape--square"><i class="m-shape-3"></i></span>
+    </div>
+    <figure class="op-photo">
+      <div class="op-photo__in">
+        <img srcset="https://images.unsplash.com/photo-1725409796872-8b41e8eca929?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8dmV0ZXJpbmFyaWFuJTIwY2F0JTIwZXhhbWluYXRpb258ZW58MXwwfHx8MTc5MTM5ODA3MHww&ixlib=rb-4.1.0&auto=format&fit=crop&w=780&q=60 780w, https://images.unsplash.com/photo-1725409796872-8b41e8eca929?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8dmV0ZXJpbmFyaWFuJTIwY2F0JTIwZXhhbWluYXRpb258ZW58MXwwfHx8MTc5MTM5ODA3MHww&ixlib=rb-4.1.0&auto=format&fit=crop&w=1300&q=60 1300w" sizes="(max-width: 767px) 260px, 102vw" style="background:#d9d9c0" src="https://images.unsplash.com/photo-1725409796872-8b41e8eca929?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8dmV0ZXJpbmFyaWFuJTIwY2F0JTIwZXhhbWluYXRpb258ZW58MXwwfHx8MTc5MTM5ODA3MHww&ixlib=rb-4.1.0&auto=format&fit=crop&w=1300&q=60" width="1600" height="1067" alt="A vet's hands holding a white kitten on the exam table during a check-up" fetchpriority="high">
+      </div>
+    </figure>
+  </div>
+  <div class="op-second">
+    <div class="op-door" aria-hidden="true"></div>
+    <div class="op-visit">
+      <h2 class="m-text-2 op-visit__title">Come in. Here’s how a visit goes.</h2>
+      <ol class="op-steps">
+        <li class="op-step">
+          <div class="op-step__top"><span class="m-badge">Step 1</span><span class="m-shape-2 op-step__mark" aria-hidden="true"></span></div>
+          <h3 class="m-text-3">Check in from the car</h3>
+          <p class="m-text">Text us when you park. We call you in when your room is ready, so nobody waits nose to nose.</p>
+        </li>
+        <li class="op-step">
+          <div class="op-step__top"><span class="m-badge">Step 2</span><span class="m-shape-6 op-step__mark" aria-hidden="true"></span></div>
+          <h3 class="m-text-3">Thirty minutes, on the floor</h3>
+          <p class="m-text">Every exam is booked for half an hour. We start on the floor with treats and only use the table if your animal is happy there.</p>
+        </li>
+        <li class="op-step">
+          <div class="op-step__top"><span class="m-badge">Step 3</span><span class="m-shape-5 op-step__mark" aria-hidden="true"></span></div>
+          <h3 class="m-text-3">A plan and a price first</h3>
+          <p class="m-text">Before any test or treatment you get a written plan with the price. Nothing extra happens without your yes.</p>
+        </li>
+        <li class="op-step">
+          <div class="op-step__top"><span class="m-badge">Step 4</span><span class="m-shape-3 op-step__mark" aria-hidden="true"></span></div>
+          <h3 class="m-text-3">A text the next morning</h3>
+          <p class="m-text">Your vet checks in the day after and answers questions by text for a week, at no charge.</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+<!-- clinic-sides: two arch-cut photos either side of the copy (demo: separate cat and dog sides of the clinic) (animation: scene:doors-open) -->
+<section id="doors" data-8b-section="clinic-sides">
+  <div class="wrap dr-grid">
+    <figure class="dr-door dr-door--cat">
+      <div class="dr-door__frame"><img style="background:#597359" src="https://images.unsplash.com/photo-1775753863993-d22406136e7c?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8Y2F0JTIwcG9ydHJhaXQlMjBjYWxtJTIwaW5kb29yfGVufDF8MXx8fDE3OTEzOTgwNzF8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=360&q=60" width="1600" height="2400" alt="A Siamese cat with blue eyes sitting upright on a green sofa" loading="lazy"></div>
+      <figcaption class="m-badge">Cat side, left door</figcaption>
+    </figure>
+    <div class="dr-copy">
+      <span class="m-shape dr-mark" aria-hidden="true"></span>
+      <h2 class="m-text-2">Two doors. Cats never wait with dogs.</h2>
+      <p class="m-text">We split the building down the middle in 2018. Each side has its own entrance, its own waiting room and its own exam rooms, so a nervous cat never hears a bark and a big dog has room to pace.</p>
+      <dl class="dr-sides">
+        <div class="dr-side"><span class="m-shape-2" aria-hidden="true"></span><dt class="m-text-3">Cat side</dt><dd class="m-text-4">Warm and quiet, with shelves that lift carriers off the floor.</dd></div>
+        <div class="dr-side"><span class="m-shape-3" aria-hidden="true"></span><dt class="m-text-3">Dog side</dt><dd class="m-text-4">A scale built into the floor, water bowls and space to sniff.</dd></div>
+        <div class="dr-side"><span class="m-shape-4" aria-hidden="true"></span><dt class="m-text-3">The warm corner</dt><dd class="m-text-4">Rabbits, birds and reptiles wait in a heated room on the cat side.</dd></div>
+      </dl>
+    </div>
+    <figure class="dr-door dr-door--dog">
+      <div class="dr-door__frame"><img style="background:#f3f3f3" src="https://images.unsplash.com/photo-1780319985575-285d3fe93d8e?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8OHx8ZG9nJTIwcG9ydHJhaXQlMjBzaXR0aW5nJTIwaW5kb29yfGVufDF8MXx8fDE3OTEzOTgwNzJ8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=390&q=60" width="1600" height="2134" alt="A golden cocker spaniel sitting on a pink leash against a white wall" loading="lazy"></div>
+      <figcaption class="m-badge">Dog side, right door</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- species: four overlapping colour panels, one per group (demo: animals the clinic treats) (animation: scene:species-deal) -->
+<section id="species" data-8b-section="species">
+  <div class="wrap section-head">
+    <h2 class="m-text-2" data-8b-motion="rise">Small, scaly, feathered or furry.</h2>
+    <p class="m-text">Four of our vets see dogs and cats every day. One of them has spent twenty years with rabbits, birds and reptiles, and keeps a heated room for them.</p>
+  </div>
+  <div class="sp-stage">
+    <ul class="sp-row">
+      <li class="sp-panel sp-panel--dogs">
+        <div class="sp-photo"><img style="background:#f3d98c" src="https://images.unsplash.com/photo-1769570238806-f92ba3ac397b?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NHx8ZG9nJTIwcG9ydHJhaXQlMjBzaXR0aW5nJTIwaW5kb29yfGVufDF8MXx8fDE3OTEzOTgwNzJ8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=160&q=60" width="1600" height="2400" alt="A smiling corgi sitting in front of plush toys" loading="lazy"></div>
+        <h3 class="m-text-3">Dogs and puppies</h3>
+        <p class="m-text">From first shots at eight weeks to the slow, careful years.</p>
+      </li>
+      <li class="sp-panel sp-panel--cats">
+        <div class="sp-photo"><img style="background:#8c8ca6" src="https://images.unsplash.com/photo-1740965682756-202476f0d1dc?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MTB8fHZldGVyaW5hcmlhbiUyMGNhdCUyMGV4YW1pbmF0aW9ufGVufDF8MHx8fDE3OTEzOTgwNzB8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=210&q=60" width="1600" height="1067" alt="A long-haired grey cat with blue eyes being stroked" loading="lazy"></div>
+        <h3 class="m-text-3">Cats and kittens</h3>
+        <p class="m-text">Handled on their own side, in towels, at their own speed.</p>
+      </li>
+      <li class="sp-panel sp-panel--small">
+        <div class="sp-photo"><img style="background:#d9d9d9" src="https://images.unsplash.com/photo-1774218318830-b6279a5b05c6?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8cGV0JTIwcmFiYml0fGVufDF8Mnx8fDE3OTEzOTgwNzN8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=160&q=60" width="1600" height="1740" alt="A person holding a fluffy white rabbit against a patterned dress" loading="lazy"></div>
+        <h3 class="m-text-3">Rabbits and small mammals</h3>
+        <p class="m-text">Rabbits, guinea pigs, rats and ferrets, teeth and tummies first.</p>
+      </li>
+      <li class="sp-panel sp-panel--exotic">
+        <div class="sp-photo"><img style="background:#262626" src="https://images.unsplash.com/photo-1562939921-067f50e031b9?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8cGV0JTIwYmVhcmRlZCUyMGRyYWdvbnxlbnwxfDJ8fHwxNzkxMzk4MDc1fDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=160&q=60" width="1600" height="1600" alt="A hand holding a bearded dragon" loading="lazy"></div>
+        <h3 class="m-text-3">Birds and reptiles</h3>
+        <p class="m-text">Parrots, lizards, snakes and tortoises, in a room kept at 82°F.</p>
+      </li>
+    </ul>
+    <span class="m-shape-2 sp-accent sp-accent--a" data-8b-motion="drift" aria-hidden="true"></span>
+    <span class="m-shape-6 sp-accent sp-accent--b" data-8b-motion="drift" data-drift="-1" aria-hidden="true"></span>
+    <span class="m-shape-5 sp-accent sp-accent--c" data-8b-motion="drift" aria-hidden="true"></span>
+    <span class="m-shape sp-accent sp-accent--d" data-8b-motion="drift" data-drift="-1" aria-hidden="true"></span>
+  </div>
+</section>
+<!-- services: list of six services, each row with a photo, text and a short note (animation: scene:care-index) -->
+<section id="care" data-8b-section="services">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="m-text-2" data-8b-motion="rise">What we do here.</h2>
+      <p class="m-text">Everything a family animal needs under one roof, and a referral letter written the same day when it needs more.</p>
+    </div>
+    <ol class="ca-list">
+      <li class="ca-row">
+        <span class="ca-rule" aria-hidden="true"></span>
+        <div class="ca-frame"><img style="background:#a6c0c0" src="https://images.unsplash.com/photo-1700665537650-1bf37979aae0?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8cHVwcHklMjB2YWNjaW5lJTIwaW5qZWN0aW9uJTIwdmV0fGVufDF8MHx8fDE3OTEzOTgxMDl8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=300&q=60" width="1600" height="1065" alt="Two vets in navy scrubs holding a small white dog in an exam room" loading="lazy"></div>
+        <div class="ca-text"><h3 class="m-text-3">Check-ups</h3><p class="m-text">A nose-to-tail exam once a year, twice once they are older. Weight, teeth, heart and joints go into one written record, so you can see the trend.</p></div>
+        <p class="ca-note m-text-4"><span class="m-shape-2" aria-hidden="true"></span>30 minutes, any weekday</p>
+      </li>
+      <li class="ca-row">
+        <span class="ca-rule" aria-hidden="true"></span>
+        <div class="ca-frame"><img style="background:#402626" src="https://images.unsplash.com/photo-1644675272883-0c4d582528d8?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8cHVwcHklMjB2YWNjaW5lJTIwaW5qZWN0aW9uJTIwdmV0fGVufDF8MHx8fDE3OTEzOTgxMDl8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=260&q=60" width="1600" height="1200" alt="A vet in a face mask sitting beside a corgi on the exam table" loading="lazy"></div>
+        <div class="ca-text"><h3 class="m-text-3">Vaccines and microchips</h3><p class="m-text">Only the vaccines your animal's life calls for. An indoor cat and a dog who swims in the Willamette do not get the same list.</p></div>
+        <p class="ca-note m-text-4"><span class="m-shape" aria-hidden="true"></span>Given during a check-up</p>
+      </li>
+      <li class="ca-row">
+        <span class="ca-rule" aria-hidden="true"></span>
+        <div class="ca-frame"><img style="background:#8c8c8c" src="https://images.unsplash.com/photo-1694880081678-398b6674d1ea?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8N3x8Y2F0JTIweWF3bmluZ3xlbnwxfDB8fHwxNzkxMzk4MTQ0fDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=300&q=60" width="1600" height="1067" alt="A white cat yawning with its mouth wide open, teeth showing" loading="lazy"></div>
+        <div class="ca-text"><h3 class="m-text-3">Teeth</h3><p class="m-text">Cleaning and X-rays under anaesthesia, extractions when a tooth is past saving, and a photo of every tooth we took out.</p></div>
+        <p class="ca-note m-text-4"><span class="m-shape-4" aria-hidden="true"></span>Home by the afternoon</p>
+      </li>
+      <li class="ca-row">
+        <span class="ca-rule" aria-hidden="true"></span>
+        <div class="ca-frame"><img style="background:#f3f3f3" src="https://images.unsplash.com/photo-1728013253378-13bf083434f0?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8dmV0ZXJpbmFyeSUyMHVsdHJhc291bmR8ZW58MXwwfHx8MTc5MTM5ODE0Nnww&ixlib=rb-4.1.0&auto=format&fit=crop&w=310&q=60" width="1600" height="1017" alt="A sleeping cat lying on surgical paper before an operation" loading="lazy"></div>
+        <div class="ca-text"><h3 class="m-text-3">Surgery</h3><p class="m-text">Spays, neuters, lumps and stitches, with a nurse who watches nothing but the anaesthetic. We call you when they wake up.</p></div>
+        <p class="ca-note m-text-4"><span class="m-shape-3" aria-hidden="true"></span>Tuesdays and Thursdays</p>
+      </li>
+      <li class="ca-row">
+        <span class="ca-rule" aria-hidden="true"></span>
+        <div class="ca-frame"><img style="background:#d9d9d9" src="https://images.unsplash.com/photo-1630359486912-4b085e38f1e7?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8dmV0ZXJpbmFyaWFuJTIwZG9nJTIwZXhhbSUyMHRhYmxlfGVufDF8MHx8fDE3OTEzOTgwNjl8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=300&q=60" width="1600" height="1069" alt="A white French bulldog in a polka-dot shirt sitting on a steel exam table" loading="lazy"></div>
+        <div class="ca-text"><h3 class="m-text-3">Same-day sick visits</h3><p class="m-text">Four slots every day stay empty until morning. Call before ten and a vet sees your animal that day.</p></div>
+        <p class="ca-note m-text-4"><span class="m-shape-6" aria-hidden="true"></span>Call before 10 am</p>
+      </li>
+      <li class="ca-row">
+        <span class="ca-rule" aria-hidden="true"></span>
+        <div class="ca-frame"><img style="background:#262626" src="https://images.unsplash.com/photo-1672626281486-84e5b1a7c479?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Mnx8c2VuaW9yJTIwZG9nJTIwZ3JleSUyMG11enpsZXxlbnwxfDF8fHwxNzkxMzk4MTA4fDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=250&q=60" width="1600" height="2400" alt="An old grey-muzzled dog lying on the floor beside a chair" loading="lazy"></div>
+        <div class="ca-text"><h3 class="m-text-3">The older years</h3><p class="m-text">Pain plans for stiff joints, kidney checks, and when the time comes, a quiet goodbye at home or in our garden room.</p></div>
+        <p class="ca-note m-text-4"><span class="m-shape-5" aria-hidden="true"></span>Home visits on request</p>
+      </li>
+    </ol>
+  </div>
+</section>
+<!-- team: four people with portraits, role and one line (demo: vets and head nurse) -->
+<section id="team" data-8b-section="team">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="m-text-2" data-8b-motion="rise">Who you’ll meet in the room.</h2>
+      <p class="m-text">Three vets and a head nurse, all of whom still kneel on the floor for an exam.</p>
+    </div>
+    <ul class="tm-grid">
+      <li class="tm-person">
+        <div class="tm-frame" data-8b-motion="reshape" data-from="circle"><img style="background:#f3f3f3" src="https://images.unsplash.com/photo-1729162128021-f37dca3ff30d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8OXx8dmV0ZXJpbmFyaWFuJTIwcG9ydHJhaXQlMjBzbWlsaW5nfGVufDF8MXx8fDE3OTEzOTgxMDV8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=280&q=60" width="1600" height="2000" alt="Portrait of Dr. Martin Hale, grey-haired, in a white coat, smiling" loading="lazy"></div>
+        <h3 class="m-text-3 tm-name"><span class="m-shape" aria-hidden="true"></span>Dr. Martin Hale</h3>
+        <p class="m-text-4">Founder, general practice and surgery</p>
+        <p class="m-text">Opened Burrow after twelve years in an emergency hospital. Still runs the Tuesday surgery list.</p>
+      </li>
+      <li class="tm-person">
+        <div class="tm-frame" data-8b-motion="reshape" data-from="arch"><img style="background:#8c7373" src="https://images.unsplash.com/photo-1770134223774-13b735e29201?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NXx8dmV0ZXJpbmFyaWFuJTIwcG9ydHJhaXQlMjBzbWlsaW5nfGVufDF8MXx8fDE3OTEzOTgxMDV8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=280&q=60" width="1600" height="2263" alt="Portrait of Dr. Priya Raman in navy scrubs and glasses, smiling" loading="lazy"></div>
+        <h3 class="m-text-3 tm-name"><span class="m-shape-4" aria-hidden="true"></span>Dr. Priya Raman</h3>
+        <p class="m-text-4">Co-founder, cats and teeth</p>
+        <p class="m-text">Ran the feline clinic at a teaching hospital, then built our cat side room by room.</p>
+      </li>
+      <li class="tm-person">
+        <div class="tm-frame" data-8b-motion="reshape" data-from="square"><img style="background:#262626" src="https://images.unsplash.com/photo-1626201061255-51c25afa69e6?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MTN8fHZldGVyaW5hcmlhbiUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfDF8fHwxNzkxMzk4MTA1fDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=280&q=60" width="1600" height="2400" alt="Portrait of Dr. Leo Marchetti, curly-haired, in dark scrubs, smiling" loading="lazy"></div>
+        <h3 class="m-text-3 tm-name"><span class="m-shape-2" aria-hidden="true"></span>Dr. Leo Marchetti</h3>
+        <p class="m-text-4">Rabbits, birds and reptiles</p>
+        <p class="m-text">Twenty years with the animals most clinics turn away. Keeps the warm room at 82°F.</p>
+      </li>
+      <li class="tm-person">
+        <div class="tm-frame" data-8b-motion="reshape" data-from="diamond"><img style="background:#c0a6a6" src="https://images.unsplash.com/photo-1784333250630-e647a26b2240?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MTF8fHZldGVyaW5hcmlhbiUyMHBvcnRyYWl0JTIwc21pbGluZ3xlbnwxfDF8fHwxNzkxMzk4MTA1fDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=280&q=60" width="1600" height="2400" alt="Portrait of Rosa Delgado laughing, in teal scrubs and a patterned surgical cap" loading="lazy"></div>
+        <h3 class="m-text-3 tm-name"><span class="m-shape-3" aria-hidden="true"></span>Rosa Delgado, LVT</h3>
+        <p class="m-text-4">Head nurse and anaesthesia</p>
+        <p class="m-text">Watches the monitor through every operation and makes the next-morning calls herself.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+<!-- patients: pinned horizontal row of seven cards (demo: patients of the month, name, breed, age, why they came) (animation: scene:patients-track) -->
+<section id="patients" data-8b-section="patients">
+  <div class="pt-pin">
+    <div class="wrap pt-head">
+      <h2 class="m-text-2">This month at Burrow.</h2>
+      <p class="m-text">Seven of the animals who came through our doors in September, shared with their people's permission.</p>
+    </div>
+    <div class="pt-viewport">
+      <ul class="pt-track">
+        <li class="pt-card">
+          <div class="pt-frame"><img style="background:#c0c0c0" src="https://images.unsplash.com/photo-1663108903748-590d5fa4b2d1?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8ZG9nJTIwd2VhcmluZyUyMGNvbmUlMjByZWNvdmVyeXxlbnwxfDF8fHwxNzkxMzk4MTEwfDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=450&q=60" width="1600" height="2400" alt="A small white dog wearing a clear recovery cone and a red harness" loading="lazy"></div>
+          <div class="pt-body"><p class="pt-meta"><span class="m-text-3">Pip</span><span class="m-text-4">Maltese, 3</span></p><p class="m-text">Spayed on Tuesday, eating on Wednesday. The cone comes off on the 14th.</p></div>
+        </li>
+        <li class="pt-card">
+          <div class="pt-frame"><img style="background:#d9d9d9" src="https://images.unsplash.com/photo-1673803893292-7ac8d2debd70?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8a2l0dGVuJTIwd3JhcHBlZCUyMGJsYW5rZXR8ZW58MXwxfHx8MTc5MTM5ODExMXww&ixlib=rb-4.1.0&auto=format&fit=crop&w=450&q=60" width="1600" height="2133" alt="A tabby cat peeking out of a pile of green blankets" loading="lazy"></div>
+          <div class="pt-body"><p class="pt-meta"><span class="m-text-3">Fern</span><span class="m-text-4">Tabby, 11</span></p><p class="m-text">Two teeth out and a clean bill for the rest. Chews on the left side again.</p></div>
+        </li>
+        <li class="pt-card">
+          <div class="pt-frame"><img style="background:#262626" src="https://images.unsplash.com/photo-1705587226186-bbb26978b7a0?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8OXx8cGV0JTIwcmFiYml0fGVufDF8Mnx8fDE3OTEzOTgwNzN8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=560&q=60" width="1600" height="1600" alt="A brown and white lop-eared rabbit on a black background" loading="lazy"></div>
+          <div class="pt-body"><p class="pt-meta"><span class="m-text-3">Mochi</span><span class="m-text-4">Lop rabbit, 2</span></p><p class="m-text">A slow gut caught early. Hay, fluids and one night in the warm room.</p></div>
+        </li>
+        <li class="pt-card">
+          <div class="pt-frame"><img style="background:#595959" src="https://images.unsplash.com/photo-1736535332333-4552fe09219d?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NXx8ZG9nJTIwd2VhcmluZyUyMGNvbmUlMjByZWNvdmVyeXxlbnwxfDF8fHwxNzkxMzk4MTEwfDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=450&q=60" width="1600" height="2133" alt="A fluffy brown puppy wearing a soft blue cone on a patterned rug" loading="lazy"></div>
+          <div class="pt-body"><p class="pt-meta"><span class="m-text-3">Biscuit</span><span class="m-text-4">Poodle cross, 5 months</span></p><p class="m-text">Swallowed a sock. Out without surgery and home by dinner.</p></div>
+        </li>
+        <li class="pt-card">
+          <div class="pt-frame"><img style="background:#262626" src="https://images.unsplash.com/photo-1790273973616-0f5d157c4914?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8OHx8a2l0dGVuJTIwd3JhcHBlZCUyMGJsYW5rZXR8ZW58MXwxfHx8MTc5MTM5ODExMXww&ixlib=rb-4.1.0&auto=format&fit=crop&w=450&q=60" width="1600" height="2844" alt="A white kitten with blue eyes peeking out from a plaid blanket" loading="lazy"></div>
+          <div class="pt-body"><p class="pt-meta"><span class="m-text-3">Snow</span><span class="m-text-4">Kitten, 10 weeks</span></p><p class="m-text">First vaccines and a microchip. Slept through both.</p></div>
+        </li>
+        <li class="pt-card">
+          <div class="pt-frame"><img style="background:#262626" src="https://images.unsplash.com/photo-1649881276101-4b58fb9e00be?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8Nnx8cGV0JTIwcGFycm90fGVufDF8Mnx8fDE3OTEzOTgwNzR8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=560&q=60" width="1600" height="1600" alt="A green-cheeked conure perched on a cage door" loading="lazy"></div>
+          <div class="pt-body"><p class="pt-meta"><span class="m-text-3">Kiwi</span><span class="m-text-4">Conure, 6</span></p><p class="m-text">Beak trimmed and a new diet, which she is loudly against.</p></div>
+        </li>
+        <li class="pt-card">
+          <div class="pt-frame"><img style="background:#738c59" src="https://images.unsplash.com/photo-1607867062231-89acdc79a5e0?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MXx8c2VuaW9yJTIwZG9nJTIwZ3JleSUyMG11enpsZXxlbnwxfDF8fHwxNzkxMzk4MTA4fDA&ixlib=rb-4.1.0&auto=format&fit=crop&w=450&q=60" width="1600" height="2133" alt="An older German shepherd with a greying face, mouth open, outdoors" loading="lazy"></div>
+          <div class="pt-body"><p class="pt-meta"><span class="m-text-3">Atlas</span><span class="m-text-4">German shepherd, 13</span></p><p class="m-text">A monthly joint injection and a ramp for the car. Back on his walks.</p></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+<!-- prices: dark band: price list (service, what is included, price) and a note on estimates -->
+<section id="prices" data-8b-section="prices">
+  <div class="wrap pr-grid">
+    <div class="pr-head">
+      <h2 class="m-text-2" data-8b-motion="rise">Prices you see before we start.</h2>
+      <p class="m-text">This year's prices for what we do most. For anything else you get a written estimate before we begin.</p>
+      <aside class="pr-note"><span class="m-shape-6" aria-hidden="true"></span><p class="m-text">Every estimate has a low and a high number. If the bill would pass the high one, we stop and call you first.</p></aside>
+      <span class="m-shape-2 pr-accent pr-accent--a" data-8b-motion="drift" aria-hidden="true"></span>
+      <span class="m-shape-4 pr-accent pr-accent--b" data-8b-motion="drift" data-drift="-1" aria-hidden="true"></span>
+    </div>
+    <dl class="pr-ledger m-surface">
+      <div class="pr-row"><dt class="m-text-3">Check-up, 30 minutes</dt><dd class="m-text-4">Exam, weight and written notes</dd><dd class="pr-price">$78</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Same-day sick visit</dt><dd class="m-text-4">Exam and a written plan before any tests</dd><dd class="pr-price">$92</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Rabbit, bird or reptile exam</dt><dd class="m-text-4">Forty minutes in the warm room</dd><dd class="pr-price">$86</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Vaccine</dt><dd class="m-text-4">Each, given during a check-up</dd><dd class="pr-price">$32</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Microchip</dt><dd class="m-text-4">Lifetime registration included</dd><dd class="pr-price">$55</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Dental cleaning</dt><dd class="m-text-4">Anaesthesia, X-rays and polish; extractions extra</dd><dd class="pr-price"><small>from</small> $420</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Cat spay or neuter</dt><dd class="m-text-4">Pain relief and a recheck included</dd><dd class="pr-price"><small>from</small> $310</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Dog spay or neuter</dt><dd class="m-text-4">Pain relief and a recheck included</dd><dd class="pr-price"><small>from</small> $420</dd></div>
+      <div class="pr-row"><dt class="m-text-3">Nail trim</dt><dd class="m-text-4">Any time we are open, no appointment</dd><dd class="pr-price">$18</dd></div>
+    </dl>
+  </div>
+</section>
+<!-- story: sticky building photo beside three dated paragraphs (demo: the clinic's history) (animation: scene:story-walk) -->
+<section id="story" data-8b-section="story">
+  <div class="wrap st-grid">
+    <div class="st-stage">
+      <figure class="st-frame"><img style="background:#c0d9d9" src="https://images.unsplash.com/photo-1719056307923-a11de279d25f?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8MTB8fHNtYWxsJTIwc2hvcCUyMHN0b3JlZnJvbnQlMjBzdHJlZXQlMjBjb3JuZXJ8ZW58MXwwfHx8MTc5MTM5ODExMnww&ixlib=rb-4.1.0&auto=format&fit=crop&w=840&q=60" width="1600" height="1200" alt="A small white two-storey corner building with a teal door and shop window" loading="lazy"></figure>
+    </div>
+    <div class="st-text">
+      <h2 class="m-text-2" data-8b-motion="rise">On Lombard Street since 2014.</h2>
+      <article class="st-step">
+        <p class="m-badge">2014</p>
+        <h3 class="m-text-3">One room behind a café door</h3>
+        <p class="m-text">Martin and Priya rented the little fish café on the corner: one exam room, a borrowed X-ray machine and a sign we never took down.</p>
+      </article>
+      <article class="st-step">
+        <p class="m-badge">2018</p>
+        <h3 class="m-text-3">Upstairs, and down the middle</h3>
+        <p class="m-text">We took the flat above for surgery and recovery, and split the ground floor into a cat side and a dog side with a door each.</p>
+      </article>
+      <article class="st-step">
+        <p class="m-badge">2023</p>
+        <h3 class="m-text-3">The whole corner, and a warm room</h3>
+        <p class="m-text">Leo joined with his rabbits, birds and reptiles, the back room became the warm room, and the corner became Burrow.</p>
+      </article>
+    </div>
+  </div>
+</section>
+<!-- faq: questions and answers (native <details>) -->
+<section id="faq" data-8b-section="faq">
+  <div class="wrap fq-grid">
+    <div class="fq-head">
+      <h2 class="m-text-2" data-8b-motion="rise">Before you come in.</h2>
+      <p class="m-text">Anything else, call <a data-8b-placeholder="phone" class="m-link" href="tel:+15030000000">503 000 0000</a> or write to <a data-8b-placeholder="email" class="m-link" href="mailto:hello@burrow.example">hello@burrow.example</a>.</p>
+    </div>
+    <div class="fq-list">
+      <details class="fq-item">
+        <summary><span class="m-text-3">Do you see emergencies?</span><span class="m-shape-6 fq-sign" aria-hidden="true"></span></summary>
+        <p class="m-text">We see sick animals the same day if you call before 10 am. At night and on Sundays we send you to the city's 24-hour emergency hospital and phone ahead with your animal's history.</p>
+      </details>
+      <details class="fq-item">
+        <summary><span class="m-text-3">Can I stay in the room?</span><span class="m-shape-6 fq-sign" aria-hidden="true"></span></summary>
+        <p class="m-text">For every exam, yes. Most animals are calmer with you there. For X-rays and surgery we take them through, and bring them back as soon as they are awake.</p>
+      </details>
+      <details class="fq-item">
+        <summary><span class="m-text-3">Do you take pet insurance?</span><span class="m-shape-6 fq-sign" aria-hidden="true"></span></summary>
+        <p class="m-text">We work with every insurer. You pay us on the day and we fill in the claim form before you leave.</p>
+      </details>
+      <details class="fq-item">
+        <summary><span class="m-text-3">What should I bring the first time?</span><span class="m-shape-6 fq-sign" aria-hidden="true"></span></summary>
+        <p class="m-text">Old records if you have them, the name of the food and any medicines, and something that smells of home: a towel, a toy, a sock.</p>
+      </details>
+      <details class="fq-item">
+        <summary><span class="m-text-3">My cat hates the carrier.</span><span class="m-shape-6 fq-sign" aria-hidden="true"></span></summary>
+        <p class="m-text">Leave it open in the living room for a week with a towel inside, and cover it on the drive. Our cat-side nurses lift the lid off rather than pulling anyone out.</p>
+      </details>
+      <details class="fq-item">
+        <summary><span class="m-text-3">Can I pay over time?</span><span class="m-shape-6 fq-sign" aria-hidden="true"></span></summary>
+        <p class="m-text">For bills over $500 you can pay in three monthly parts with no interest. Ask at the desk or mention it when you get your estimate.</p>
+      </details>
+    </div>
+  </div>
+</section>
+<!-- contact: coral arch panel: address, phone, email, hours, photo and a visit request form (animation: scene:contact-arch) -->
+<section id="contact" data-8b-section="contact">
+  <div class="ct-panel">
+    <div class="ct-head">
+      <h2 class="m-text-2" data-8b-motion="rise">Come in.</h2>
+      <p class="m-text">Ask for a visit below, call, or text us from the car park. New patients are welcome on both sides of the building.</p>
+    </div>
+    <div class="ct-grid">
+      <div class="ct-info">
+        <div class="ct-photo" data-8b-motion="reshape" data-from="arch"><img style="background:#8c8c8c" src="https://images.unsplash.com/photo-1759987383760-327efaf5522a?ixid=M3w0Mzc5fDB8MXxzZWFyY2h8NXx8dmV0ZXJpbmFyeSUyMGNsaW5pYyUyMHJlY2VwdGlvbiUyMHdhaXRpbmclMjByb29tfGVufDF8MHx8fDE3OTEzOTgxMTJ8MA&ixlib=rb-4.1.0&auto=format&fit=crop&w=500&q=60" width="1600" height="1060" alt="A bright, empty waiting room with chairs along the wall and sunlight from a tall window" loading="lazy"></div>
+        <dl class="ct-facts">
+          <div class="ct-fact"><dt>Address</dt><dd><a data-8b-placeholder="map" class="m-link" href="https://maps.google.com/?q=2140+N+Lombard+St+Portland+OR+97217">2140 N Lombard Street, Portland, OR 97217</a></dd></div>
+          <div class="ct-fact"><dt>Phone</dt><dd><a data-8b-placeholder="phone" class="m-link" href="tel:+15030000000">503 000 0000</a>, texts welcome</dd></div>
+          <div class="ct-fact"><dt>Email</dt><dd><a data-8b-placeholder="email" class="m-link" href="mailto:hello@burrow.example">hello@burrow.example</a></dd></div>
+          <div class="ct-fact"><dt>Hours</dt><dd class="ct-hours"><span>Monday–Friday</span><span>8 am – 7 pm</span><span>Saturday</span><span>9 am – 3 pm</span><span>Sunday</span><span>Closed</span></dd></div>
+        </dl>
+      </div>
+      <form data-8b-placeholder="form" class="ct-form" action="#contact" method="post">
+        <label class="m-field"><span class="m-field__label">Your name</span><input class="m-field__input" name="name" type="text" autocomplete="name" required></label>
+        <label class="m-field"><span class="m-field__label">Phone</span><input class="m-field__input" name="phone" type="tel" autocomplete="tel" required></label>
+        <label class="m-field"><span class="m-field__label">Animal's name</span><input class="m-field__input" name="pet" type="text"></label>
+        <label class="m-field"><span class="m-field__label">Species</span><select class="m-field__input" name="species"><option>Dog</option><option>Cat</option><option>Rabbit or small mammal</option><option>Bird</option><option>Reptile</option></select></label>
+        <label class="m-field ct-wide"><span class="m-field__label">What's going on?</span><textarea class="m-field__input" name="reason" rows="3"></textarea></label>
+        <p class="m-text-4">We reply within two hours while we are open.</p>
+        <button class="m-btn-3" type="submit"><span class="m-btn__label">Ask for a visit</span></button>
+        <p class="ct-status m-text" role="status" hidden>Thank you. We will call you back within two hours while we are open.</p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+<!-- footer: rounded panel: brand line, address, three link columns, copyright and the Design: 8B credit -->
+<footer id="footer" data-8b-section="footer">
+  <div class="ft-panel">
+    <div class="ft-shapes" aria-hidden="true"><span class="m-shape" data-8b-motion="drift" data-drift="0.3"></span><span class="m-shape-2" data-8b-motion="drift" data-drift="-0.3"></span><span class="m-shape-3" data-8b-motion="drift" data-drift="0.3"></span><span class="m-shape-4" data-8b-motion="drift" data-drift="-0.3"></span></div>
+    <div class="ft-brand">
+      <p class="m-text-3">Burrow Veterinary, a clinic for every animal that lives with you.</p>
+      <p class="m-text-4">2140 N Lombard Street<br>Portland, Oregon 97217</p>
+    </div>
+    <nav class="ft-col" aria-label="Visit">
+      <p class="m-text-4">Visit</p>
+      <a class="m-link-2" href="#contact">Book a visit</a>
+      <a class="m-link-2" href="#doors">The clinic</a>
+      <a class="m-link-2" href="#prices">Prices</a>
+    </nav>
+    <nav class="ft-col" aria-label="Care">
+      <p class="m-text-4">Care</p>
+      <a class="m-link-2" href="#care">Services</a>
+      <a class="m-link-2" href="#team">Our vets</a>
+      <a class="m-link-2" href="#faq">Questions</a>
+    </nav>
+    <div class="ft-col">
+      <p class="m-text-4">Talk to us</p>
+      <a data-8b-placeholder="phone" class="m-link-2" href="tel:+15030000000">503 000 0000</a>
+      <a data-8b-placeholder="email" class="m-link-2" href="mailto:hello@burrow.example">hello@burrow.example</a>
+      <a data-8b-placeholder="social" class="m-link-2" href="https://www.instagram.com/">Instagram</a>
+    </div>
+    <div class="ft-base">
+      <p class="m-text-4">© 2026 Burrow Veterinary PC · Design: <a href="https://8b.com/" style="color:inherit" data-8b-credit>8B</a></p>
+      <a class="m-link-2" href="#contact">Privacy</a>
+      <p class="m-text-4">Mon–Fri 8–7, Sat 9–3</p>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js"></script>
+<script data-8b-part="section-script:navigation">
+(() => {
+  const nav = document.getElementById('navigation');
+  const sheet = nav.querySelector('.nav__sheet');
+  const open = nav.querySelector('.nav__toggle:not(.nav__close)');
+  const close = nav.querySelector('.nav__close');
+  const setSheet = state => {
+    sheet.hidden = !state;
+    open.setAttribute('aria-expanded', String(state));
+    if (state) { window.lenis?.stop(); close.focus(); } else { window.lenis?.start(); }
+  };
+  open.addEventListener('click', () => setSheet(true));
+  close.addEventListener('click', () => { setSheet(false); open.focus(); });
+  sheet.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setSheet(false)));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !sheet.hidden) { setSheet(false); open.focus(); } });
+  let last = window.scrollY, travel = 0, frame = 0;
+  const update = () => {
+    frame = 0;
+    const y = window.scrollY, delta = y - last;
+    last = y;
+    if (!delta) return;
+    travel = Math.sign(delta) === Math.sign(travel) ? travel + delta : delta;
+    if (y < 120 || travel < -24) nav.dataset.hidden = 'false';
+    else if (travel > 24 && sheet.hidden && !nav.contains(document.activeElement)) nav.dataset.hidden = 'true';
+  };
+  window.addEventListener('scroll', () => { if (!frame) frame = requestAnimationFrame(update); }, { passive: true });
+  nav.addEventListener('focusin', () => { nav.dataset.hidden = 'false'; });
+})();
+</script>
+<script data-8b-part="section-script:opening">
+(() => {
+  const section = document.getElementById('opening');
+  const first = section.querySelector('.op-first');
+  const observer = new IntersectionObserver(([entry]) => { section.dataset.loops = entry.isIntersecting ? 'on' : 'off'; });
+  observer.observe(first);
+})();
+</script>
+<script data-8b-part="motion-queue">
+(() => {
+  'use strict';
+  const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+  const parsed = document.readyState === 'loading' ? new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true })) : Promise.resolve();
+  const ready = () => Promise.all([fonts, parsed]).then(() => firsts);
+  const nextTask = () => window.scheduler?.yield?.() ?? new Promise(resolve => setTimeout(resolve));
+  const refresh = () => {
+    if (typeof window.refreshScroll === 'function') return window.refreshScroll();
+    window.ScrollTrigger?.sort(); window.ScrollTrigger?.refresh();
+  };
+  const run = (setup, name) => {
+    for (const trigger of window.ScrollTrigger?.getAll() || []) if (!trigger.end && window.ScrollTrigger.getAll().includes(trigger)) trigger.refresh(0, 1);
+    const context = window.gsap.context(() => {});
+    const log = new MutationObserver(() => {});
+    log.observe(document.documentElement, { attributes: true, attributeOldValue: true, subtree: true });
+    let failure = null, records;
+    try { context.add(() => { try { setup(); } catch (error) { failure = error; } }); }
+    finally { records = log.takeRecords(); log.disconnect(); }
+    if (!failure) return true;
+    try { context.revert(); } catch (error) { console.error(name, 'revert failed', error); }
+    for (const { target, attributeName, oldValue } of records.reverse()) {
+      const now = target.getAttribute(attributeName);
+      if (oldValue == null) { if (now != null) target.removeAttribute(attributeName); }
+      else if (now !== oldValue) target.setAttribute(attributeName, oldValue);
+    }
+    console.error(name, failure);
+    return false;
+  };
+  let firsts = Promise.resolve(), tail = null, pending = 0, lazy = null, building = 0, firstCount = 0;
+  window.motionReady = ready();
+  parsed.then(() => { if (firstCount && !tail) firsts.then(refresh); });
+  window.queueMotion = (setup, { first = false, near, id } = {}) => {
+    if (!window.gsap || typeof setup !== 'function') return;
+    const name = id || document.currentScript?.getAttribute('data-8b-part') || 'motion';
+    if (near instanceof Element && window.IntersectionObserver) {
+      const watch = new IntersectionObserver(entries => {
+        if (!entries.some(entry => entry.isIntersecting)) return;
+        watch.disconnect();
+        building++;
+        lazy = (lazy || ready()).then(nextTask).then(() => run(setup, name)).finally(() => { if (!--building) refresh(); });
+      }, { rootMargin: '100% 0px' });
+      watch.observe(near);
+      return;
+    }
+    if (first) { firstCount++; firsts = firsts.then(() => fonts).then(() => { if (!run(setup, name)) refresh(); }); }
+    else {
+      pending++;
+      tail = (tail || ready()).then(nextTask).then(() => run(setup, name))
+        .finally(() => { if (!--pending) refresh(); });
+    }
+    window.motionReady = Promise.all([firsts, tail]);
+  };
+})();
+</script>
+<script data-8b-part="page-init">
+gsap.registerPlugin(ScrollTrigger, SplitText);
+const pageNav = document.getElementById('navigation');
+function refreshScroll() {
+  document.documentElement.style.setProperty('--nav-h', `${pageNav.offsetHeight}px`);
+  ScrollTrigger.sort();
+  ScrollTrigger.refresh();
+}
+gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+  const lenis = window.lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 0.95, anchors: { offset: -pageNav.offsetHeight } });
+  const tick = time => lenis.raf(time * 1000);
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(tick);
+  gsap.ticker.lagSmoothing(0);
+  return () => { gsap.ticker.remove(tick); gsap.ticker.lagSmoothing(500, 33); lenis.destroy(); window.lenis = null; };
+});
+let refreshTimer = 0;
+window.addEventListener('resize', () => { clearTimeout(refreshTimer); refreshTimer = setTimeout(refreshScroll, 200); });
+</script>
+<script data-8b-part="motion">
+const effects = {
+  rise(element, vars = {}) {
+    const split = SplitText.create(element, { type: 'lines', mask: 'lines', linesClass: 'rise-line' });
+    return gsap.timeline({ ...vars, onComplete: () => split.revert() })
+      .from(split.lines, { yPercent: 105, duration: 0.95, ease: 'power3.out', stagger: 0.09 });
+  },
+  reshape(element, vars = {}) {
+    const from = {
+      circle: 'inset(9% 9% 9% 9% round 50% 50% 50% 50%)',
+      arch: 'inset(10% 6% 0% 6% round 50% 50% 0% 0%)',
+      square: 'inset(14% 14% 14% 14% round 0% 0% 0% 0%)',
+      diamond: 'inset(18% 18% 18% 18% round 12% 12% 12% 12%)'
+    }[element.dataset.from || 'circle'];
+    const image = element.querySelector('img');
+    return gsap.timeline({ ...vars, onComplete: () => gsap.set(element, { clearProps: 'clipPath' }) })
+      .fromTo(element, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0% round 0% 0% 0% 0%)', duration: 1.15, ease: 'power3.inOut' }, 0)
+      .from(image, { scale: 1.22, duration: 1.4, ease: 'power3.out' }, 0);
+  },
+  drift(element, vars = {}) {
+    const direction = Number(element.dataset.drift || 1);
+    return gsap.timeline(vars)
+      .fromTo(element, { y: 70 * direction, rotation: -40 * direction }, { y: 0, rotation: 0, ease: 'power1.out', duration: 0.42 })
+      .to(element, { y: 0, duration: 0.16 })
+      .to(element, { y: -70 * direction, rotation: 40 * direction, ease: 'power1.in', duration: 0.42 });
+  }
+};
+document.querySelectorAll('[data-8b-section]').forEach(section => {
+  const first = () => section.getBoundingClientRect().top < innerHeight;
+  const bind = (name, create) => {
+    const elements = [...section.querySelectorAll(`[data-8b-motion~="${name}"]`)];
+    if (!elements.length) return;
+    const id = `effect:${name}:${section.id}`;
+    queueMotion(() => gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      elements.forEach((element, index) => create(element, `${id}:${index}`));
+    }), first() ? { first: true, id } : { near: section, id });
+  };
+  bind('rise', (element, id) => {
+    const timeline = effects.rise(element, { paused: true });
+    ScrollTrigger.create({ id, trigger: element, start: 'top 88%', once: true, onEnter: () => timeline.play() });
+  });
+  bind('reshape', (element, id) => {
+    const timeline = effects.reshape(element, { paused: true });
+    ScrollTrigger.create({ id, trigger: element, start: 'top 86%', once: true, onEnter: () => timeline.play() });
+  });
+  bind('drift', (element, id) => {
+    ScrollTrigger.create({ id, trigger: element, start: 'top bottom', end: 'bottom top', scrub: 0.8, animation: effects.drift(element) });
+  });
+});
+</script>
+<script data-8b-part="scene:opening-door">
+queueMotion(() => {
+  const section = document.getElementById('opening');
+  const arch = section.querySelector('.op-shape--arch');
+  const door = section.querySelector('.op-door');
+  const second = section.querySelector('.op-second');
+  const photo = section.querySelector('.op-photo');
+  const title = section.querySelector('.op-visit__title');
+  const marks = section.querySelectorAll('.op-step__mark');
+  const others = [...section.querySelectorAll('.op-shape:not(.op-shape--arch)')];
+  const offset = element => {
+    let x = 0, y = 0;
+    for (let node = element; node && node !== section; node = node.offsetParent) { x += node.offsetLeft; y += node.offsetTop; }
+    return { x, y };
+  };
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    let geometry;
+    const measure = () => {
+      const a = offset(arch), d = offset(door);
+      geometry = { x: d.x - a.x, y: d.y - a.y, sx: door.offsetWidth / arch.offsetWidth, sy: door.offsetHeight / arch.offsetHeight };
+    };
+    measure();
+    gsap.set(arch, { transformOrigin: '0 0' });
+    gsap.set(door, { autoAlpha: 0 });
+    const flung = [[-260, -120, -150], [240, 160, 140], [-200, 220, 120], [220, 260, -110]];
+    const timeline = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        id: 'opening-door', trigger: section, start: 'top top', end: () => `+=${offset(second).y}`,
+        scrub: 0.7, invalidateOnRefresh: true, onRefreshInit: measure
+      }
+    });
+    timeline
+      .to(arch, { x: () => geometry.x, y: () => geometry.y, duration: 1 }, 0)
+      .to(arch, { scaleX: () => geometry.sx, scaleY: () => geometry.sy, duration: 1 }, 0)
+      .to(photo, { scale: 0.8, yPercent: -6, borderRadius: '160px 260px 160px 160px', duration: 0.85, ease: 'power1.in' }, 0)
+      .fromTo(title, { scale: 0.86, transformOrigin: '50% 100%' }, { scale: 1, duration: 0.45, ease: 'power2.out' }, 0.55);
+    others.forEach((shape, index) => {
+      const [x, y, rotation] = flung[index];
+      timeline.to(shape, { x, y, rotation, scale: 1.9, duration: 0.6, ease: 'power1.out' }, 0.04 * index);
+    });
+    timeline
+      .fromTo(marks, { scale: 0.2, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.25, stagger: 0.05, ease: 'back.out(2)' }, 0.7)
+      .set(door, { autoAlpha: 1 }, 1)
+      .set(arch, { autoAlpha: 0 }, 1);
+  });
+}, { first: true });
+</script>
+<script data-8b-part="scene:doors-open">
+queueMotion(() => {
+  const section = document.getElementById('doors');
+  const grid = section.querySelector('.dr-grid');
+  const doors = [...section.querySelectorAll('.dr-door')];
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    const shift = door => grid.offsetWidth / 2 - (door.offsetLeft + door.offsetWidth / 2);
+    const timeline = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: { id: 'doors-open', trigger: grid, start: 'top 82%', end: 'top 22%', scrub: 0.6, invalidateOnRefresh: true }
+    });
+    doors.forEach((door, index) => {
+      const side = index ? 1 : -1;
+      timeline
+        .fromTo(door, { x: () => shift(door) * 0.92 }, { x: 0, duration: 1, ease: 'power2.inOut' }, 0)
+        .fromTo(door.querySelector('.dr-door__frame'), { clipPath: 'inset(0% 30% 0% 30% round 999px 999px 0px 0px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px 0px 0px 0px)', duration: 1, ease: 'power2.inOut' }, 0)
+        .fromTo(door.querySelector('img'), { xPercent: -14 * side, scale: 1.18 }, { xPercent: 0, scale: 1, duration: 1, ease: 'power1.out' }, 0);
+    });
+    timeline.eventCallback('onComplete', () => doors.forEach(door => gsap.set(door.querySelector('.dr-door__frame'), { clearProps: 'clipPath' })));
+  });
+}, { near: document.getElementById('doors') });
+</script>
+<script data-8b-part="scene:species-deal">
+queueMotion(() => {
+  const section = document.getElementById('species');
+  const row = section.querySelector('.sp-row');
+  const panels = [...row.querySelectorAll('.sp-panel')];
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    const toCentre = (panel, axis) => axis === 'x'
+      ? row.offsetWidth / 2 - (panel.offsetLeft + panel.offsetWidth / 2)
+      : row.offsetHeight / 2 - (panel.offsetTop + panel.offsetHeight / 2);
+    const turns = [-9, 6, -4, 11];
+    const timeline = gsap.timeline({
+      scrollTrigger: { id: 'species-deal', trigger: row, start: 'top 85%', end: 'bottom 60%', scrub: 0.7, invalidateOnRefresh: true }
+    });
+    panels.forEach((panel, index) => {
+      timeline.fromTo(panel,
+        { x: () => toCentre(panel, 'x'), y: () => toCentre(panel, 'y') + 30, rotation: turns[index % turns.length], scale: 0.86 },
+        { x: 0, y: 0, rotation: 0, scale: 1, duration: 1, ease: 'power2.out' }, index * 0.32);
+    });
+  });
+}, { near: document.getElementById('species') });
+</script>
+<script data-8b-part="scene:care-index">
+queueMotion(() => {
+  const section = document.getElementById('care');
+  const rows = [...section.querySelectorAll('.ca-row')];
+  const colours = ['--color-6', '--color-7', '--color-8', '--color-9', '--color-5', '--color-10'];
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    const styles = getComputedStyle(document.documentElement);
+    rows.forEach((row, index) => {
+      const frame = row.querySelector('.ca-frame');
+      const image = frame.querySelector('img');
+      const rule = row.querySelector('.ca-rule');
+      const colour = styles.getPropertyValue(colours[index % colours.length]).trim();
+      const closed = 'inset(38% 70% 38% 0% round 999px 999px 999px 999px)';
+      const open = 'inset(0% 0% 0% 0% round 0px 0px 0px 0px)';
+      gsap.timeline({ scrollTrigger: { id: `care-index:row-${index + 1}`, trigger: row, start: 'top bottom', end: 'bottom top', scrub: 0.5 } })
+        .fromTo(frame, { clipPath: closed }, { clipPath: open, duration: 0.36, ease: 'power2.inOut' }, 0)
+        .fromTo(image, { scale: 1.3 }, { scale: 1, duration: 0.36, ease: 'power2.out' }, 0)
+        .fromTo(rule, { scaleX: 0.08 }, { scaleX: 1, backgroundColor: colour, duration: 0.36, ease: 'power2.out' }, 0)
+        .to(rule, { backgroundColor: styles.getPropertyValue('--color-2').trim(), duration: 0.2 }, 0.62)
+        .to(frame, { clipPath: closed, duration: 0.36, ease: 'power2.inOut' }, 0.64)
+        .to(image, { scale: 1.3, duration: 0.36, ease: 'power2.in' }, 0.64);
+    });
+  });
+}, { near: document.getElementById('care') });
+</script>
+<script data-8b-part="scene:patients-track">
+queueMotion(() => {
+  const section = document.getElementById('patients');
+  const pin = section.querySelector('.pt-pin');
+  const track = section.querySelector('.pt-track');
+  const cards = [...track.querySelectorAll('.pt-card')];
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    section.dataset.track = 'on';
+    const setters = cards.map(card => ({ y: gsap.quickSetter(card, 'y', 'px'), r: gsap.quickSetter(card, 'rotation', 'deg') }));
+    const distance = () => Math.max(0, track.scrollWidth - document.documentElement.clientWidth);
+    const wave = () => {
+      const centre = innerWidth / 2;
+      cards.forEach((card, index) => {
+        const box = card.getBoundingClientRect();
+        const raw = gsap.utils.clamp(-1.4, 1.4, (box.left + box.width / 2 - centre) / innerWidth);
+        const d = Math.sign(raw) * Math.max(0, Math.abs(raw) - 0.1);
+        setters[index].y(120 * d * d);
+        setters[index].r(10 * d);
+      });
+    };
+    gsap.to(track, {
+      x: () => -distance(), ease: 'none', onUpdate: wave,
+      scrollTrigger: { id: 'patients-track', trigger: pin, start: 'top top', end: () => `+=${distance()}`, pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1, onRefresh: wave }
+    });
+    wave();
+    return () => { delete section.dataset.track; gsap.set(cards, { clearProps: 'transform' }); };
+  });
+});
+</script>
+<script data-8b-part="section-script:contact">
+(() => {
+  const form = document.querySelector('#contact .ct-form');
+  const status = form.querySelector('.ct-status');
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    status.hidden = false;
+    form.reset();
+  });
+})();
+</script>
+<script data-8b-part="scene:story-walk">
+queueMotion(() => {
+  const section = document.getElementById('story');
+  const image = section.querySelector('.st-frame img');
+  const text = section.querySelector('.st-text');
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    gsap.timeline({ scrollTrigger: { id: 'story-walk', trigger: text, start: 'top 55%', end: 'bottom 75%', scrub: 0.8 } })
+      .fromTo(image, { scale: 2.2, transformOrigin: '42% 88%' }, { scale: 2.2, transformOrigin: '42% 88%', duration: 4.2 })
+      .to(image, { scale: 1.75, transformOrigin: '56% 30%', duration: 2, ease: 'power2.inOut' })
+      .to(image, { scale: 1.75, duration: 1 })
+      .to(image, { scale: 1, transformOrigin: '50% 50%', duration: 2, ease: 'power2.inOut' })
+      .to(image, { scale: 1, duration: 0.8 });
+  });
+}, { near: document.getElementById('story') });
+</script>
+<script data-8b-part="scene:contact-arch">
+queueMotion(() => {
+  const section = document.getElementById('contact');
+  const panel = section.querySelector('.ct-panel');
+  gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+    const corner = () => (innerWidth < 901 ? 14 : 32);
+    const rise = () => (innerWidth < 901 ? 150 : 300);
+    gsap.timeline({ scrollTrigger: { id: 'contact-arch', trigger: section, start: 'top 95%', end: 'top 15%', scrub: 0.6, invalidateOnRefresh: true } })
+      .fromTo(panel,
+        { scale: 0.9, y: 60, borderRadius: () => `${corner()}px ${corner()}px ${corner()}px ${corner()}px / ${corner()}px ${corner()}px ${corner()}px ${corner()}px` },
+        { scale: 1, y: 0, borderRadius: () => `${panel.offsetWidth / 2}px ${panel.offsetWidth / 2}px ${corner()}px ${corner()}px / ${rise()}px ${rise()}px ${corner()}px ${corner()}px`, ease: 'power2.out', duration: 1 });
+  });
+}, { near: document.getElementById('contact') });
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "name": "algohub-rewrite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "check": "npm run check --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test:frontend && npm run api:test && npm run openapi:check",
+    "test:frontend": "npm run test:unit --workspace=@algohub/ui && npm run test:unit --workspace=@algohub/auth-client && npm run test:unit --workspace=@algohub/practicum-client && npm run test:unit --workspace=@algohub/elearning-client && npm run test:unit --workspace=@algohub/siakad-client",
+    "test:e2e": "playwright test",
+    "lint": "npm run format:check && npm run check",
+    "format": "prettier --write \"apps/**/*.{js,ts,svelte,json,css}\" \"packages/**/*.{js,ts,svelte,json,css}\"",
+    "format:check": "prettier --check \"apps/**/*.{js,ts,svelte,json,css}\" \"packages/**/*.{js,ts,svelte,json,css}\"",
+    "api:test": "cd backend && go test -count=1 ./...",
+    "api:test:race": "cd backend && go test -race -count=1 ./...",
+    "api:build": "cd backend && go build ./cmd/api",
+    "api:vet": "cd backend && go vet ./...",
+    "api:audit": "cd backend && go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...",
+    "openapi:sync": "node scripts/sync-openapi.mjs",
+    "openapi:sync:check": "node scripts/sync-openapi.mjs --check",
+    "openapi:check": "npm run openapi:sync:check && node scripts/check-openapi.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "prettier": "^3.6.2",
+    "prettier-plugin-svelte": "^3.4.0",
+    "yaml": "^2.9.1"
+  }
+}

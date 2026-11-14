@@ -1,14 +1,21 @@
-# Kedua project Vercel memakai repo ini dengan rootDirectory frontend/backend.
+.env*
 **/.env*
-**/.git
-**/node_modules
-**/.svelte-kit
-**/build
-**/build-api
-**/dist
-**/backups
-**/bin
+.claude/
+.github/
+plan/
+docs/
+memory/
+coverage/
+playwright-report/
+test-results/
+tests/
+**/tests/
+**/*_test.go
+**/node_modules/
+**/.svelte-kit/
+**/.vercel/
+**/dist/
+**/build/
 **/*.log
-
-# Backend produksi memakai container; jangan bangun entrypoint serverless lama.
-backend/api/
+**/*.exe
+**/*.test

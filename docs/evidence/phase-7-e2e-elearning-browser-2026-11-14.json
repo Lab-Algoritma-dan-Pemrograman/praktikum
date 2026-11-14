@@ -1,0 +1,743 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "e:\\rekapProject\\project_ap_v2\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "browser-preview.spec.ts",
+      "browser-preview-regressions.spec.ts",
+      "elearning.spec.ts",
+      "--reporter=json"
+    ],
+    "configFile": "e:\\rekapProject\\project_ap_v2\\playwright.config.ts",
+    "rootDir": "e:/rekapProject/project_ap_v2/tests/frontend/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "e:/rekapProject/project_ap_v2/tests/frontend/results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "e:/rekapProject/project_ap_v2/tests/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e",
+        "snapshotDir": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 60000,
+        "use": {
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium",
+          "baseURL": "http://portal.localhost:5273",
+          "actionTimeout": 15000,
+          "navigationTimeout": 30000,
+          "trace": "off",
+          "video": "off",
+          "screenshot": "off",
+          "launchOptions": {
+            "env": {
+              "ALGOHUB_E2E_API_PORT": "8180",
+              "ALGOHUB_E2E_APP_PORT_BASE": "5273"
+            },
+            "args": [
+              "--host-resolver-rules=MAP *.localhost 127.0.0.1",
+              "--no-proxy-server"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "browser-preview-regressions.spec.ts",
+      "file": "browser-preview-regressions.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real Python interactive syntax, wait, cancel and isolated rerun",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Opt-in real pinned Python runtime.",
+                  "location": {
+                    "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview-regressions.spec.ts",
+                    "line": 33,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 7,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:09.342Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Opt-in real pinned Python runtime.",
+                      "location": {
+                        "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview-regressions.spec.ts",
+                        "line": 33,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "0b292b108dc21f1065a4-046b2d432b3661d7d35d",
+          "file": "browser-preview-regressions.spec.ts",
+          "line": 40,
+          "column": 1
+        },
+        {
+          "title": "real Python cold initialization does not spend the execution deadline",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Opt-in real pinned Python runtime.",
+                  "location": {
+                    "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview-regressions.spec.ts",
+                    "line": 33,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:09.413Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Opt-in real pinned Python runtime.",
+                      "location": {
+                        "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview-regressions.spec.ts",
+                        "line": 33,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "0b292b108dc21f1065a4-e84ff5c363c355e7bbc1",
+          "file": "browser-preview-regressions.spec.ts",
+          "line": 84,
+          "column": 1
+        },
+        {
+          "title": "real Python matplotlib renders PNG and clears figures after failed runs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Opt-in real pinned Python runtime.",
+                  "location": {
+                    "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview-regressions.spec.ts",
+                    "line": 33,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 2,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:09.441Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Opt-in real pinned Python runtime.",
+                      "location": {
+                        "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview-regressions.spec.ts",
+                        "line": 33,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "0b292b108dc21f1065a4-a5490ba611d3e5aecdb4",
+          "file": "browser-preview-regressions.spec.ts",
+          "line": 120,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "browser-preview.spec.ts",
+      "file": "browser-preview.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "browser C preview is lazy, isolated, reusable, bounded and never calls the runner API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 14017,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "preview.metric.first_c_ms \u001b[33m1125\u001b[39m\n"
+                    },
+                    {
+                      "text": "preview.metric.initial_runtime_requests \u001b[33m8\u001b[39m\n"
+                    },
+                    {
+                      "text": "preview.metric.second_c_ms \u001b[33m1\u001b[39m\n"
+                    },
+                    {
+                      "text": "preview.metric.second_run_asset_requests \u001b[33m0\u001b[39m\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:09.501Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ebe8c2a1842a2fef4b1-a604b1bfb23fd945fe02",
+          "file": "browser-preview.spec.ts",
+          "line": 3,
+          "column": 1
+        },
+        {
+          "title": "browser preview keeps heap growth bounded across 20 runs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5267,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "preview.metric.heap_growth_mb_20_runs -0.82\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:26.109Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ebe8c2a1842a2fef4b1-b37812000a9fad6bdcc6",
+          "file": "browser-preview.spec.ts",
+          "line": 127,
+          "column": 1
+        },
+        {
+          "title": "browser preview terminates a nonresponsive worker and does not retry on the server",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 21870,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:31.447Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ebe8c2a1842a2fef4b1-d06a2be4af7235e3a410",
+          "file": "browser-preview.spec.ts",
+          "line": 174,
+          "column": 1
+        },
+        {
+          "title": "failed preview bootstrap can be retried without reloading the application",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3315,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:53.336Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3ebe8c2a1842a2fef4b1-936f02e0dc8efd159686",
+          "file": "browser-preview.spec.ts",
+          "line": 203,
+          "column": 1
+        },
+        {
+          "title": "real Python preview uses only the pinned public runtime and no application API",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Opt-in test downloads the pinned public Python runtime.",
+                  "location": {
+                    "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview.spec.ts",
+                    "line": 253,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 109,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:56.669Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Opt-in test downloads the pinned public Python runtime.",
+                      "location": {
+                        "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview.spec.ts",
+                        "line": 253,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "3ebe8c2a1842a2fef4b1-5b6b8ce7299284eb0a80",
+          "file": "browser-preview.spec.ts",
+          "line": 249,
+          "column": 1
+        },
+        {
+          "title": "real Python preview loads packages from user imports",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "skip",
+                  "description": "Opt-in test downloads the pinned public Python runtime.",
+                  "location": {
+                    "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview.spec.ts",
+                    "line": 371,
+                    "column": 8
+                  }
+                }
+              ],
+              "expectedStatus": "skipped",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "skipped",
+                  "duration": 151,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:56.795Z",
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Opt-in test downloads the pinned public Python runtime.",
+                      "location": {
+                        "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\browser-preview.spec.ts",
+                        "line": 371,
+                        "column": 8
+                      }
+                    }
+                  ],
+                  "attachments": []
+                }
+              ],
+              "status": "skipped"
+            }
+          ],
+          "id": "3ebe8c2a1842a2fef4b1-2912f31a5c15f1cb8c8c",
+          "file": "browser-preview.spec.ts",
+          "line": 367,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "elearning.spec.ts",
+      "file": "elearning.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "elearning student and admin full flow at 320px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11254,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:44:57.037Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "80a126d5a224639ffd3f-b531874779996f3dae42",
+          "file": "elearning.spec.ts",
+          "line": 110,
+          "column": 3
+        },
+        {
+          "title": "elearning student and admin full flow at 768px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7534,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:45:08.341Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "80a126d5a224639ffd3f-4e310d1423c44ae00b21",
+          "file": "elearning.spec.ts",
+          "line": 110,
+          "column": 3
+        },
+        {
+          "title": "elearning student and admin full flow at 1280px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5494,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:45:15.893Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "80a126d5a224639ffd3f-ad0652a9973f317a497d",
+          "file": "elearning.spec.ts",
+          "line": 110,
+          "column": 3
+        },
+        {
+          "title": "browser-trusted code completion is independent of server runner and text-only quiz still completes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2668,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:45:21.404Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "80a126d5a224639ffd3f-082dc577454fbf39d123",
+          "file": "elearning.spec.ts",
+          "line": 347,
+          "column": 1
+        },
+        {
+          "title": "elearning offline draft reconciliation, 409 conflict resolution, Bug Hunt and scope guards",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4841,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:45:24.091Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "80a126d5a224639ffd3f-ac9492c0c86ba8c5b63b",
+          "file": "elearning.spec.ts",
+          "line": 436,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-13T17:43:12.937Z",
+    "duration": 141646.284,
+    "expected": 9,
+    "skipped": 5,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

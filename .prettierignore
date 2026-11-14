@@ -1,0 +1,8 @@
+node_modules
+.svelte-kit
+dist
+build
+.vercel
+coverage
+package-lock.json
+apps/portal/static/runtimes/v1/clang/

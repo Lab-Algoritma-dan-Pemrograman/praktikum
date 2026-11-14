@@ -1,0 +1,48 @@
+/* Algohub shared UI foundation: non-secret tokens only. */
+:root {
+  --ah-ink: #142724;
+  --ah-ink-strong: #10221f;
+  --ah-muted: #5d6964;
+  --ah-muted-on-dark: #b9c7c3;
+  --ah-cream: #f5f0e7;
+  --ah-paper: #fffdf8;
+  --ah-surface: #e8e2d6;
+  --ah-coral: #ee785c;
+  --ah-blue: #7eb7c4;
+  --ah-yellow: #e4bb5e;
+  --ah-green: #62aa8f;
+  --ah-green-ink: #365e56;
+  --ah-danger: #8b452e;
+  --ah-line: #14272426;
+  --ah-line-strong: #14272470;
+  --ah-content-max: 74rem;
+  --ah-space-1: 0.25rem;
+  --ah-space-2: 0.5rem;
+  --ah-space-3: 0.75rem;
+  --ah-space-4: 1rem;
+  --ah-space-5: 1.5rem;
+  --ah-space-6: 2rem;
+  --ah-radius-sm: 0.75rem;
+  --ah-radius-md: 1rem;
+  --ah-radius-lg: 2rem;
+  --ah-radius-arch: 1.6rem 1.6rem 0.65rem 0.65rem;
+  --ah-focus: 3px solid var(--ah-coral);
+  --ah-motion-fast: 160ms;
+  --ah-motion-standard: 220ms;
+}
+
+:focus-visible {
+  outline: var(--ah-focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

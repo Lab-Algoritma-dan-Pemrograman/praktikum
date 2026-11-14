@@ -1,0 +1,19 @@
+{
+  "name": "@algohub/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "scripts": {
+    "test:unit": "node --experimental-strip-types --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@algohub/auth-client": "file:../auth-client"
+  },
+  "peerDependencies": {
+    "svelte": ">=5.0.0"
+  }
+}

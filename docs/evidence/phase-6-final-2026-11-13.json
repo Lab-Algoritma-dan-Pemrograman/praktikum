@@ -1,0 +1,152 @@
+{
+  "phase": 6,
+  "status": "completed",
+  "completion_scope": "Approved masked migration rehearsal; not lossless legacy migration or production cutover",
+  "date": "2026-11-13",
+  "batch_id": "phase6-masked-live-20261113-v1",
+  "authorization": {
+    "legacy_source": "Read-only database inspection and local isolated processing authorized",
+    "staging": "Masked import into existing dedicated rewrite staging authorized",
+    "scope": "Owner delegated conservative disposition, file and recovery scope selection after explicit question",
+    "cleanup": "Two exact failed-test session family IDs explicitly approved for revocation",
+    "evidence": "Non-PII counts, test results, hashes and handover persistence explicitly approved"
+  },
+  "source_accounting": {
+    "rows": 80349,
+    "imported": 19816,
+    "rejected": 60533,
+    "all_dispositions_recorded": true,
+    "no_lossless_claim_for_rejected_rows": true
+  },
+  "staging_import": {
+    "committed": true,
+    "receipt_rows": 19026,
+    "auth_users": 396,
+    "public_users": 396,
+    "role_assignments": 396,
+    "domain_rows": 17838,
+    "derived_permission_grants_added": 479,
+    "duration_ms": 392046,
+    "original_receipt_retained": true
+  },
+  "replay": {
+    "method": "Staging read-only receipt-verified replay; actual Apply twice tested locally",
+    "unchanged": 19026,
+    "inserted": 0,
+    "duration_ms": 15446,
+    "public_content_and_stable_auth_metadata_unchanged": true
+  },
+  "final_reconciliation": {
+    "passed": true,
+    "checks": 157,
+    "foreign_key_checks": 62,
+    "unique_index_checks": 77,
+    "auth_acceptance_change": "Only last_sign_in_at and updated_at changed on one acceptance Auth user; restoring those two fields reproduces its original receipt digest",
+    "original_receipt_modified": false,
+    "strict_rollback_or_replay_guard_relaxed": false
+  },
+  "recovery": {
+    "passed": true,
+    "gates": 7,
+    "original_preimport_backup_preserved_and_restored": true,
+    "preimport_public_user_count": 30,
+    "separate_postimport_backup_restored": true,
+    "public_content_counts_schema_exact": true,
+    "sequence_last_value_and_is_called_exact": true,
+    "noncredential_auth_metadata_exact": true,
+    "imported_application_flow_test_executed_and_passed": true,
+    "scope": "Sanitized public state and test-identity Auth metadata; excludes sessions, audit, notifications, operations and leases; not recovery of provider passwords/MFA/sessions"
+  },
+  "real_browser_acceptance": {
+    "passed": true,
+    "checks": 31,
+    "real_supabase_password_login": true,
+    "sso_hosts": 6,
+    "password_form_submissions": 1,
+    "exact_imported_identity_curriculum_progress_attempt_and_class_reads": true,
+    "host_only_secure_httponly_cookies": true,
+    "page_errors": 0,
+    "logout_and_six_host_401s_verified": true,
+    "screenshot_reviewed": true
+  },
+  "local_regression": {
+    "passed": true,
+    "rehearsal_gates": 7,
+    "go_version": "1.26.11",
+    "postgresql_version": "18.3",
+    "top_level_tests_passed": 170,
+    "passing_test_events": 487,
+    "failed_tests": 0,
+    "ordinary_suite_named_skips": ["TestMigrationRehearsalImportedFlows", "TestPhase6LiveImportedFlows"],
+    "skip_explanation": "Opt-in imported-flow tests executed separately on restored imported databases; package-without-tests events are not test skips",
+    "backend_vet": "passed",
+    "backend_build": "passed",
+    "source_inputs_unchanged_during_run": 135,
+    "last_narrow_change": "Post-acceptance Auth timestamp verifier received targeted package test/vet/build and real read-only staging verification; no claim full suite reran after that narrow change"
+  },
+  "staging_final": {
+    "auth_users": 426,
+    "public_users": 426,
+    "role_assignments": 426,
+    "explicit_grants": 481,
+    "public_digest": "c433311eae93a66276a88fb244b4517b00d268fec09d53878a5dc33a7f84f349",
+    "active_acceptance_sessions": 0,
+    "public_content_unchanged_through_browser_acceptance": true
+  },
+  "cleanup": {
+    "owned_pgdata_remaining": 0,
+    "all_owned_clusters_stopped": true,
+    "containers_created": 0,
+    "networks_created": 0,
+    "failed_test_families_revoked": 2,
+    "active_acceptance_sessions": 0,
+    "legacy_and_production_writes": 0,
+    "scheduler_changes": 0,
+    "reports_dumps_and_failure_evidence_retained": true
+  },
+  "out_of_scope": [
+    "Lossless import of all rejected history",
+    "File copy without an available target attachment model",
+    "Supabase credential/MFA/provider-session recovery",
+    "Production cutover or DNS switch",
+    "New project provisioning, scheduler changes or reopening runner decisions"
+  ],
+  "artifacts": {
+    "plan": {
+      "path": "E:/tmp/algohub-phase6-live-20261113-f9aelu0c/live-target-plan-v3.json",
+      "sha256": "2da24c02db1dc5bea3458f405eddbf57bd5bca05bf5f70b4247dc32e1ceb21cb"
+    },
+    "original_receipt": {
+      "path": "E:/tmp/algohub-phase6-stage-5_6uzevg/apply-first.json",
+      "sha256": "6eae63659f9ac2556d0e8b30b2cacfc6f11781b683223e820ca541335f11255c"
+    },
+    "preimport_backup": {
+      "path": "E:/tmp/algohub-phase6-stage-5_6uzevg/staging-before.dump",
+      "sha256": "16b5b1eee3ce0ab6a1ced9ab66635efa6f42c17d0dc668c75c46cea88e613c09"
+    },
+    "postimport_backup": {
+      "path": "E:/tmp/algohub-phase6-recovery-87b_147f/staging-postimport-sanitized.dump",
+      "sha256": "ffba48796c8a11cfd4a6e168f21aa194cf37aaf7314d41c4ae62cafca8cea4ee"
+    },
+    "final_reconciliation": {
+      "path": "E:/tmp/algohub-phase6-live-20261113-f9aelu0c/staging-reconcile-postacceptance.json",
+      "sha256": "bf6ecd0e148048fad70d1f256ef2f7ab5c1583c52373b66cab05c3c3335a855d"
+    },
+    "browser": {
+      "path": "E:/tmp/algohub-phase6-live-20261113-f9aelu0c/browser-acceptance-v3/summary.json",
+      "sha256": "d452f7c1f5deb7ff654b72ee4863267adfe3eaecd01ef6797b3108311dc89366"
+    },
+    "local_regression": {
+      "path": "E:/tmp/algohub-phase6-masked-local-w1d1os3y/summary.json",
+      "sha256": "c46f6c27802ceafddb415a4d9b5a9cbca0f7ae859b9fa39e4fc7f98121bf9b9b"
+    },
+    "recovery": {
+      "path": "E:/tmp/algohub-phase6-recovery-87b_147f/summary.json",
+      "sha256": "f3fabf0c3fb7dd330e752540e94276151b9c2edcd3052576994a64a5486939e9"
+    },
+    "final_sessions": {
+      "path": "E:/tmp/algohub-phase6-live-20261113-f9aelu0c/acceptance-session-final.json",
+      "sha256": "922d015a45191594154b879360a78d27fa3925b09ae18fdba18aa73498f14550"
+    }
+  }
+}

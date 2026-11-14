@@ -1,8 +1,0 @@
-.env
-.env.*
-.git
-.vercel
-bin
-backups
-*.log
-*.exe

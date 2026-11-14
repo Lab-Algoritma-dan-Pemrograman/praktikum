@@ -1,0 +1,118 @@
+{
+  "phase": 7,
+  "scope": "local-technical-readiness",
+  "date_local": "2026-11-14",
+  "status": "passed_with_expected_skips_and_external_blockers",
+  "environment": {
+    "browser": "Chromium",
+    "app_port_base": 5273,
+    "api_port": 8180,
+    "isolated_servers": true,
+    "remote_mutation": false
+  },
+  "checks": {
+    "workspace_check": {
+      "workspaces": 6,
+      "errors": 0,
+      "warnings": 0
+    },
+    "frontend_unit": {
+      "passed": 86,
+      "failed": 0,
+      "skipped": 0
+    },
+    "e2e": {
+      "named_tests": 72,
+      "passed": 67,
+      "expected_skipped": 5,
+      "unexpected_failed": 0,
+      "flaky": 0,
+      "groups": [
+        {
+          "name": "identity-a11y",
+          "passed": 38,
+          "skipped": 0,
+          "failed": 0,
+          "artifact": "phase-7-e2e-identity-a11y-2026-11-14.json",
+          "sha256": "b94e0971a9f54ec5f556fb5f73541506dad8a571611484ef5e592eef1feeb30d"
+        },
+        {
+          "name": "elearning-browser",
+          "passed": 9,
+          "skipped": 5,
+          "failed": 0,
+          "skip_reason": "Expected opt-in tests for downloading/running the pinned public Python runtime; Phase 1-5 evidence retained instead of repeating the download-heavy run.",
+          "artifact": "phase-7-e2e-elearning-browser-2026-11-14.json",
+          "sha256": "02dc134d2b0417f1913a7777116cae796da66d0cb8a2dc89ab799cc9ffb3282e"
+        },
+        {
+          "name": "practicum-siakad-final",
+          "passed": 20,
+          "skipped": 0,
+          "failed": 0,
+          "artifact": "phase-7-e2e-practicum-siakad-rerun1-2026-11-14.json",
+          "sha256": "fb02ab84ef1b881ec487fdbde02716edc35ac6aedf590484870f3e9d2b176248"
+        }
+      ]
+    },
+    "a11y_subset": {
+      "passed": 12,
+      "failed": 0,
+      "active_rule_violations": 0,
+      "viewports": [
+        "320x640",
+        "1280x720"
+      ],
+      "manual_gaps": [
+        "color contrast",
+        "screen reader",
+        "authenticated keyboard-only journey",
+        "Firefox/WebKit",
+        "physical mobile device"
+      ]
+    },
+    "npm_audit": {
+      "exit_at_high_threshold": 0,
+      "critical": 0,
+      "high": 0,
+      "moderate": 3,
+      "low": 4,
+      "artifact": "phase-7-npm-audit-2026-11-14.json",
+      "sha256": "6378f828f878e0086c63eb6c867af65445a942f2a3c932eec801e4e75537d1b0"
+    },
+    "backend_regression": {
+      "status": "reused_phase_6_baseline",
+      "reason": "No backend source changed in this Phase 7 continuation.",
+      "top_level_tests": 170,
+      "pass_events": 487
+    }
+  },
+  "corrected_evidence": [
+    {
+      "issue": "Initial a11y run targeted unrelated local servers on ports 5173-5174 and used a non-failing assertion.",
+      "resolution": "Replaced by isolated identity assertions and hard axe gates; no Algohub UI defect was fabricated."
+    },
+    {
+      "issue": "Initial Practicum/SIAKAD group had 19 passes and one SIAKAD 1280px test race.",
+      "failed_artifact": "phase-7-e2e-practicum-siakad-2026-11-14.json",
+      "failed_artifact_sha256": "5125c0b458983e3243c3dd4d75fade4ec7eb2b0612fe9f629a509267f879d212",
+      "resolution": "Wait for the new unvalidated attendance record instead of selecting the first stale record.",
+      "targeted_rerun": "phase-7-e2e-siakad-1280-rerun1-2026-11-14.json",
+      "targeted_rerun_sha256": "28c72fb973a3388dfcec8f0797eb1bcf5d6cbb2bf0843f0f3a6e4c7d722d535f",
+      "targeted_result": "1 passed",
+      "full_rerun_result": "20 passed"
+    }
+  ],
+  "source_delta": {
+    "manifest": "phase-7-source-checksums-final-2026-11-14.txt",
+    "manifest_sha256": "bbe89e07b70e44fa51ef90dc02aa8983d80fa7afe87b5016ebf4e0100d95fc3a"
+  },
+  "external_blockers": [
+    "human UAT sign-off",
+    "real pilot cohort and feedback period",
+    "authorized staging load/429 run",
+    "real alert recipient and delivery test",
+    "authorized staging incident drill",
+    "manual device/browser/screen-reader coverage"
+  ]
+}

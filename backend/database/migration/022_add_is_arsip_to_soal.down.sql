@@ -1,2 +1,0 @@
-DROP INDEX IF EXISTS idx_soal_arsip;
-ALTER TABLE soal DROP COLUMN IF EXISTS is_arsip;

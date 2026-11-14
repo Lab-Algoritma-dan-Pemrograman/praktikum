@@ -1,0 +1,26 @@
+{
+  "name": "@algohub/praktikum",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@algohub/auth-client": "file:../../packages/auth-client",
+    "@algohub/practicum-client": "file:../../packages/practicum-client",
+    "@algohub/ui": "file:../../packages/ui"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-vercel": "^7.0.2",
+    "@sveltejs/kit": "^3.1.1",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.5"
+  }
+}

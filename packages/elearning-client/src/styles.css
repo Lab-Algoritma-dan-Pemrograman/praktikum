@@ -1,0 +1,222 @@
+.elearning {
+  color: #17324d;
+  max-width: 76rem;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 1.25rem;
+  overflow-wrap: anywhere;
+}
+.elearning .stack > *,
+.elearning .grid > *,
+.elearning .actions > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.elearning button {
+  overflow-wrap: anywhere;
+}
+.elearning textarea.code {
+  white-space: pre;
+  overflow-x: auto;
+}
+.elearning .runner-output {
+  max-height: 20rem;
+  overflow: auto;
+}
+.elearning h1 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  margin-top: 0.5rem;
+}
+.elearning h2 {
+  font-size: 1.35rem;
+}
+.elearning h3 {
+  font-size: 1.1rem;
+}
+.elearning p {
+  line-height: 1.6;
+}
+.elearning a {
+  color: #245b5a;
+  overflow-wrap: anywhere;
+}
+.elearning nav,
+.elearning .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+}
+.elearning nav {
+  margin-bottom: 1.25rem;
+}
+.elearning button,
+.elearning .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #245b5a;
+  border-radius: 0.4rem;
+  background: #245b5a;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+.elearning button.secondary,
+.elearning .button.secondary {
+  background: white;
+  color: #245b5a;
+}
+.elearning button.danger {
+  background: #963f32;
+  border-color: #963f32;
+}
+.elearning button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.elearning label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+.elearning label.check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
+.elearning input:not([type='checkbox']):not([type='radio']),
+.elearning select,
+.elearning textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid #8b9fa8;
+  border-radius: 0.35rem;
+  padding: 0.65rem;
+  background: white;
+  color: #17324d;
+  font: inherit;
+}
+.elearning textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+.elearning textarea.code,
+.elearning pre {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9rem;
+  tab-size: 2;
+}
+.elearning pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #f1f5f6;
+  padding: 0.8rem;
+  border-radius: 0.35rem;
+}
+.elearning .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+}
+.elearning .stack {
+  display: grid;
+  gap: 1rem;
+}
+.elearning .panel {
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid #cbd9dc;
+  border-radius: 0.65rem;
+  background: white;
+}
+.elearning .notice {
+  padding: 0.85rem;
+  border-left: 4px solid #b87327;
+  background: #fff5e5;
+  overflow-wrap: anywhere;
+}
+.elearning .error {
+  border-color: #a33b31;
+  background: #fff0ed;
+}
+.elearning .success {
+  border-color: #245b5a;
+  background: #e7f2f0;
+}
+.elearning .muted {
+  color: #4d6872;
+  font-size: 0.9rem;
+}
+.elearning .badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.3rem;
+  background: #e7f2f0;
+  color: #174c4b;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.elearning .progress-bar {
+  width: 100%;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: #d8e2e4;
+  overflow: hidden;
+}
+.elearning .progress-fill {
+  height: 100%;
+  background: #245b5a;
+}
+.elearning .table-wrap {
+  overflow-x: auto;
+}
+.elearning table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.elearning th,
+.elearning td {
+  text-align: left;
+  padding: 0.7rem;
+  border-bottom: 1px solid #d8e2e4;
+  vertical-align: top;
+}
+.elearning fieldset {
+  min-width: 0;
+  border: 1px solid #cbd9dc;
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+}
+.elearning summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding: 0.6rem 0;
+  font-weight: 600;
+}
+.elearning :focus-visible {
+  outline: 3px solid #b56824;
+  outline-offset: 3px;
+}
+@media (max-width: 480px) {
+  .elearning {
+    padding: 0.75rem;
+  }
+  .elearning .panel {
+    padding: 0.85rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .elearning *,
+  .elearning *::before,
+  .elearning *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

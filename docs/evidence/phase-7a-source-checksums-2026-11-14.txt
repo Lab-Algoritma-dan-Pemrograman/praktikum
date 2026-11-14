@@ -1,0 +1,11 @@
+d85a8fb3890cc0557bcced95c7130a73921f78ce9b6f1679f5b64a09a960ce5c *apps/portal/src/routes/+page.svelte
+c1ffa990fd6474c3180d46f59f8836a9b5beb239d94b3597b2007501c9c1318b *apps/portal/src/lib/PublicInfoPage.svelte
+5be1f5266aff1a833bd37c2b23d0e91c424d825223891b934a4bbb976e0dc27e *apps/portal/src/routes/info/+server.ts
+31de963f3e6f94dbf4243f40f521b7cb02f0749eb813e6ecc307e392784857a4 *apps/portal/src/routes/praktikum/+server.ts
+bb6820dd6d5228dbc767ca000daee8a2c68dd9d013e245c49a4e72bef0d79582 *packages/auth-client/src/server.server.ts
+21b1c058afa1c1af11e5ff8bb009ca26379e560f3f95893e053014a13a2a59c5 *packages/auth-client/tests/identity.test.ts
+b64dd60af2f559185616b8377b210988a54c60bbc6dba23605c43bdb25df256a *packages/ui/src/tokens.css
+0e07f6d355d55947e7ffc6304993a47dc00bd7a37a57bcef32494fde34a9eac2 *tests/frontend/e2e/a11y.spec.ts
+0ebb3278cfa72d81d6be26bae3b45748c76d95f6a9e7f50eb4b4227b9ac48ab8 *tests/frontend/e2e/portal-public.spec.ts
+6f550023d549bf4d6845c569f1a45cc0a53264c96e5d3fc366d5337202db993f *tests/frontend/e2e/phase7a-screenshots.spec.ts
+176219a817e9d10adc5ca3e8e0c494ea3c61bbcbf6fddbc1b56883cfc36a441c *docs/phase-7a-closeout.md

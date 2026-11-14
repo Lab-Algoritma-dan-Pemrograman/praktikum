@@ -1,38 +1,20 @@
-# Go workspace
+node_modules/
+.svelte-kit/
+dist/
+build/
+.vercel/
+coverage/
+*.log
 .env
-
-# Catatan kredensial (DB password, service key, dll) — JANGAN ikut repo
-data.txt
-*.secret
-.idea/
-.vscode/
-.DS_Store
+.env.*
+!.env.example
+!.env.staging.example
+backend/bin/
 *.exe
-*.exe~
-*.dll
-*.so
-*.dylib
 *.test
-*.out
-
-# Dokumen internal (PRD, ERD, catatan update, panduan deploy) — tidak ikut push repo
-updateAndPRDERD/
-
-# Claude Code: konfigurasi lokal & memory — tidak ikut repo
-.claude/
-memory/
-
-# Dump log build/check & artefak test — bukan source
-frontend/build_out.txt
-frontend/check_out.txt
-frontend/test-results/
-frontend/playwright-report/
-backups/
-
-# Script rekap nilai lokal (bukan bagian aplikasi)
-tools-rekap-nilai/
-
-# Bun-only: cegah npm lockfile liar
-package-lock.json
+playwright-report/
+test-results/
+tests/frontend/results/
 
 .vercel
+.env*

@@ -1,173 +1,83 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
+	"net"
 	"os"
-	"path/filepath"
-	"sort"
 	"strings"
+	"time"
 
-	"lab-ap/config"
-	"lab-ap/database"
-
-	"gorm.io/gorm"
+	"github.com/algohub/algohub-rewrite/backend/migrations"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// Migrator sederhana: membaca file *.up.sql / *.down.sql berurutan,
-// mencatat versi yang sudah diterapkan di tabel schema_migrations.
-//
-// Pemakaian:
-//   go run ./cmd/migrate up        -> terapkan semua migrasi yang belum jalan
-//   go run ./cmd/migrate down      -> rollback 1 langkah terakhir
-//   go run ./cmd/migrate down all  -> rollback semua
-
-const migrationDir = "database/migration"
-
 func main() {
-	if len(os.Args) < 2 {
-		log.Fatal("pemakaian: migrate [up|down] [all]")
+	if err := run(); err != nil {
+		log.Fatal(err)
 	}
-	cmd := os.Args[1]
+	log.Println("Identity migrations are up to date")
+}
 
-	cfg := config.Load()
-	db, err := database.Connect(cfg.DSN(), false)
+func migrationDatabaseURL() string {
+	if value := strings.TrimSpace(os.Getenv("ALGOHUB_MIGRATION_DATABASE_URL")); value != "" {
+		return value
+	}
+	return strings.TrimSpace(os.Getenv("ALGOHUB_DATABASE_URL"))
+}
+
+func run() error {
+	databaseURL := migrationDatabaseURL()
+	if databaseURL == "" {
+		return errors.New("ALGOHUB_DATABASE_URL is required")
+	}
+	config, err := pgxpool.ParseConfig(databaseURL)
 	if err != nil {
-		log.Fatalf("koneksi DB gagal: %v", err)
+		return errors.New("invalid ALGOHUB_DATABASE_URL")
 	}
-	if err := ensureTable(db); err != nil {
-		log.Fatalf("gagal menyiapkan schema_migrations: %v", err)
+	if err := validateMigrationTarget(os.Getenv("ALGOHUB_ENV"), config, os.Getenv("ALGOHUB_ALLOW_PRODUCTION_MIGRATIONS") == "true"); err != nil {
+		return err
 	}
-
-	switch cmd {
-	case "up":
-		runUp(db)
-	case "down":
-		all := len(os.Args) > 2 && os.Args[2] == "all"
-		runDown(db, all)
-	default:
-		log.Fatalf("perintah tidak dikenal: %s", cmd)
-	}
-}
-
-type schemaMigration struct {
-	Version string `gorm:"primaryKey;column:version"`
-}
-
-func (schemaMigration) TableName() string { return "schema_migrations" }
-
-func ensureTable(db *gorm.DB) error {
-	return db.AutoMigrate(&schemaMigration{})
-}
-
-func appliedVersions(db *gorm.DB) (map[string]bool, error) {
-	var rows []schemaMigration
-	if err := db.Order("version asc").Find(&rows).Error; err != nil {
-		return nil, err
-	}
-	m := make(map[string]bool, len(rows))
-	for _, r := range rows {
-		m[r.Version] = true
-	}
-	return m, nil
-}
-
-// version mengambil prefix "001" dari "001_create_users.up.sql".
-func version(file string) string {
-	base := filepath.Base(file)
-	if i := strings.Index(base, "_"); i > 0 {
-		return base[:i]
-	}
-	return base
-}
-
-func listFiles(suffix string) []string {
-	pattern := filepath.Join(migrationDir, "*"+suffix)
-	files, err := filepath.Glob(pattern)
+	config.MaxConns, config.MinConns = 1, 0
+	config.ConnConfig.ConnectTimeout = 5 * time.Second
+	config.MaxConnLifetime, config.MaxConnIdleTime = 5*time.Minute, 30*time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
-		log.Fatalf("gagal membaca migrasi: %v", err)
+		return err
 	}
-	sort.Strings(files)
-	return files
+	defer pool.Close()
+	return migrations.Apply(ctx, pool)
 }
 
-func runUp(db *gorm.DB) {
-	applied, err := appliedVersions(db)
-	if err != nil {
-		log.Fatalf("gagal baca versi: %v", err)
+func validateMigrationTarget(environment string, config *pgxpool.Config, allowProduction bool) error {
+	if strings.HasSuffix(config.ConnConfig.Host, ".pooler.supabase.com") && config.ConnConfig.Port == 6543 {
+		return errors.New("migrations require a direct or session-pooler connection, not Supavisor transaction pooling")
 	}
-	files := listFiles(".up.sql")
-	count := 0
-	for _, f := range files {
-		v := version(f)
-		if applied[v] {
-			continue
+	switch strings.ToLower(strings.TrimSpace(environment)) {
+	case "local":
+		hosts := []string{config.ConnConfig.Host}
+		for _, fallback := range config.ConnConfig.Fallbacks {
+			hosts = append(hosts, fallback.Host)
 		}
-		sqlBytes, err := os.ReadFile(f)
-		if err != nil {
-			log.Fatalf("baca %s gagal: %v", f, err)
-		}
-		if err := execSQL(db, string(sqlBytes)); err != nil {
-			log.Fatalf("✗ migrasi %s gagal: %v", v, err)
-		}
-		if err := db.Create(&schemaMigration{Version: v}).Error; err != nil {
-			log.Fatalf("gagal catat versi %s: %v", v, err)
-		}
-		fmt.Printf("✓ up   %s\n", filepath.Base(f))
-		count++
-	}
-	if count == 0 {
-		fmt.Println("Tidak ada migrasi baru. Database sudah terkini.")
-	} else {
-		fmt.Printf("Selesai: %d migrasi diterapkan.\n", count)
-	}
-}
-
-func runDown(db *gorm.DB, all bool) {
-	applied, err := appliedVersions(db)
-	if err != nil {
-		log.Fatalf("gagal baca versi: %v", err)
-	}
-	files := listFiles(".down.sql")
-	// urutkan menurun agar rollback dari yang terbaru
-	sort.Sort(sort.Reverse(sort.StringSlice(files)))
-
-	for _, f := range files {
-		v := version(f)
-		if !applied[v] {
-			continue
-		}
-		sqlBytes, err := os.ReadFile(f)
-		if err != nil {
-			log.Fatalf("baca %s gagal: %v", f, err)
-		}
-		if err := execSQL(db, string(sqlBytes)); err != nil {
-			log.Fatalf("✗ rollback %s gagal: %v", v, err)
-		}
-		if err := db.Delete(&schemaMigration{Version: v}).Error; err != nil {
-			log.Fatalf("gagal hapus versi %s: %v", v, err)
-		}
-		fmt.Printf("✓ down %s\n", filepath.Base(f))
-		if !all {
-			return
-		}
-	}
-	fmt.Println("Rollback selesai.")
-}
-
-// execSQL menjalankan satu file SQL yang mungkin berisi beberapa statement.
-func execSQL(db *gorm.DB, raw string) error {
-	stmts := strings.Split(raw, ";")
-	return db.Transaction(func(tx *gorm.DB) error {
-		for _, s := range stmts {
-			s = strings.TrimSpace(s)
-			if s == "" {
-				continue
-			}
-			if err := tx.Exec(s).Error; err != nil {
-				return err
+		for _, host := range hosts {
+			ip := net.ParseIP(host)
+			if host != "localhost" && !strings.HasPrefix(host, "/") && (ip == nil || !ip.IsLoopback()) {
+				return errors.New("local migrations require a loopback PostgreSQL host")
 			}
 		}
 		return nil
-	})
+	case "staging":
+		return nil
+	case "production":
+		if allowProduction {
+			return nil
+		}
+		return errors.New("production migrations require ALGOHUB_ALLOW_PRODUCTION_MIGRATIONS=true")
+	default:
+		return fmt.Errorf("migrations require ALGOHUB_ENV=local or staging; received %q", environment)
+	}
 }

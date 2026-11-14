@@ -1,0 +1,17 @@
+{
+  "name": "@algohub/practicum-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./workspace": "./src/workspace.ts",
+    "./styles.css": "./src/styles.css"
+  },
+  "scripts": {
+    "test:unit": "node --experimental-strip-types --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@algohub/auth-client": "file:../auth-client"
+  }
+}

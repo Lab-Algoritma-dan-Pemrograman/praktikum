@@ -1,0 +1,860 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "e:\\rekapProject\\project_ap_v2\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "practicum.spec.ts",
+      "siakad.spec.ts",
+      "siakad-pagination.spec.ts",
+      "--reporter=json"
+    ],
+    "configFile": "e:\\rekapProject\\project_ap_v2\\playwright.config.ts",
+    "rootDir": "e:/rekapProject/project_ap_v2/tests/frontend/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "e:/rekapProject/project_ap_v2/tests/frontend/results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "e:/rekapProject/project_ap_v2/tests/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e",
+        "snapshotDir": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 60000,
+        "use": {
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium",
+          "baseURL": "http://portal.localhost:5273",
+          "actionTimeout": 15000,
+          "navigationTimeout": 30000,
+          "trace": "off",
+          "video": "off",
+          "screenshot": "off",
+          "launchOptions": {
+            "env": {
+              "ALGOHUB_E2E_API_PORT": "8180",
+              "ALGOHUB_E2E_APP_PORT_BASE": "5273"
+            },
+            "args": [
+              "--host-resolver-rules=MAP *.localhost 127.0.0.1",
+              "--no-proxy-server"
+            ]
+          }
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "practicum.spec.ts",
+      "file": "practicum.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "practicum student and admin full flow at 320px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 20885,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:48:54.608Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0d7a5a14933b3f8ab573-d13480dbb0eac4d8dcb4",
+          "file": "practicum.spec.ts",
+          "line": 190,
+          "column": 3
+        },
+        {
+          "title": "practicum student and admin full flow at 768px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7962,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:49:18.668Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0d7a5a14933b3f8ab573-0fd113d3fcf5caafecc2",
+          "file": "practicum.spec.ts",
+          "line": 190,
+          "column": 3
+        },
+        {
+          "title": "practicum student and admin full flow at 1280px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8647,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:49:26.654Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0d7a5a14933b3f8ab573-13bb460a7d51f52c47b9",
+          "file": "practicum.spec.ts",
+          "line": 190,
+          "column": 3
+        },
+        {
+          "title": "practicum scoped assistant activation, monitoring, permanent close and scope denial",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12208,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:49:35.317Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0d7a5a14933b3f8ab573-f04e1e6bc4845222e34d",
+          "file": "practicum.spec.ts",
+          "line": 349,
+          "column": 1
+        },
+        {
+          "title": "practicum reconnect resolves real revision conflict, retry keeps one save, and runner failure is explicit",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 16177,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:49:47.603Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0d7a5a14933b3f8ab573-e3c154659c091707e315",
+          "file": "practicum.spec.ts",
+          "line": 493,
+          "column": 1
+        },
+        {
+          "title": "practicum deadline uses real server closure, not browser time, and refuses late answers",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 19265,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:03.825Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0d7a5a14933b3f8ab573-7cfd893c01beef8120e5",
+          "file": "practicum.spec.ts",
+          "line": 643,
+          "column": 1
+        },
+        {
+          "title": "practicum empty, non-roster, ownership and direct-route authorization remain enforced",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8112,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:23.118Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0d7a5a14933b3f8ab573-f220ad7b3df7e6df395a",
+          "file": "practicum.spec.ts",
+          "line": 704,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "siakad-pagination.spec.ts",
+      "file": "siakad-pagination.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "siakad pagination keeps class/item creations and drafts across hydrated admin tabs",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4487,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:31.374Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c90e012d46618693e523-610d5387b0e23364dd28",
+          "file": "siakad-pagination.spec.ts",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "siakad borrower reaches later available items without changing an unresolved rental on history load-more",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5514,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:35.881Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c90e012d46618693e523-a40771d3f0e7cd172d11",
+          "file": "siakad-pagination.spec.ts",
+          "line": 115,
+          "column": 1
+        },
+        {
+          "title": "siakad overview and QR attendance expose later classes, schedules, notifications and history",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2974,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:41.426Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c90e012d46618693e523-3a3fbeff118aedca6494",
+          "file": "siakad-pagination.spec.ts",
+          "line": 196,
+          "column": 1
+        },
+        {
+          "title": "siakad admin reaches later schedules, attendance and rentals and preserves validation replay after refresh",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3280,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:44.415Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c90e012d46618693e523-e987de51cce01b7e21ec",
+          "file": "siakad-pagination.spec.ts",
+          "line": 271,
+          "column": 1
+        },
+        {
+          "title": "siakad unrelated rental decisions cannot discard an unresolved inventory creation key",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1395,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:47.708Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c90e012d46618693e523-bdbeed2a68b9c8b56e78",
+          "file": "siakad-pagination.spec.ts",
+          "line": 399,
+          "column": 1
+        },
+        {
+          "title": "siakad validation rebases untouched fields but requires persistent explicit same-field conflict resolution",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2051,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:49.154Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c90e012d46618693e523-c3a196f8a40412e5d66c",
+          "file": "siakad-pagination.spec.ts",
+          "line": 469,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "siakad.spec.ts",
+      "file": "siakad.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "siakad QR attendance, inventory rental, division workflow and report at 320px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13949,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:50:51.276Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0eb094d905b884a23b5a-a2155be34980d2b906f4",
+          "file": "siakad.spec.ts",
+          "line": 54,
+          "column": 3
+        },
+        {
+          "title": "siakad QR attendance, inventory rental, division workflow and report at 768px",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12906,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:51:05.280Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0eb094d905b884a23b5a-d345666b9849dc347088",
+          "file": "siakad.spec.ts",
+          "line": 54,
+          "column": 3
+        },
+        {
+          "title": "siakad QR attendance, inventory rental, division workflow and report at 1280px",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 26506,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"berhasil divalidasi\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"berhasil divalidasi\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n\n    at e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\siakad.spec.ts:108:47",
+                    "location": {
+                      "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\siakad.spec.ts",
+                      "column": 47,
+                      "line": 108
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 106 |\u001b[39m         \u001b[33m.\u001b[39mfirst()\n \u001b[90m 107 |\u001b[39m         \u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 108 |\u001b[39m       \u001b[36mawait\u001b[39m expect(admin\u001b[33m.\u001b[39mgetByRole(\u001b[32m'status'\u001b[39m))\u001b[33m.\u001b[39mtoContainText(\n \u001b[90m     |\u001b[39m                                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 109 |\u001b[39m         \u001b[32m'berhasil divalidasi'\u001b[39m\n \u001b[90m 110 |\u001b[39m       )\u001b[33m;\u001b[39m\n \u001b[90m 111 |\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\siakad.spec.ts",
+                        "column": 47,
+                        "line": 108
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('status')\nExpected substring: \u001b[32m\"berhasil divalidasi\"\u001b[39m\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('status') with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status')\u001b[22m\n\n\n  106 |         .first()\n  107 |         .click();\n> 108 |       await expect(admin.getByRole('status')).toContainText(\n      |                                               ^\n  109 |         'berhasil divalidasi'\n  110 |       );\n  111 |\n    at e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\siakad.spec.ts:108:47"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:51:18.378Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\results\\siakad-siakad-QR-attendanc-743ea-rkflow-and-report-at-1280px\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "e:\\rekapProject\\project_ap_v2\\tests\\frontend\\e2e\\siakad.spec.ts",
+                    "column": 47,
+                    "line": 108
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "0eb094d905b884a23b5a-7b8eb65d4b9a13816b05",
+          "file": "siakad.spec.ts",
+          "line": 54,
+          "column": 3
+        },
+        {
+          "title": "siakad division-specific UI and API boundaries across sekretaris, k3, bendahara and peminjam",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11367,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:52:01.971Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0eb094d905b884a23b5a-12fb019c37e218f79d55",
+          "file": "siakad.spec.ts",
+          "line": 190,
+          "column": 1
+        },
+        {
+          "title": "siakad rental retry after a lost committed response creates only one request",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2535,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:52:14.367Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0eb094d905b884a23b5a-af850273764124f095a4",
+          "file": "siakad.spec.ts",
+          "line": 269,
+          "column": 1
+        },
+        {
+          "title": "siakad one-time QR response loss is reconciled without exposing or duplicating tokens",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2037,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:52:16.918Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0eb094d905b884a23b5a-1f5053e320ffc7b6c645",
+          "file": "siakad.spec.ts",
+          "line": 318,
+          "column": 1
+        },
+        {
+          "title": "siakad scoped admin forms work outside lab and reject invalid roster IDs before sending",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4414,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-13T17:52:18.999Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "0eb094d905b884a23b5a-b52ff1ee0181229dba75",
+          "file": "siakad.spec.ts",
+          "line": 368,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-13T17:47:23.060Z",
+    "duration": 305967.456,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

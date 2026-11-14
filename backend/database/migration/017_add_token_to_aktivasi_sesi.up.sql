@@ -1,1 +1,0 @@
-ALTER TABLE aktivasi_sesi ADD COLUMN token VARCHAR(10) NULL;

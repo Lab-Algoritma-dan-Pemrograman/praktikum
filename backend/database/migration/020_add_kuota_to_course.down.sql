@@ -1,3 +1,0 @@
-ALTER TABLE course DROP COLUMN IF EXISTS kuota_easy;
-ALTER TABLE course DROP COLUMN IF EXISTS kuota_medium;
-ALTER TABLE course DROP COLUMN IF EXISTS kuota_hard;
