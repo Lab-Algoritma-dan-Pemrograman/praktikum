@@ -123,9 +123,13 @@
   <header class="site-header">
     <div class="nav-shell">
       <a class="brand" href="/" aria-label="Algohub beranda">
-        <span class="brand-mark" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
-        </span>
+        <img
+          class="brand-mark"
+          src="/logo-mark.png"
+          alt=""
+          width="55"
+          height="96"
+        />
         <span class="brand-word">Algohub</span>
       </a>
 
@@ -445,9 +449,13 @@
   <footer data-reveal>
     <div class="footer-brand">
       <a class="brand" href="/" aria-label="Algohub beranda">
-        <span class="brand-mark" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
-        </span>
+        <img
+          class="brand-mark"
+          src="/logo-mark.png"
+          alt=""
+          width="55"
+          height="96"
+        />
         <span class="brand-word">Algohub</span>
       </a>
       <p>Ruang digital untuk pembelajaran dan operasional laboratorium.</p>
@@ -551,29 +559,9 @@
   }
 
   .brand-mark {
-    display: grid;
-    width: 2.4rem;
-    height: 2.75rem;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.16rem;
-    padding: 0.34rem;
-    border-radius: 50% 50% 0.45rem 0.45rem / 60% 60% 0 0;
-    background: var(--ah-coral);
-  }
-
-  .brand-mark span {
-    border-radius: 50%;
-    background: var(--ah-cream);
-  }
-
-  .brand-mark span:nth-child(2) {
-    border-radius: 50% 50% 0 50%;
-    background: var(--ah-ink);
-  }
-
-  .brand-mark span:nth-child(3) {
-    border-radius: 50% 0 50% 50%;
-    background: var(--ah-blue);
+    width: auto;
+    height: 2.6rem;
+    object-fit: contain;
   }
 
   .desktop-nav {
@@ -1578,19 +1566,11 @@
   }
 
   footer .brand-mark {
+    box-sizing: content-box;
+    height: 2rem;
+    padding: 0.35rem;
+    border-radius: 0.45rem;
     background: var(--ah-cream);
-  }
-
-  footer .brand-mark span {
-    background: var(--ah-ink);
-  }
-
-  footer .brand-mark span:nth-child(2) {
-    background: var(--ah-coral);
-  }
-
-  footer .brand-mark span:nth-child(3) {
-    background: var(--ah-blue);
   }
 
   footer nav {
@@ -1691,8 +1671,7 @@
     }
 
     .brand-mark {
-      width: 2rem;
-      height: 2.4rem;
+      height: 2.2rem;
     }
 
     .desktop-nav a {

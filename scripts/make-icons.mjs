@@ -262,10 +262,18 @@ function main() {
   const CREAM = '#fdfbf7'; // --ah-cream
   console.log(`icons -> ${outDir}`);
   const mark = square(trim(decodePng(source)), 0.06);
+  const raw = trim(decodePng(source));
   write(outDir, 'favicon-32.png', resize(mark, 32, 32));
   write(outDir, 'icon-192.png', resize(flatten(mark, CREAM), 192, 192));
   write(outDir, 'icon-512.png', resize(flatten(mark, CREAM), 512, 512));
   write(outDir, 'apple-touch-icon.png', resize(flatten(mark, CREAM), 180, 180));
+  // transparent, un-padded mark for in-app navbars (keeps the real aspect)
+  const markH = 96;
+  write(
+    outDir,
+    'logo-mark.png',
+    resize(raw, Math.round((raw.width / raw.height) * markH), markH)
+  );
   if (wordmark && fs.existsSync(wordmark)) {
     const wm = trim(decodePng(wordmark));
     const targetW = 480;
