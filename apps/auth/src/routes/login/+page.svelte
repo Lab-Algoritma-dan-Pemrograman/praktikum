@@ -224,7 +224,7 @@
   .eyebrow {
     margin: 0 0 0.6rem;
     color: var(--ah-console-accent);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;

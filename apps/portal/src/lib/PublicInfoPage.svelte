@@ -267,7 +267,7 @@
     }
     .public-header nav a {
       padding-inline: 0.2rem;
-      font-size: 0.72rem;
+      font-size: 0.75rem;
     }
   }
   @media (prefers-reduced-motion: reduce) {

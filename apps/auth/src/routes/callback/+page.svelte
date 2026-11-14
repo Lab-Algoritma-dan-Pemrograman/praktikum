@@ -16,7 +16,7 @@
   }
   .eyebrow {
     color: var(--ah-console-accent-ink);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 800;
     letter-spacing: 0.12em;
   }

@@ -52,6 +52,10 @@
     overflow-wrap: anywhere;
   }
   .brand {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 0 0.15rem;
     color: var(--ah-console-accent);
     font-weight: 800;
   }
