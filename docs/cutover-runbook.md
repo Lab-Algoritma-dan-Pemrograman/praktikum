@@ -112,7 +112,7 @@ Ganti record lama (jangan sentuh MX/TXT email):
 | Nama                       | Tipe  | Nilai                                 |
 | -------------------------- | ----- | ------------------------------------- |
 | `algohub.web.id`           | A     | `216.198.79.1` dan `64.29.17.1`       |
-| `www.algohub.web.id`       | CNAME | `b29bfc892b421039.vercel-dns-017.com` |
+| `www.algohub.web.id`       | CNAME | tetap `algohub.web.id` (ikut apex)    |
 | `auth.algohub.web.id`      | CNAME | `c4e569dad7e755f8.vercel-dns-017.com` |
 | `admin.algohub.web.id`     | CNAME | `995cdb8c0192bfc7.vercel-dns-017.com` |
 | `siakad.algohub.web.id`    | CNAME | `e9381a5040432c36.vercel-dns-017.com` |
@@ -122,3 +122,45 @@ Ganti record lama (jangan sentuh MX/TXT email):
 
 Alternatif apex bila registrar mendukung ALIAS/ANAME: arahkan ke
 `b29bfc892b421039.vercel-dns-017.com`.
+
+### KOREKSI: zona DNS aktif = Cloudflare, bukan panel Cloudhost
+
+Cek publik 2026-11-15: `NS algohub.web.id` = `dion.ns.cloudflare.com` /
+`dolly.ns.cloudflare.com`. Panel `bromo/rinjani.cloudhost.id` yang tampil di
+dashboard Cloudhost **sudah tidak dipakai** — perubahan di sana tidak berefek.
+Zona yang harus diedit ada di **Cloudflare**.
+
+Kondisi publik saat itu: `algohub.web.id`, `api`, `siakad` sudah A ke IP Vercel,
+`www` & `elearning` CNAME ke target project **lama**, `auth`/`admin`/`praktikum`
+belum ada, dan semua host mengembalikan `402 DEPLOYMENT_DISABLED` (project lama
+nonaktif). Artinya situs lama sudah mati sebelum cutover.
+
+Record yang dipakai project produksi baru:
+
+| Nama             | Tipe  | Nilai                                       |
+| ---------------- | ----- | ------------------------------------------- |
+| `algohub.web.id` | A     | `216.198.79.1` + `64.29.17.1` (sudah benar) |
+| `www`            | CNAME | `b29bfc892b421039.vercel-dns-017.com`       |
+| `auth`           | CNAME | `c4e569dad7e755f8.vercel-dns-017.com`       |
+| `admin`          | CNAME | `995cdb8c0192bfc7.vercel-dns-017.com`       |
+| `siakad`         | CNAME | `e9381a5040432c36.vercel-dns-017.com`       |
+| `elearning`      | CNAME | `95733b230f4d56fc.vercel-dns-017.com`       |
+| `praktikum`      | CNAME | `b54579b2dc5cf3ea.vercel-dns-017.com`       |
+| `api`            | CNAME | `701c6cd40f36bee7.vercel-dns-017.com`       |
+
+Verifikasi kepemilikan (8 TXT pada nama `_vercel`, boleh berdampingan):
+
+```
+vc-domain-verify=algohub.web.id,0f02ffababb85d576d34
+vc-domain-verify=www.algohub.web.id,2f01d753693a76daaf3d
+vc-domain-verify=auth.algohub.web.id,05ff75ec1b44288ead8f
+vc-domain-verify=admin.algohub.web.id,e3ceb3b928f928e80155
+vc-domain-verify=siakad.algohub.web.id,79904fec75e6084c8e4d
+vc-domain-verify=elearning.algohub.web.id,8fcaaa34539a9d0f57c8
+vc-domain-verify=praktikum.algohub.web.id,e551e46f7fc0d65189ea
+vc-domain-verify=api.algohub.web.id,f64038533b4ffeb27e25
+```
+
+Yang **tidak boleh** diubah: MX, TXT `brevo-code`, `_dmarc`, CNAME
+`brevo1._domainkey`/`brevo2._domainkey`, CNAME `mail`, `ftp`, dan semua record
+`*.staging`.
