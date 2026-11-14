@@ -1,0 +1,15 @@
+;; ============================================================
+;; 5 RECORD INI HARUS DI-EDIT MANUAL (bukan di-import),
+;; karena namanya sudah ada -> import bisa bikin record ganda.
+;; Cloudflare > DNS > Records > klik Edit pada record, ganti VALUE-nya.
+;; Proxy tetap "DNS only" (awan abu-abu).
+;; ============================================================
+
+;; nama				tipe	value lama -> value baru
+;; algohub.web.id.		CNAME	23811fa98da5942c.vercel-dns-017.com.  ->  b29bfc892b421039.vercel-dns-017.com.
+;; www.algohub.web.id.		CNAME	23811fa98da5942c.vercel-dns-017.com.  ->  b29bfc892b421039.vercel-dns-017.com.
+;; api.algohub.web.id.		CNAME	2e170c4bc75f1056.vercel-dns-017.com.  ->  701c6cd40f36bee7.vercel-dns-017.com.
+;; siakad.algohub.web.id.	CNAME	850997afc52c02ce.vercel-dns-017.com.  ->  e9381a5040432c36.vercel-dns-017.com.
+;; elearning.algohub.web.id.	CNAME	2b1e723ffddda812.vercel-dns-017.com.  ->  95733b230f4d56fc.vercel-dns-017.com.
+
+;; JANGAN diubah: MX/brevo-code/_dmarc/brevo1+2._domainkey/mail/ftp, dan semua *.staging.

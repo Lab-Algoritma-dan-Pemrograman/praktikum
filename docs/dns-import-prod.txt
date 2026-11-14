@@ -1,0 +1,20 @@
+;; ============================================================
+;; IMPORT KE CLOUDFLARE — record BARU untuk produksi algohub v2
+;; Dashboard Cloudflare > DNS > Records > Import and Export > Import
+;; Isinya HANYA 8 TXT verifikasi + 3 CNAME baru. Record lama tidak diubah.
+;; ============================================================
+
+;; TXT verifikasi kepemilikan domain (8 baris, semua di nama _vercel)
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=algohub.web.id,0f02ffababb85d576d34"
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=www.algohub.web.id,2f01d753693a76daaf3d"
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=auth.algohub.web.id,05ff75ec1b44288ead8f"
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=admin.algohub.web.id,e3ceb3b928f928e80155"
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=siakad.algohub.web.id,79904fec75e6084c8e4d"
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=elearning.algohub.web.id,8fcaaa34539a9d0f57c8"
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=praktikum.algohub.web.id,e551e46f7fc0d65189ea"
+_vercel.algohub.web.id.	1	IN	TXT	"vc-domain-verify=api.algohub.web.id,f64038533b4ffeb27e25"
+
+;; CNAME subdomain yang benar-benar BARU (belum ada di zona)
+auth.algohub.web.id.	1	IN	CNAME	c4e569dad7e755f8.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+admin.algohub.web.id.	1	IN	CNAME	995cdb8c0192bfc7.vercel-dns-017.com. ; cf_tags=cf-proxied:false
+praktikum.algohub.web.id.	1	IN	CNAME	b54579b2dc5cf3ea.vercel-dns-017.com. ; cf_tags=cf-proxied:false
