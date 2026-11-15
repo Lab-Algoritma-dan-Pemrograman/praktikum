@@ -129,10 +129,6 @@
   <main id="main-content">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="eyebrow">
-          <span class="eyebrow-mark" aria-hidden="true"></span>Ruang digital
-          laboratorium
-        </p>
         <h1 id="hero-title">
           Belajar, praktik, dan kelola lab dalam satu identitas.
         </h1>
@@ -153,55 +149,33 @@
             <span class="button-label">Jelajahi layanan</span>
           </a>
         </div>
-        <ul class="hero-notes" aria-label="Keunggulan Algohub">
-          <li>
-            <span class="note-dot note-dot-green" aria-hidden="true"></span>Satu
-            identitas
-          </li>
-          <li>
-            <span class="note-dot note-dot-blue" aria-hidden="true"></span>Akses
-            sesuai peran
-          </li>
-          <li>
-            <span class="note-dot note-dot-yellow" aria-hidden="true"
-            ></span>Responsif di berbagai layar
-          </li>
-        </ul>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
-        <div class="visual-frame">
-          <div class="visual-bar">
-            <span></span><span></span><span></span>
-            <p>algohub / workspace</p>
-          </div>
-          <div class="visual-body">
-            <ul class="visual-list">
-              <li><span>01</span>ruang belajar aktif</li>
-              <li><span>02</span>sesi praktikum tersimpan</li>
-              <li><span>03</span>layanan lab terhubung</li>
-            </ul>
-            <div class="visual-cards">
-              <div class="visual-card card-blue">
-                <span>SIAKAD</span>
-                <strong>Jadwal &amp; lab</strong>
-              </div>
-              <div class="visual-card card-yellow">
-                <span>E-learning</span>
-                <strong>Materi &amp; XP</strong>
-              </div>
-              <div class="visual-card card-coral">
-                <span>Praktikum</span>
-                <strong>Sesi &amp; review</strong>
-              </div>
-            </div>
-          </div>
+      <figure class="hero-term" aria-label="Contoh sesi praktikum Algohub">
+        <div class="term-bar">
+          <span></span><span></span><span></span>
+          <p>sesi / algoritma-dasar.py</p>
         </div>
-        <span class="float-shape float-arch"></span>
-        <span class="float-shape float-circle"></span>
-        <span class="float-shape float-plus"></span>
-        <span class="float-shape float-diamond"></span>
-      </div>
+        <div class="term-body">
+          <p class="term-line">
+            <span class="term-comment"># sesi praktikum Algohub</span>
+          </p>
+          <p class="term-line">
+            <span class="term-key">def</span>
+            <span class="term-fn">lulus</span>(nilai):
+          </p>
+          <p class="term-line term-indent">
+            <span class="term-key">return</span> nilai &gt;=
+            <span class="term-num">70</span>
+          </p>
+          <p class="term-line term-out">
+            &gt;&gt;&gt; lulus(<span class="term-num">82</span>)
+          </p>
+          <p class="term-line term-ok">
+            True <span class="term-note">· 3/3 testcase lulus</span>
+          </p>
+        </div>
+      </figure>
     </section>
 
     <section
@@ -509,26 +483,12 @@
     padding: clamp(6.5rem, 9vw, 8.5rem) 0 clamp(3rem, 5vw, 5rem);
   }
 
-  .eyebrow,
   .kicker {
     margin: 0 0 1.1rem;
     color: var(--ah-muted);
     font-size: 0.95rem;
     font-weight: 500;
     line-height: 1.3;
-  }
-
-  .eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-  }
-
-  .eyebrow-mark {
-    width: 0.85rem;
-    height: 0.85rem;
-    border-radius: 50%;
-    background: var(--ah-khaki);
   }
 
   h1,
@@ -568,206 +528,86 @@
     margin-top: 2rem;
   }
 
-  .hero-notes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem 1.4rem;
-    margin: 2rem 0 0;
-    padding: 0;
-    color: var(--ah-muted);
-    font-size: 0.9rem;
-    list-style: none;
-  }
-
-  .hero-notes li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .note-dot {
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 50%;
-    background: var(--ah-green);
-  }
-
-  .note-dot-blue {
-    background: var(--ah-blue);
-  }
-
-  .note-dot-yellow {
-    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
-    border-radius: 0;
-    background: var(--ah-yellow);
-  }
-
-  .hero-visual {
-    position: relative;
-    display: grid;
-    min-height: 32rem;
-    align-items: center;
-    justify-items: center;
-    padding: 1.5rem 0;
-  }
-
-  .visual-frame {
-    width: 100%;
-    max-width: 30rem;
+  .hero-term {
     overflow: hidden;
-    padding: 0 0.9rem 1.1rem;
-    border-radius: 13rem 13rem 2rem 2rem;
-    background: var(--ah-ink);
+    margin: 0;
+    border-radius: 1.25rem;
+    background: var(--ah-ink-strong);
     color: var(--ah-cream);
+    font-family: var(--ah-font-mono);
+    box-shadow: 0 24px 60px -32px
+      color-mix(in srgb, var(--ah-ink) 55%, transparent);
   }
 
-  .visual-bar {
+  .term-bar {
     display: flex;
-    min-height: 3.25rem;
+    min-height: 3rem;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0 0.4rem;
+    gap: 0.4rem;
+    padding: 0 1rem;
     border-bottom: 1px solid
       color-mix(in srgb, var(--ah-cream) 14%, transparent);
     color: var(--ah-muted-on-dark);
+    font-family: inherit;
   }
 
-  .visual-bar > span {
-    width: 0.6rem;
-    height: 0.6rem;
+  .term-bar > span {
+    width: 0.65rem;
+    height: 0.65rem;
     border-radius: 50%;
-    background: var(--ah-coral);
+    background: color-mix(in srgb, var(--ah-cream) 22%, transparent);
   }
 
-  .visual-bar > span:nth-child(2) {
-    background: var(--ah-yellow);
-  }
-
-  .visual-bar > span:nth-child(3) {
-    background: var(--ah-green);
-  }
-
-  .visual-bar p {
+  .term-bar p {
     margin: 0 0 0 auto;
     font-size: 0.75rem;
   }
 
-  .visual-body {
-    padding: 1.4rem 0.4rem 0.2rem;
-  }
-
-  .visual-list {
+  .term-body {
     display: grid;
-    gap: 0.95rem;
-    margin: 0;
-    padding: 0 0.3rem;
-    list-style: none;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 0.78rem;
-    color: color-mix(in srgb, var(--ah-cream) 80%, transparent);
+    gap: 0.35rem;
+    padding: 1.25rem 1.35rem 1.4rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
   }
 
-  .visual-list span {
-    margin-right: 0.7rem;
+  .term-line {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .term-indent {
+    padding-left: 1.6rem;
+  }
+
+  .term-comment {
+    color: color-mix(in srgb, var(--ah-cream) 52%, transparent);
+  }
+
+  .term-key {
+    color: var(--ah-pink);
+  }
+
+  .term-fn {
+    color: var(--ah-blue);
+  }
+
+  .term-num {
     color: var(--ah-yellow);
   }
 
-  .visual-cards {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
-    margin-top: 1.4rem;
+  .term-out {
+    margin-top: 0.4rem;
+    color: color-mix(in srgb, var(--ah-cream) 78%, transparent);
   }
 
-  .visual-card {
-    display: grid;
-    min-height: 6rem;
-    align-content: space-between;
-    gap: 0.75rem;
-    padding: 0.8rem;
-    border-radius: 0.9rem;
-    color: var(--ah-ink);
+  .term-ok {
+    color: var(--ah-green);
   }
 
-  .visual-card span {
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-
-  .visual-card strong {
-    font-size: 0.82rem;
-    font-weight: 500;
-    line-height: 1.2;
-  }
-
-  .card-blue {
-    background: var(--ah-blue);
-  }
-
-  .card-yellow {
-    background: var(--ah-yellow);
-  }
-
-  .card-coral {
-    background: var(--ah-coral);
-  }
-
-  .float-shape {
-    position: absolute;
-    z-index: 2;
-    display: block;
-    border-radius: 0.4rem;
-    background: var(--ah-coral);
-  }
-
-  .float-arch {
-    top: 4%;
-    right: -1.5%;
-    width: 4.5rem;
-    height: 6rem;
-    border-radius: 50% 50% 0.6rem 0.6rem / 55% 55% 0 0;
-    transform: rotate(7deg);
-  }
-
-  .float-circle {
-    bottom: 9%;
-    left: -2%;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    background: var(--ah-yellow);
-  }
-
-  .float-plus {
-    top: 20%;
-    left: -3%;
-    width: 2.6rem;
-    height: 2.6rem;
-    background: var(--ah-pink);
-    clip-path: polygon(
-      34% 0,
-      66% 0,
-      66% 34%,
-      100% 34%,
-      100% 66%,
-      66% 66%,
-      66% 100%,
-      34% 100%,
-      34% 66%,
-      0 66%,
-      0 34%,
-      34% 34%
-    );
-  }
-
-  .float-diamond {
-    right: 7%;
-    bottom: 1%;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0;
-    background: var(--ah-blue);
-    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  .term-note {
+    color: color-mix(in srgb, var(--ah-cream) 55%, transparent);
   }
 
   .section {
@@ -1083,7 +923,7 @@
       animation: hero-rise var(--ah-duration-hero) var(--ah-ease-out) backwards;
     }
 
-    .hero-visual {
+    .hero-term {
       animation: hero-rise var(--ah-duration-hero-slow) var(--ah-delay-hero)
         var(--ah-ease-out) backwards;
     }
@@ -1124,11 +964,9 @@
       padding-top: 7rem;
     }
 
-    .hero-visual {
-      width: min(30rem, 100%);
-      min-height: 0;
+    .hero-term {
+      max-width: 34rem;
       margin: 0 auto;
-      padding: 2rem 0 1rem;
     }
 
     .workflow-band,
@@ -1166,33 +1004,8 @@
       width: 100%;
     }
 
-    .hero-notes {
-      display: grid;
-      gap: 0.6rem;
-    }
-
-    .visual-frame {
-      border-radius: 8rem 8rem 1.5rem 1.5rem;
-    }
-
-    .visual-card {
-      min-height: 5rem;
-      padding: 0.65rem;
-    }
-
-    .float-arch {
-      width: 3.5rem;
-      height: 4.75rem;
-    }
-
-    .float-circle {
-      width: 3rem;
-      height: 3rem;
-    }
-
-    .float-plus {
-      width: 2.1rem;
-      height: 2.1rem;
+    .term-body {
+      font-size: 0.8rem;
     }
 
     .section {
