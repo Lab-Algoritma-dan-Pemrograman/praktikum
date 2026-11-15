@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import {
     acquirePreview,
     normalizeBrowserTestOutput,
@@ -33,7 +33,6 @@
   let issue = '';
   let result: BrowserRunResult | null = null;
   let verificationResults: BrowserVerificationResult['results'] = [];
-  let live = { stdout: '', stderr: '' };
   let prefetched = 0;
   let serverBusy = false;
   let serverResult: PlaygroundFallbackResult | null = null;
@@ -43,6 +42,42 @@
   let inputValue = '';
   let inputWaiting = false;
   let inputResolver: ((value: string) => void) | undefined;
+
+  type TerminalLine = {
+    kind: 'stdout' | 'stderr' | 'input' | 'system';
+    text: string;
+  };
+
+  const terminalCap = 16384;
+  let terminal: TerminalLine[] = [];
+  let terminalBytes = 0;
+  let scrollback: HTMLDivElement | undefined;
+  let written = { stdout: '', stderr: '' };
+
+  function appendTerminal(kind: TerminalLine['kind'], text: string) {
+    if (!text || terminalBytes >= terminalCap) return;
+    const bytes = new TextEncoder().encode(text);
+    const room = terminalCap - terminalBytes;
+    const chunk =
+      bytes.length <= room
+        ? text
+        : new TextDecoder().decode(bytes.subarray(0, room));
+    terminalBytes += Math.min(bytes.length, room);
+    const last = terminal[terminal.length - 1];
+    terminal =
+      last && last.kind === kind
+        ? [...terminal.slice(0, -1), { kind, text: last.text + chunk }]
+        : [...terminal, { kind, text: chunk }];
+    void tick().then(() => {
+      if (scrollback) scrollback.scrollTop = scrollback.scrollHeight;
+    });
+  }
+
+  function resetTerminal() {
+    terminal = [];
+    terminalBytes = 0;
+    written = { stdout: '', stderr: '' };
+  }
 
   function requestInput(prompt = '') {
     inputPrompt = prompt;
@@ -58,6 +93,8 @@
     const resolve = inputResolver;
     inputResolver = undefined;
     inputWaiting = false;
+    appendTerminal('input', `${inputPrompt}${inputValue}\n`);
+    inputPrompt = '';
     resolve?.(inputValue);
   }
 
@@ -92,7 +129,7 @@
     onVerification?.(null);
     serverResult = null;
     serverIssue = '';
-    live = { stdout: '', stderr: '' };
+    resetTerminal();
     prefetched = 0;
     try {
       const cases = verify
@@ -101,7 +138,7 @@
           : [{ description: 'Program dapat dijalankan', input: stdin }]
         : [{ description: 'Preview', input: stdin }];
       for (const testCase of cases) {
-        live = { stdout: '', stderr: '' };
+        resetTerminal();
         result = await preview.run(
           runtimeOrigin,
           {
@@ -112,7 +149,8 @@
           abort.signal,
           {
             onWrite: (stream, text) => {
-              live = { ...live, [stream]: cap(live[stream] + text) };
+              written[stream] = cap(written[stream] + text);
+              appendTerminal(stream, text);
             },
             onPrefetch: (loaded) => (prefetched = loaded),
             onInput: requestInput,
@@ -129,6 +167,12 @@
           (testCase.expectedOutput === undefined ||
             normalizeBrowserTestOutput(result.stdout) ===
               normalizeBrowserTestOutput(testCase.expectedOutput));
+        for (const stream of ['stdout', 'stderr'] as const) {
+          const seen = written[stream];
+          const produced = result[stream];
+          if (produced.startsWith(seen))
+            appendTerminal(stream, produced.slice(seen.length));
+        }
         if (verify) {
           verificationResults = [
             ...verificationResults,
@@ -165,7 +209,6 @@
       onVerification?.(null);
     } finally {
       busy = false;
-      live = { stdout: '', stderr: '' };
       inputWaiting = false;
       inputResolver?.('');
       inputResolver = undefined;
@@ -242,33 +285,9 @@
       </p>
     {/if}
   {/if}
-  {#if inputWaiting}
-    <form class="panel stack" onsubmit={submitInput}>
-      <label>
-        {inputPrompt || 'Program meminta input'}
-        <input
-          bind:value={inputValue}
-          maxlength="16383"
-          autocomplete="off"
-          use:focusInput
-        />
-      </label>
-      <button type="submit">Kirim input</button>
-    </form>
-  {/if}
   {#if issue}<p class="notice error" role="alert">{issue}</p>{/if}
   {#if busy && prefetched > 0 && prefetched < 2}
     <p class="muted">Menyiapkan runtime C: {prefetched}/2 bagian.</p>
-  {/if}
-  {#if busy && (live.stdout || live.stderr)}
-    <div class="panel stack" aria-label="Keluaran sementara">
-      {#if live.stdout}<pre
-          class="runner-output"
-          aria-label="stdout sementara">{live.stdout}</pre>{/if}
-      {#if live.stderr}<pre
-          class="runner-output"
-          aria-label="stderr sementara">{live.stderr}</pre>{/if}
-    </div>
   {/if}
   {#if verificationResults.length > 0}
     <section class="panel stack" aria-label="Hasil testcase browser">
@@ -283,33 +302,65 @@
       </ul>
     </section>
   {/if}
-  {#if result}
-    <div class="panel stack" aria-live="polite">
-      <h3>Preview browser: {result.status}</h3>
-      <p class="muted" data-testid="preview-duration">
-        {result.durationMs} ms · hasil lokal, tidak dikirim sebagai nilai
-      </p>
-      <h4>stdout preview</h4>
-      <pre
-        class="runner-output"
-        aria-label="stdout preview browser">{result.stdout || '(kosong)'}</pre>
-      <h4>stderr preview</h4>
-      <pre
-        class="runner-output"
-        aria-label="stderr preview browser">{result.stderr || '(kosong)'}</pre>
-      {#if result.images.length}
-        <h4>Grafik preview</h4>
-        <div class="stack">
-          {#each result.images as image, index}
-            <img
-              class="preview-image"
-              src={image}
-              alt={`Grafik hasil preview ${index + 1}`}
-            />
-          {/each}
-        </div>
+  {#if busy || result}
+    <div class="panel stack">
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+      <div
+        class="terminal-scrollback"
+        data-testid="terminal-scrollback"
+        role="log"
+        aria-live="polite"
+        tabindex="0"
+        bind:this={scrollback}
+      >
+        {#each terminal as line}
+          <div class="term-line" data-kind={line.kind}>{line.text}</div>
+        {/each}
+        {#if inputWaiting}
+          <div class="term-line term-prompt" data-kind="prompt">
+            {inputPrompt}<span class="term-caret" aria-hidden="true">▍</span>
+          </div>
+        {/if}
+      </div>
+      {#if result}
+        {#if result.images.length}
+          <div class="terminal-images">
+            {#each result.images as image, index}
+              <img
+                class="preview-image"
+                src={image}
+                alt={`Grafik hasil preview ${index + 1}`}
+              />
+            {/each}
+          </div>
+        {/if}
+        {#if result.truncated}<p class="terminal-notice">
+            Output dipotong sesuai batas ukuran.
+          </p>{/if}
+        <p
+          class="terminal-status status-{result.status}"
+          data-testid="terminal-status"
+        >
+          Preview browser: {result.status}
+        </p>
+        <p class="muted" data-testid="preview-duration">
+          {result.durationMs} ms · hasil lokal, tidak dikirim sebagai nilai
+        </p>
       {/if}
-      {#if result.truncated}<p>Output dipotong sesuai batas ukuran.</p>{/if}
+      {#if inputWaiting}
+        <form class="terminal-input" onsubmit={submitInput}>
+          <label>
+            {inputPrompt || 'Program meminta input'}
+            <input
+              bind:value={inputValue}
+              maxlength="16383"
+              autocomplete="off"
+              use:focusInput
+            />
+          </label>
+          <button type="submit">Kirim input</button>
+        </form>
+      {/if}
     </div>
   {/if}
   {#if serverResult}
@@ -347,5 +398,73 @@
     max-width: 100%;
     height: auto;
     margin: 0.5rem 0;
+  }
+
+  .terminal-scrollback {
+    max-height: 20rem;
+    overflow: auto;
+    padding: 0.8rem;
+    border-radius: var(--ah-console-radius-badge);
+    background: var(--ah-console-sunken);
+    color: var(--ah-console-text);
+    font-family: var(--ah-font-mono, ui-monospace, monospace);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .term-line {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .term-line[data-kind='stderr'] {
+    color: var(--ah-console-danger);
+  }
+
+  .term-line[data-kind='input'] {
+    color: var(--ah-console-accent-ink);
+  }
+
+  .term-line[data-kind='system'] {
+    color: var(--ah-console-muted);
+  }
+
+  .term-prompt {
+    color: var(--ah-console-muted);
+  }
+
+  .term-caret {
+    color: var(--ah-console-accent);
+  }
+
+  .terminal-images {
+    display: grid;
+    gap: var(--ah-space-2, 0.5rem);
+  }
+
+  .terminal-notice {
+    color: var(--ah-console-warning);
+  }
+
+  .terminal-input label {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  :global(.terminal-status) {
+    font-weight: 600;
+  }
+
+  :global(.terminal-status.status-success) {
+    color: var(--ah-console-accent);
+  }
+
+  :global(.terminal-status.status-timeout) {
+    color: var(--ah-console-warning);
+  }
+
+  :global(.terminal-status.status-compile_error),
+  :global(.terminal-status.status-runtime_error) {
+    color: var(--ah-console-danger);
   }
 </style>

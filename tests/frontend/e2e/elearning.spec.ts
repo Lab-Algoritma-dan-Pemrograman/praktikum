@@ -309,9 +309,9 @@ for (const width of [320, 768, 1280]) {
         page.getByRole('heading', { name: 'Playground C & Python' })
       ).toBeVisible();
       await page.getByRole('button', { name: 'Jalankan di browser' }).click();
-      await expect(
-        page.getByRole('heading', { name: 'Preview browser: success' })
-      ).toBeVisible();
+      await expect(page.getByTestId('terminal-status')).toContainText(
+        'Preview browser: success'
+      );
       expect(authoritativeRunRequests).toBe(0);
       await assertFits(page);
 

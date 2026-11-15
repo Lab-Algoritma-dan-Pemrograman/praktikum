@@ -37,9 +37,9 @@ test('browser C preview is lazy, isolated, reusable, bounded and never calls the
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('hasil:42', { timeout: 60000 });
+  await expect(page.getByTestId('terminal-scrollback')).toHaveText('hasil:42', {
+    timeout: 60000
+  });
   console.log(
     'preview.metric.first_c_ms',
     Number(
@@ -76,9 +76,7 @@ test('browser C preview is lazy, isolated, reusable, bounded and never calls the
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('hasil:7');
+  await expect(page.getByTestId('terminal-scrollback')).toHaveText('hasil:7');
   expect(runtimeRequests.length).toBe(assetCount);
   const secondRunMs = Number(
     (await page.getByTestId('preview-duration').textContent())?.match(
@@ -99,12 +97,9 @@ test('browser C preview is lazy, isolated, reusable, bounded and never calls the
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByRole('heading', {
-      name: 'Preview browser: compile_error',
-      exact: true
-    })
-  ).toBeVisible();
+  await expect(page.getByTestId('terminal-status')).toContainText(
+    'Preview browser: compile_error'
+  );
   await page
     .getByLabel('Kode playground', { exact: true })
     .fill(
@@ -116,11 +111,13 @@ test('browser C preview is lazy, isolated, reusable, bounded and never calls the
   await expect(
     page.getByText('Output dipotong sesuai batas ukuran.', { exact: true })
   ).toBeVisible();
-  expect(
-    (await page
-      .getByLabel('stdout preview browser', { exact: true })
-      .textContent())!.length
-  ).toBeLessThanOrEqual(16384);
+  const outputSize = await page
+    .getByTestId('terminal-scrollback')
+    .locator('.term-line')
+    .evaluateAll((lines) =>
+      lines.reduce((total, line) => total + (line.textContent ?? '').length, 0)
+    );
+  expect(outputSize).toBeLessThanOrEqual(16384);
   expect(serverRuns).toEqual([]);
 });
 
@@ -150,9 +147,9 @@ test('browser preview keeps heap growth bounded across 20 runs', async ({
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('hasil:2', { timeout: 60000 });
+  await expect(page.getByTestId('terminal-scrollback')).toHaveText('hasil:2', {
+    timeout: 60000
+  });
   const before = await heap();
   for (let index = 1; index <= 20; index++) {
     await page
@@ -161,9 +158,9 @@ test('browser preview keeps heap growth bounded across 20 runs', async ({
     await page
       .getByRole('button', { name: 'Jalankan di browser', exact: true })
       .click();
-    await expect(
-      page.getByLabel('stdout preview browser', { exact: true })
-    ).toHaveText(`hasil:${index + 2}`);
+    await expect(page.getByTestId('terminal-scrollback')).toHaveText(
+      `hasil:${index + 2}`
+    );
   }
   const after = await heap();
   const growthMb = (after - before) / (1024 * 1024);
@@ -240,9 +237,10 @@ test('failed preview bootstrap can be retried without reloading the application'
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('recovered', { timeout: 60000 });
+  await expect(page.getByTestId('terminal-scrollback')).toHaveText(
+    'recovered',
+    { timeout: 60000 }
+  );
   expect(frameRequests).toBe(2);
 });
 
@@ -298,15 +296,13 @@ test('real Python preview uses only the pinned public runtime and no application
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByRole('heading', { name: /^Preview browser:/ })
-  ).toBeVisible({ timeout: 60000 });
-  await expect(
-    page.getByLabel('stderr preview browser', { exact: true })
-  ).toHaveText('(kosong)');
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('hasil:42', { timeout: 60000 });
+  await expect(page.getByTestId('terminal-status')).toContainText(
+    'Preview browser:',
+    { timeout: 60000 }
+  );
+  await expect(page.getByTestId('terminal-scrollback')).toHaveText('hasil:42', {
+    timeout: 60000
+  });
   console.log(
     'preview.metric.python_first_run_ms',
     Number(
@@ -321,9 +317,9 @@ test('real Python preview uses only the pinned public runtime and no application
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('hasil:4', { timeout: 60000 });
+  await expect(page.getByTestId('terminal-scrollback')).toHaveText('hasil:4', {
+    timeout: 60000
+  });
   const pythonRunMs = Number(
     (await page.getByTestId('preview-duration').textContent())?.match(
       /^(\d+)/
@@ -345,9 +341,10 @@ test('real Python preview uses only the pinned public runtime and no application
     .click();
   await page.getByLabel('Program meminta input', { exact: true }).fill('42');
   await page.getByRole('button', { name: 'Kirim input', exact: true }).click();
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('interaktif:42', { timeout: 60000 });
+  await expect(page.getByTestId('terminal-scrollback')).toContainText(
+    'interaktif:42',
+    { timeout: 60000 }
+  );
   expect(serverRuns).toBe(0);
 
   const frame = page
@@ -394,10 +391,7 @@ test('real Python preview loads packages from user imports', async ({
   await page
     .getByRole('button', { name: 'Jalankan di browser', exact: true })
     .click();
-  await expect(
-    page.getByLabel('stdout preview browser', { exact: true })
-  ).toHaveText('6', { timeout: 150000 });
-  await expect(
-    page.getByLabel('stderr preview browser', { exact: true })
-  ).toHaveText('(kosong)');
+  await expect(page.getByTestId('terminal-scrollback')).toHaveText('6', {
+    timeout: 150000
+  });
 });

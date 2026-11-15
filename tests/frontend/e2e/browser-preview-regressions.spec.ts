@@ -26,8 +26,7 @@ async function run(page: Page, source: string) {
     .click();
 }
 
-const stdout = (page: Page) =>
-  page.getByLabel('stdout preview browser', { exact: true });
+const stdout = (page: Page) => page.getByTestId('terminal-scrollback');
 
 test.beforeEach(() => {
   test.skip(
@@ -50,15 +49,13 @@ test('real Python interactive syntax, wait, cancel and isolated rerun', async ({
   );
   const input = page.getByLabel('Name:', { exact: true });
   await expect(input).toBeVisible({ timeout: 60000 });
-  await expect(page.getByLabel('stdout sementara', { exact: true })).toHaveText(
-    'input('
-  );
+  await expect(page.getByTestId('terminal-scrollback')).toContainText('input(');
   await page.clock.fastForward(46000);
   await expect(input).toBeVisible();
   await expect(page.getByRole('alert')).toHaveCount(0);
   await input.fill('  Ana  ');
   await page.getByRole('button', { name: 'Kirim input', exact: true }).click();
-  await expect(stdout(page)).toHaveText('input(\nANA');
+  await expect(stdout(page)).toContainText('ANA');
 
   await run(page, 'print("answer" in globals())');
   await expect(stdout(page)).toHaveText('False');
@@ -71,7 +68,7 @@ test('real Python interactive syntax, wait, cancel and isolated rerun', async ({
   await run(page, 'print(input("Again: ").strip())');
   await page.getByLabel('Again:', { exact: true }).fill('fresh');
   await page.getByRole('button', { name: 'Kirim input', exact: true }).click();
-  await expect(stdout(page)).toHaveText('fresh');
+  await expect(stdout(page)).toContainText('fresh');
 
   await page.getByRole('checkbox', { name: /Input interaktif/ }).uncheck();
   await page
@@ -147,12 +144,9 @@ test('real Python matplotlib renders PNG and clears figures after failed runs', 
     page,
     'import matplotlib.pyplot as plt\nplt.plot([1, 2], [3, 4])\nraise ValueError("synthetic-failure")'
   );
-  await expect(
-    page.getByRole('heading', {
-      name: 'Preview browser: runtime_error',
-      exact: true
-    })
-  ).toBeVisible();
+  await expect(page.getByTestId('terminal-status')).toContainText(
+    'Preview browser: runtime_error'
+  );
   await expect(
     page.getByRole('img', { name: /Grafik hasil preview/ })
   ).toHaveCount(0);
