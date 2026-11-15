@@ -1,5 +1,35 @@
 # Praktikum: repair lokal dan gate rollout — 2026-11-15
 
+## Hasil production (2026-11-15)
+
+Rollout dijalankan pada project Supabase `zngmetvdvsfowerwngma` dan tujuh project
+Vercel `algohub-v2-*` milik team `lab-algoritma-pemrograman`.
+
+| Tahap | Hasil |
+| --- | --- |
+| Backup | `pg_dump` full 12,4 MB (sha256 `bbbc651e…`) + subset rehearsal, disimpan privat di luar repo |
+| Rehearsal | Clone lokal dari data asli: mismatch session/scope → 0, work fingerprint identik, idempotent |
+| Gate pengajar | `practicum.grade.write` **0 → 104** aktivasi, `question.manage` **0 → 104**, `session.manage` tetap 104 |
+| Gate mahasiswa | Pasangan eligible **1982 → 1982** (tanpa regresi) |
+| Migrasi | 0011 + 0012 diterapkan atomik; fingerprint work sebelum/sesudah identik |
+| Setelah migrasi | Semua 11 pemeriksaan mismatch **0**; 1.634 attempt, 3.746 jawaban, 78.829 baris legacy utuh |
+| Deploy | API, auth, admin, praktikum dipromosikan ke alias production |
+| Smoke | `/healthz` ok, `/readyz` ready, anonim 401, portal/auth/praktikum 200, admin 401 |
+
+Temuan penting: sebelum repair, **koordinator tidak punya akses menilai atau
+mengelola soal untuk aktivasi legacy mana pun** (0 dari 104). Setelah 0012
+konteks domain/session tersedia dan akses menjadi 104.
+
+Data nilai: `score` per jawaban dan `total_nilai` pengerjaan **memang NULL di
+sumber legacy** (3.746 dan 1.634 baris), jadi v2 menampilkan "Belum
+dipublikasikan". Tidak ada nilai yang dikarang. Rinciannya di
+`evidence/production-grades.json`.
+
+Verifikasi production masih perlu satu langkah owner: **login nyata** untuk
+membuktikan alur mahasiswa di browser. Skripnya sudah ada
+(`scripts/praktikum-prod-authenticated.mjs`) dan hanya berjalan bila owner
+menyediakan kredensial uji lewat environment.
+
 ## Status dan batas
 
 Perubahan berada di working tree lokal, belum di-commit/deploy. Tidak ada SQL, write, reset, atau perubahan konfigurasi production yang dijalankan dalam pekerjaan ini. Pemeriksaan entry publik hanya mengonfirmasi HTTP 200; itu bukan acceptance authenticated production.
