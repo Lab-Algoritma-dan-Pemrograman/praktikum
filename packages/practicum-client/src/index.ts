@@ -147,6 +147,8 @@ export interface GradeSummary {
   max_score: number;
   percentage: number | null;
   submitted_at: string | null;
+  /** Optional participation score 0..100, present once a grader publishes it. */
+  keaktifan?: number | null;
 }
 export interface RunnerInfo {
   languages: { language: string; version: string; label: string }[];
