@@ -341,6 +341,8 @@ test('access editor applies role/division/scoped grant, audit paginates empty au
       'Akses berhasil disimpan'
     );
     await login(student, 'portal', 'mahasiswa@example.test');
+    // Ringkasan peran pindah dari landing (0ae1db0) ke /workspace (4aa6607).
+    await student.goto(`${hosts.portal}/workspace`);
     await expect(
       student.getByText('Belum ada penugasan.', { exact: false })
     ).toBeVisible();

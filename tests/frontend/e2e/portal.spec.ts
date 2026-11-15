@@ -24,26 +24,33 @@ for (const width of [320, 768, 1280]) {
         name: 'Berpindah layanan tanpa kehilangan konteks.'
       })
     ).toBeVisible();
-    await expect(page.getByRole('article')).toHaveCount(4);
+    // Kartu layanan kini berupa tautan ServicePrismCards (0b9bdcf), bukan <article>.
+    const services = page.getByRole('region', {
+      name: 'Berpindah layanan tanpa kehilangan konteks.'
+    });
+    await expect(services.getByRole('link')).toHaveCount(4);
 
     await expect(
-      page.getByRole('link', { name: /Buka SIAKAD & layanan lab/ })
+      services.getByRole('link', { name: /SIAKAD & layanan lab.*Buka SIAKAD/ })
     ).toHaveAttribute('href', `${hosts.siakad}/login`);
     await expect(
-      page.getByRole('link', { name: /Buka E-learning interaktif/ })
+      services.getByRole('link', {
+        name: /E-learning interaktif.*Buka E-learning/
+      })
     ).toHaveAttribute('href', `${hosts.elearning}/login`);
     await expect(
-      page.getByRole('link', { name: /Buka Praktikum terarah/ })
+      services.getByRole('link', { name: /Praktikum terarah.*Buka Praktikum/ })
     ).toHaveAttribute('href', `${hosts.praktikum}/login`);
 
-    if (width <= 720) {
+    // PublicNav bersama beralih ke menu mobile di bawah 60rem (960px).
+    if (width <= 960) {
       await page.getByText('Menu', { exact: true }).click();
       await expect(
         page.getByRole('navigation', { name: 'Navigasi mobile' })
       ).toBeVisible();
     } else {
       await expect(
-        page.getByRole('navigation', { name: 'Navigasi landing page' })
+        page.getByRole('navigation', { name: 'Navigasi utama' })
       ).toBeVisible();
     }
 
@@ -56,26 +63,32 @@ for (const width of [320, 768, 1280]) {
   });
 }
 
-test('portal landing shows scoped workspace for an authenticated user', async ({
+test('portal workspace shows scoped applications for an authenticated user', async ({
   page
 }) => {
   await login(page, 'portal', 'mahasiswa@example.test');
 
+  // Landing tidak lagi memuat data sesi (0ae1db0); ringkasan akun dan pilihan
+  // aplikasi pindah ke /workspace (4aa6607).
   await expect(
-    page.getByRole('heading', { name: /Selamat datang kembali/ })
+    page.getByRole('link', { name: 'Buka ruang kerja' }).first()
+  ).toHaveAttribute('href', '/workspace');
+  await page.goto(`${hosts.portal}/workspace`);
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: 'Mau mengerjakan apa hari ini?'
+    })
   ).toBeVisible();
   await expect(
-    page.getByText('mahasiswa', { exact: false }).first()
+    page.getByRole('list', { name: 'Peran akun' }).getByText('mahasiswa')
   ).toBeVisible();
-  const workspace = page.locator('#workspace');
-  await expect(
-    workspace.getByRole('link', { name: 'SIAKAD', exact: true })
-  ).toHaveAttribute('href', `${hosts.siakad}/login`);
-  await expect(
-    workspace.getByRole('link', { name: 'E-learning', exact: true })
-  ).toHaveAttribute('href', `${hosts.elearning}/login`);
-  await expect(
-    workspace.getByRole('link', { name: 'Praktikum', exact: true })
-  ).toHaveAttribute('href', `${hosts.praktikum}/login`);
+  for (const app of ['siakad', 'elearning', 'praktikum'] as const) {
+    await expect(page.locator(`a.tile[data-app="${app}"]`)).toHaveAttribute(
+      'href',
+      `${hosts[app]}/api/auth/start?return_to=%2F`
+    );
+  }
+  await expect(page.locator('a.tile[data-app="admin"]')).toHaveCount(0);
   await noBrowserCredentials(page);
 });

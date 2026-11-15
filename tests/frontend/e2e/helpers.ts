@@ -72,8 +72,15 @@ export async function login(
     await page.getByRole('button', { name: 'Masuk', exact: true }).click();
     expect((await (await submission).allHeaders()).origin).toBe(hosts.auth);
   }
+  // Login langsung di host auth (tanpa return_to) sengaja berakhir di
+  // portal /workspace sejak SSO workspace diperkenalkan.
+  const destination =
+    app === 'auth'
+      ? { origin: hosts.portal, pathname: '/workspace' }
+      : { origin: hosts[app], pathname: '/' };
   await expect(page).toHaveURL(
-    (url) => url.origin === hosts[app] && url.pathname === '/'
+    (url) =>
+      url.origin === destination.origin && url.pathname === destination.pathname
   );
 }
 

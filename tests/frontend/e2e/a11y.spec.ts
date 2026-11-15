@@ -21,8 +21,8 @@ const loginTarget = (name: string, origin: string): PageTarget => ({
   url: `${origin}/login`,
   finalOrigin: hosts.auth,
   finalPath: '/login',
-  title: 'Login — Algohub',
-  heading: 'Masuk dengan identitas Algohub.',
+  title: 'Masuk — Algohub',
+  heading: 'Masuk ke Algohub',
   returnTo: `${origin}/`
 });
 
@@ -41,7 +41,7 @@ const pages: PageTarget[] = [
     finalOrigin: hosts.portal,
     finalPath: '/jadwal',
     title: 'Jadwal praktikum — Algohub',
-    heading: 'Ritme pekan praktikum, dari aktivasi sampai publikasi nilai.'
+    heading: 'Kalender pekan praktikum.'
   },
   {
     name: 'portal-asisten',
@@ -96,8 +96,8 @@ const pages: PageTarget[] = [
     url: `${hosts.auth}/login`,
     finalOrigin: hosts.auth,
     finalPath: '/login',
-    title: 'Login — Algohub',
-    heading: 'Masuk dengan identitas Algohub.'
+    title: 'Masuk — Algohub',
+    heading: 'Masuk ke Algohub'
   },
   loginTarget('admin-login', hosts.admin),
   loginTarget('siakad-login', hosts.siakad),

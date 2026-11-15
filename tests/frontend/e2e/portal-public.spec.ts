@@ -4,7 +4,7 @@ import { hosts } from '../local';
 const publicRoutes = [
   {
     path: '/jadwal',
-    heading: 'Ritme pekan praktikum, dari aktivasi sampai publikasi nilai.'
+    heading: 'Kalender pekan praktikum.'
   },
   { path: '/asisten', heading: 'Divisi yang menjalankan laboratorium.' },
   {

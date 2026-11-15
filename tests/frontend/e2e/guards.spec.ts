@@ -145,8 +145,9 @@ for (const width of [320, 768, 1280]) {
     await page.getByText('Pindah aplikasi', { exact: true }).click();
     await page.locator(`a[href="${hosts.siakad}/login"]`).click();
     await expect(page).toHaveURL(`${hosts.siakad}/`);
+    // Dashboard SIAKAD (de49511) memakai h1 "Ringkasan akademik".
     await expect(
-      page.getByRole('heading', { name: 'SIAKAD', exact: true })
+      page.getByRole('heading', { level: 1, name: 'Ringkasan akademik' })
     ).toBeVisible();
     expect(
       await page.evaluate(

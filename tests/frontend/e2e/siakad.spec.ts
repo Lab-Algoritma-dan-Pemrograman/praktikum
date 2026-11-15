@@ -27,6 +27,18 @@ async function newActor(browser: Browser, email: string, width = 1280) {
   return { context, page };
 }
 
+// Sejak redesain sidebar (de49511) navigasi SIAKAD ada di AppSidebar: tiap
+// tautan berisi label + hint, dan di bawah 60rem menjadi drawer yang dibuka
+// tombol "Menu".
+async function openSiakadSection(page: Page, label: string) {
+  const toggle = page.getByRole('button', { name: 'Menu', exact: true });
+  if (await toggle.isVisible()) await toggle.click();
+  await page
+    .getByRole('navigation', { name: 'Navigasi Siakad' })
+    .getByRole('link', { name: new RegExp(`^${label} `) })
+    .click();
+}
+
 async function assertFits(page: Page) {
   const dimensions = await page.evaluate(() => ({
     viewport: innerWidth,
@@ -82,14 +94,12 @@ for (const width of [320, 768, 1280]) {
     page.on('pageerror', (error) => errors.push(error.message));
     try {
       await expect(
-        page.getByRole('heading', { name: 'SIAKAD', exact: true })
+        page.getByRole('heading', { level: 1, name: 'Ringkasan akademik' })
       ).toBeVisible();
       await assertFits(page);
 
       // Student checks in with QR token.
-      await page
-        .getByRole('link', { name: 'Presensi QR', exact: true })
-        .click();
+      await openSiakadSection(page, 'Presensi QR');
       await page.getByLabel('Token QR presensi').fill(qrToken!);
       await page.getByRole('button', { name: 'Kirim presensi QR' }).click();
       await expect(
@@ -124,9 +134,7 @@ for (const width of [320, 768, 1280]) {
       ).toHaveCount(0);
 
       // Student requests an equipment rental.
-      await page
-        .getByRole('link', { name: 'Inventaris & Penyewaan', exact: true })
-        .click();
+      await openSiakadSection(page, 'Inventaris & sewa');
       await page
         .getByLabel('Keperluan peminjaman')
         .fill(`Praktikum E2E ${width}px`);
@@ -177,9 +185,7 @@ for (const width of [320, 768, 1280]) {
       await assertFits(admin);
 
       // Student receives notifications on overview page.
-      await page
-        .getByRole('link', { name: 'Kelas & Jadwal', exact: true })
-        .click();
+      await openSiakadSection(page, 'Ringkasan');
       await expect(
         page.getByRole('region', { name: 'Notifikasi SIAKAD' })
       ).toContainText('Status Penyewaan Alat');
