@@ -140,7 +140,7 @@ Ini bukti tentang source yang dibaca, bukan konfirmasi versi/config hosted servi
 
 ## Acceptance domain lanjutan — 11 November 2026
 
-Pemilik menyetujui baseline 30 pengguna, maksimal 120 attempt untuk batch scheduler, dataset sintetis kecil pada domain lain, serta delapan request Glot tambahan. [Laporan acceptance terperinci](archive/staging-acceptance-2026-11-11.md) menyimpan bukti, koreksi harness, data retained, dan urutan lanjut.
+Pemilik menyetujui baseline 30 pengguna, maksimal 120 attempt untuk batch scheduler, dataset sintetis kecil pada domain lain, serta delapan request Glot tambahan. Ringkasan acceptance, koreksi harness, data retained, dan urutan lanjut tersebar di [dokumen staging](staging-setup.md) dan [runbook scheduler](staging-scheduler.md); arsip rinci tidak lagi disimpan di repo.
 
 - SIAKAD/inventaris: 284 passing assertions pada transaksi nyata terbatas (QR, stok/rental concurrency, divisi finance, CSV/notifikasi/audit), tanpa defect aplikasi unresolved pada dataset itu. Ada gap cakupan yang tercatat; bukan full sign-off tanpa batas.
 - E-learning: 20 pemeriksaan awal dan satu defect text-only completion. Fix text-only kemudian dideploy sebagai `dpl_3gJ4ZhcarakoZWr159jC4q2cM63v`; retest retained text/quiz lesson pada 02:52 WIB lulus 8/8, tanpa draft dummy atau XP ganda. Fix achievement normal-authoring lebih baru masih memerlukan deployed acceptance.
@@ -169,7 +169,7 @@ Pemilik menyetujui baseline 30 pengguna, maksimal 120 attempt untuk batch schedu
 
 ## Kajian source Glot lanjutan — 11 November 2026
 
-[Hasil kajian dan sumber terpin](archive/glot-runner-source-review-2026-11-11.md) menelusuri route publik sampai container melalui repo resmi `glotcode/docker-run`. Codec `/api/mux` tetap hanya meneruskan empat field hasil; numeric exit/fase tidak tersedia. Build image resmi mereferensikan `code-runner` `3b87378`, berbeda dari main `41befd8`; keduanya kehilangan informasi signal yang sama. Metadata versi terpisah/cache serta allowlist image `:latest` belum membuktikan runtime tiap run.
+Hasil kajian dan sumber terpin (arsip lokal, tidak lagi disimpan di repo) menelusuri route publik sampai container melalui repo resmi `glotcode/docker-run`. Codec `/api/mux` tetap hanya meneruskan empat field hasil; numeric exit/fase tidak tersedia. Build image resmi mereferensikan `code-runner` `3b87378`, berbeda dari main `41befd8`; keduanya kehilangan informasi signal yang sama. Metadata versi terpisah/cache serta allowlist image `:latest` belum membuktikan runtime tiap run.
 
 Mekanisme resource/cleanup tersedia pada source, tetapi konfigurasi hosted belum terbukti. Penambahan status hanya pada `code-runner` tidak cukup tanpa dukungan codec publik dan rollout image layanan. Rekomendasi berikutnya adalah konfirmasi/jalur resmi dari pengelola hosted Glot sebelum budget probe baru. Tidak ada request Glot/metadata, operasi staging, perubahan kode aplikasi, deployment, atau pengulangan suite pada kajian ini; runner tetap `Unconfigured`, budget tetap 18/18 terpakai.
 

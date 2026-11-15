@@ -183,5 +183,5 @@ Referensi:
 
 - [Template environment staging](../.env.staging.example)
 - [Panduan teknis staging](staging-setup.md)
-- [Kontrak Phase 5](phase-5-contract.md)
+- [Kontrak dan implementasi Phase 5](phase-5-siakad.md)
 - [Hasil verifikasi lokal Phase 5](phase-5-siakad.md)

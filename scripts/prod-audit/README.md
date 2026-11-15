@@ -55,11 +55,11 @@ psql "$TARGET_DATABASE_URL" -f scripts/prod-audit/target-schema-map.sql \
   `backend/migrations/0002`–`0007` (identity + `practicum_*` 8 tabel +
   `learning_*` 9 tabel + `academic_*` 8 tabel).
 - Bandingkan Section 3 dengan temuan lama di `plan/database-migration.md`.
-- Bandingkan Section 4 dan 5 dengan `docs/phase-6-inventory.md` (masking
-  rehearsal Phase 6) untuk melihat data baru sejak rehearsal.
+- Bandingkan Section 4 dan 5 dengan `docs/migration.md` Lampiran A (inventaris
+  dan masking rehearsal Phase 6) untuk melihat data baru sejak rehearsal.
 - Section 5 menentukan titik mulai delta-import di hari cutover.
 
 ## Setelah audit
 
-Lampirkan hasil ke `docs/archive/prod-cutover-runbook-superseded.md` (bagian "Strategi data")
+Lampirkan hasil ke `docs/migration.md` (Lampiran B) dan `docs/cutover-runbook.md`
 sebagai baseline nyata sebelum owner memutuskan tanggal cutover.

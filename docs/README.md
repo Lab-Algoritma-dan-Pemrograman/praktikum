@@ -1,20 +1,18 @@
 # Dokumentasi Algohub
 
-Folder ini dipisah supaya yang masih berlaku tidak tercampur dengan catatan yang
-sudah lewat. Kalau mencari sesuatu, mulai dari tabel di bawah.
+Folder ini hanya berisi dokumen yang masih berlaku. Histori lama tetap bisa
+diakses lewat git history, bukan lewat subfolder arsip.
 
-## Yang berlaku sekarang
+## Mulai dari sini
 
 | Dokumen | Isi |
 | --- | --- |
+| [updates/](updates/) | Update log kronologis: perubahan, verifikasi, dan tindak lanjut |
+| [migration.md](migration.md) | Status migrasi legacy → v2, angka produksi, inventaris data, audit legacy |
 | [cutover-runbook.md](cutover-runbook.md) | Runbook cutover produksi: urutan hari-H, rollback, DNS |
-| [migration-status-2026-11-15.md](migration-status-2026-11-15.md) | Status migrasi data legacy → v2, angka produksi, temuan |
-| [praktikum-repair-2026-11-15.md](praktikum-repair-2026-11-15.md) | Perbaikan Praktikum: UI/UX, integritas data, hasil rollout |
-| [runbook.md](runbook.md) | Runbook operator staging (triage, eskalasi) |
-| [support-playbook.md](support-playbook.md) | Alur dukungan pengguna |
-| [uat-signoff-ledger.md](uat-signoff-ledger.md) | Catatan keputusan UAT |
+| [operations.md](operations.md) | Runbook operator staging, support playbook, dan UAT sign-off ledger |
 
-## Setup dan operasi
+## Setup dan operasi staging
 
 | Dokumen | Isi |
 | --- | --- |
@@ -22,35 +20,37 @@ sudah lewat. Kalau mencari sesuatu, mulai dari tabel di bawah.
 | [staging-setup.md](staging-setup.md) | Setup teknis per project Vercel |
 | [staging-accounts.md](staging-accounts.md) | Akun sintetis staging |
 | [staging-dns.md](staging-dns.md) | Record DNS staging |
-| [staging-scheduler.md](staging-scheduler.md) | Scheduler pencapaian |
+| [staging-scheduler.md](staging-scheduler.md) | Scheduler rekonsiliasi Praktikum |
+| [host-migration-checklist.md](host-migration-checklist.md) | Item migrasi host/domain |
 | [dns-import-prod.txt](dns-import-prod.txt) / [dns-edit-manual-prod.txt](dns-edit-manual-prod.txt) | Record DNS produksi untuk Cloudflare |
-| [phase-7a-host-migration-checklist.md](phase-7a-host-migration-checklist.md) | Item migrasi host/owner |
 
-## Kontrak per fase
+## Kontrak dan laporan fase
+
+Setiap dokumen fase menggabungkan kontrak implementasi dan laporan hasilnya.
 
 | Dokumen | Isi |
 | --- | --- |
-| [phase-2-identity.md](phase-2-identity.md) | Identity, SSO, kontrak database |
-| [phase-3-contract.md](phase-3-contract.md) / [phase-3-practicum.md](phase-3-practicum.md) | Kontrak dan implementasi Praktikum |
-| [phase-4-contract.md](phase-4-contract.md) / [phase-4-elearning.md](phase-4-elearning.md) | Kontrak dan implementasi E-learning |
-| [phase-5-contract.md](phase-5-contract.md) / [phase-5-siakad.md](phase-5-siakad.md) | Kontrak dan implementasi SIAKAD |
-| [phase-1-5-closeout.md](phase-1-5-closeout.md) | Closeout Phase 1–5 |
-| [phase-6-inventory.md](phase-6-inventory.md) | Inventaris dataset Phase 6 |
-| [elearning-browser-completion-decision-2026-11-12.md](elearning-browser-completion-decision-2026-11-12.md) | Keputusan runner browser |
-| [prod-audit-legacy-2026-11-14.md](prod-audit-legacy-2026-11-14.md) | Audit legacy sebelum cutover |
+| [phase-1-5-closeout.md](phase-1-5-closeout.md) | Penutupan Phase 1–5 |
+| [phase-2-identity.md](phase-2-identity.md) | Identity, SSO, authorization, dan kontrak database |
+| [phase-3-practicum.md](phase-3-practicum.md) | Praktikum: kontrak, implementasi, verifikasi |
+| [phase-4-elearning.md](phase-4-elearning.md) | E-learning: kontrak, implementasi, verifikasi |
+| [phase-5-siakad.md](phase-5-siakad.md) | SIAKAD dan inventory: kontrak, implementasi, verifikasi |
+| [elearning-browser-completion-decision-2026-11-12.md](elearning-browser-completion-decision-2026-11-12.md) | Keputusan runner browser E-learning |
+| [updates/2026-11-15-praktikum-repair.md](updates/2026-11-15-praktikum-repair.md) | Perbaikan Praktikum: UI/UX, integritas data, hasil rollout |
 
 ## Subfolder
 
 | Folder | Isi |
 | --- | --- |
+| [updates/](updates/) | Update log dan template entri baru |
 | [openapi/](openapi/) | Sumber OpenAPI 3.1 dan bundel hasil generate |
-| [archive/](archive/) | Laporan fase yang selesai, keputusan yang digantikan, dan [bukti mentah](archive/evidence/) dari run tertentu |
+| [evidence/](evidence/) | Screenshot bukti untuk laporan yang masih aktif |
 
 ## Catatan
 
-- `docs/archive/` disimpan untuk jejak historis, bukan panduan aktif. Laporan di
-  sana boleh menyebut kondisi yang sudah tidak berlaku.
 - `docs/ux-visual/` **tidak** disimpan di git; itu output pengukuran lokal yang
   dibuat ulang oleh `scripts/ux-measure*.mjs`.
 - Jangan menaruh kredensial di folder ini. Nilai rahasia hanya di environment
   Vercel atau file `.env.*.local` yang di-ignore.
+- Untuk update baru, salin [template](updates/_template.md) ke
+  `updates/YYYY-MM-DD-<topik>.md` dan tautkan dari [updates/README.md](updates/README.md).

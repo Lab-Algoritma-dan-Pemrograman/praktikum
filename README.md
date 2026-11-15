@@ -54,7 +54,7 @@ Practicum routes require `ALGOHUB_PRACTICUM_ENABLED=true` (enabled by the local 
 
 See [Phase 3 implementation and verification](docs/phase-3-practicum.md) and [Phase 4 E-learning implementation and verification](docs/phase-4-elearning.md) for state transitions, migration details, API/UI coverage and release blockers. E-learning routes require `ALGOHUB_ELEARNING_ENABLED=true` (enabled in `.env.example`; open `http://elearning.localhost:5177` for the student flow or `/elearning` on the admin host).
 
-SIAKAD routes require `ALGOHUB_SIAKAD_ENABLED=true` (enabled in the local template; disabled by default). Open `http://siakad.localhost:5176` for classes, attendance and rentals, or `/siakad` on the admin host. Fixture accounts `sekretaris@example.test`, `k3@example.test`, `labops@example.test`, `bendahara@example.test`, and `peminjam@example.test` use `fixture-password` only in isolated local fixture mode. See [Phase 5 contract](docs/phase-5-contract.md) and [Phase 5 implementation and verification](docs/phase-5-siakad.md).
+SIAKAD routes require `ALGOHUB_SIAKAD_ENABLED=true` (enabled in the local template; disabled by default). Open `http://siakad.localhost:5176` for classes, attendance and rentals, or `/siakad` on the admin host. Fixture accounts `sekretaris@example.test`, `k3@example.test`, `labops@example.test`, `bendahara@example.test`, and `peminjam@example.test` use `fixture-password` only in isolated local fixture mode. See [Phase 5 implementation, verification and contract](docs/phase-5-siakad.md).
 
 ## Phase 1–5 closeout
 

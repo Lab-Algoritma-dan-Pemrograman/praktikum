@@ -1,4 +1,0 @@
-363e0a47e3852dae6ba537602cb45cc65c127b1a2a6b9de00ae58c31eeb8c984 *tests/frontend/local.ts
-f87cffd4527e0c2fa5b59c3bff06f177cc71224999ecf71c43791f0c7e5655d1 *tests/frontend/e2e/a11y.spec.ts
-fb109c5bc4bfa753276b55740b89be585755640714d6394996aebda7a3c6b2ee *tests/frontend/pw-a11y-existing.config.ts
-9153a4f823c229892b054cffed38ce475a0bd8461b6b3184710ce6e0290c0fc0 *playwright.config.ts

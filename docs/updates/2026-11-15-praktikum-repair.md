@@ -45,7 +45,7 @@ Perubahan berada di working tree lokal, belum di-commit/deploy. Tidak ada SQL, w
 - Roster PostgreSQL divalidasi dalam batch pada koneksi transaksi yang sama; bukan mengambil koneksi identity kedua saat koneksi pertama masih terkunci. Rollback I/O diberi deadline.
 - Admission runner opsional tidak menghitung stale lease sebagai concurrency aktif. Reconciler membersihkan maksimal 100 stale lease dalam transaksi terpisah; provider/AI baru tidak ditambahkan.
 - Mapping legacy diperbaiki agar attempt menggunakan parent activation untuk session ID/scope, bukan activation-session ID atau keanggotaan terakhir.
-- Forward migration **[0011](../backend/migrations/0011_practicum_attempt_metadata_repair.sql)** memperbaiki metadata legacy yang terbukti, memverifikasi ancestry, dan menambah invariant DB. Tidak mengubah owner, jawaban, snapshot soal, nilai, revision, atau deadline; bukan izin menjalankannya pada production.
+- Forward migration **[0011](../../backend/migrations/0011_practicum_attempt_metadata_repair.sql)** memperbaiki metadata legacy yang terbukti, memverifikasi ancestry, dan menambah invariant DB. Tidak mengubah owner, jawaban, snapshot soal, nilai, revision, atau deadline; bukan izin menjalankannya pada production.
 - Persistence attempt **dan activation** mempertahankan JSON snapshot/timestamp asli, metadata legacy/answer IDs, field roster yang sebelumnya absent, dan unique key ketika save/submit/manual grading/close/shared-timer start. Snapshot typed yang benar-benar diubah ditolak, bukan diam-diam ditimpa. Resume legacy menggunakan parent + owner sehingga tidak bergantung pada format unique key baru.
 
 **Penutupan batch:** preservation activation telah selesai diverifikasi sub-agent. Penutupan aktivasi legacy tidak lagi ditolak akibat serialisasi snapshot, timestamp, atau field roster absent; collection attempt tetap atomik. Go + PostgreSQL, race, vet/build, dan contract lulus setelah fix. Rerun browser terintegrasi final **14/14 lulus**, termasuk navigasi soal ketika save belum selesai. Cluster PostgreSQL disposable telah dihentikan setelah verifikasi; tidak ada layanan DB test yang dibiarkan berjalan.
@@ -71,17 +71,17 @@ Tes tidak dilemahkan agar hijau. Helper E2E login diselaraskan dengan label aktu
 
 ## Preview sintetis
 
-- [Daftar sesi desktop](evidence/praktikum-2026-11-15/sessions-desktop.png)
-- [Detail sesi desktop](evidence/praktikum-2026-11-15/detail-desktop.png)
-- [Workspace mobile](evidence/praktikum-2026-11-15/workspace-mobile.png)
-- [Konfirmasi submit mobile](evidence/praktikum-2026-11-15/submit-mobile.png)
-- [Riwayat mobile](evidence/praktikum-2026-11-15/history-mobile.png)
+- [Daftar sesi desktop](../evidence/praktikum-2026-11-15/sessions-desktop.png)
+- [Detail sesi desktop](../evidence/praktikum-2026-11-15/detail-desktop.png)
+- [Workspace mobile](../evidence/praktikum-2026-11-15/workspace-mobile.png)
+- [Konfirmasi submit mobile](../evidence/praktikum-2026-11-15/submit-mobile.png)
+- [Riwayat mobile](../evidence/praktikum-2026-11-15/history-mobile.png)
 
 Semua akun/jawaban pada gambar adalah fixture sintetis. Screenshot setelah perubahan, bukan pasangan before/after production. Folder preview lokal tidak otomatis ikut clean checkout.
 
 ## Gate sebelum menyentuh production
 
-1. **Packaging dan revision.** Working tree memiliki pekerjaan pengguna lain; jangan menyapu semuanya ke satu commit. Shared UI barrel masih mengacu pada [ServicePrismCards.svelte](../packages/ui/src/ServicePrismCards.svelte)/[prism-cards.ts](../packages/ui/src/prism-cards.ts) yang sudah untracked sebelum pekerjaan ini. Local build bukan bukti clean checkout dapat build tanpa file tersebut.
+1. **Packaging dan revision.** Working tree memiliki pekerjaan pengguna lain; jangan menyapu semuanya ke satu commit. Shared UI barrel masih mengacu pada [ServicePrismCards.svelte](../../packages/ui/src/ServicePrismCards.svelte)/[prism-cards.ts](../../packages/ui/src/prism-cards.ts) yang sudah untracked sebelum pekerjaan ini. Local build bukan bukti clean checkout dapat build tanpa file tersebut.
 2. **Riwayat migrasi.** Periksa nama/checksum dan urutan yang benar-benar applied. 0009/0010 adalah perubahan yang telah ada sebelumnya; 0010 memperluas roster frozen. Histori owner-only tidak membutuhkan pelonggaran roster, jadi jangan menerapkannya hanya untuk menampilkan nilai. Jangan mengubah checksum/menghapus history untuk melewati blocker.
 3. **Backup dan dry-run.** Uji 0011 pada clone DB dengan data yang relevan. Hitung mismatch session/scope/owner/course, unknown ancestry, dan legacy rows yang kehilangan marker. Migration fail-closed; jangan memaksanya bila data tidak memenuhi guard. Bandingkan semua field work/grade/timer/owner sebelum/sesudah, bukan hanya jumlah baris.
 4. **Scope legacy vs permission nyata.** Generator lama memakai scope `{}` untuk session/course/question serta class/shift-only untuk activation. 0011 hanya menyelaraskan attempt dengan parent, **tidak** mengarang domain/institution/division/session context yang hilang. Uji akses pengajar aktual dan konteks scope sebelum menganggap semua administrasi legacy siap; jangan memperbaiki kegagalan dengan grant global sembarangan.
@@ -95,4 +95,4 @@ Semua akun/jawaban pada gambar adalah fixture sintetis. Screenshot setelah perub
 - `npm run openapi:check` memakai fixture server lokal.
 - Go unit/integration dengan `ALGOHUB_TEST_DATABASE_URL` yang eksplisit menunjuk loopback disposable `*_test`; tanpa env itu PG tests skip.
 - `go test -race -p 1` untuk paket usecase/repository (Windows memakai PATH MinGW lokal yang sudah tersedia, bukan perubahan production build flags).
-- Playwright: [practicum.spec.ts](../tests/frontend/e2e/practicum.spec.ts) + [practicum-accessibility.spec.ts](../tests/frontend/e2e/practicum-accessibility.spec.ts), port base app 5473/API 8380; launcher membersihkan inherited secrets dan membatasi browser ke host lokal.
+- Playwright: [practicum.spec.ts](../../tests/frontend/e2e/practicum.spec.ts) + [practicum-accessibility.spec.ts](../../tests/frontend/e2e/practicum-accessibility.spec.ts), port base app 5473/API 8380; launcher membersihkan inherited secrets dan membatasi browser ke host lokal.
