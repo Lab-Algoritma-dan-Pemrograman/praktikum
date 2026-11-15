@@ -4,7 +4,7 @@ Panduan pengisian manual untuk Algohub Rewrite, Phase 2–5.
 
 **Batas pekerjaan:** isi konfigurasi secara lokal terlebih dahulu. Dokumen ini bukan perintah atau persetujuan untuk menjalankan migrasi, membuat user, deploy, atau mengubah DNS. Preflight berikutnya tetap read-only sampai hasilnya diperiksa dan perubahan disetujui.
 
-Implementasi sampai Phase 5 memakai keputusan final $0: C/WASM dan Pyodide di browser, Glot preview-only, serta completion gamifikasi E-learning yang client-trusted. Judge0/RapidAPI tidak diperlukan. Migration rehearsal dan UAT/cutover tetap terpisah. Lihat [decision record](elearning-browser-completion-decision-2026-11-12.md) dan [laporan Phase 5](phase-5-siakad.md).
+Implementasi sampai Phase 5 memakai keputusan final $0: C/WASM dan Pyodide di browser, Glot preview-only, serta completion gamifikasi E-learning yang client-trusted. Judge0/RapidAPI tidak diperlukan. Migration rehearsal dan UAT/cutover tetap terpisah. Ringkasan terbaru ada di [update log](updates/README.md).
 
 ## 1. File mana yang harus diisi?
 
@@ -92,7 +92,7 @@ ALGOHUB_ELEARNING_ENABLED=true
 ALGOHUB_SIAKAD_ENABLED=true
 ```
 
-Pada pemeriksaan 9 November 2026, file pribadi lama belum memuat flag E-learning dan SIAKAD. Kedua flag telah ditambahkan pada 10 November 2026, bersama persyaratan TLS pada URI database. Untuk file lain/checkout baru, pastikan flag tetap ada; default backend tanpa flag adalah `false`. Schema staging kemudian diterapkan dengan persetujuan terpisah, bukan otomatis karena flag aktif. Lihat [status penutupan Phase 1–5](phase-1-5-closeout.md).
+Pada pemeriksaan 9 November 2026, file pribadi lama belum memuat flag E-learning dan SIAKAD. Kedua flag telah ditambahkan pada 10 November 2026, bersama persyaratan TLS pada URI database. Untuk file lain/checkout baru, pastikan flag tetap ada; default backend tanpa flag adalah `false`. Schema staging kemudian diterapkan dengan persetujuan terpisah, bukan otomatis karena flag aktif. Lihat [update log](updates/README.md).
 
 - [ ] Pertahankan API/Auth origin dan kedua allowlist HTTPS sesuai hostname staging yang disepakati.
 - [ ] Pertahankan timeout, session TTL, rate limits, dan batas pool dari template kecuali ada perubahan yang dibahas khusus.
@@ -183,5 +183,4 @@ Referensi:
 
 - [Template environment staging](../.env.staging.example)
 - [Panduan teknis staging](staging-setup.md)
-- [Kontrak dan implementasi Phase 5](phase-5-siakad.md)
-- [Hasil verifikasi lokal Phase 5](phase-5-siakad.md)
+- [Update log](updates/README.md)

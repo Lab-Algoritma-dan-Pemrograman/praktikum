@@ -46,7 +46,7 @@ E2E harus memiliki seluruh target server. Jika port default dipakai project lain
 
 ### 5. Recovery dan rollback limits
 
-- Backup yang teruji: **sanitized public state + noncredential Auth metadata** (`docs/phase-6-closeout.md` §5). Tidak memulihkan password/MFA/provider sessions/audit/notifications/operations/leases.
+- Backup yang teruji: **sanitized public state + noncredential Auth metadata** (detail tersimpan di git history). Tidak memulihkan password/MFA/provider sessions/audit/notifications/operations/leases.
 - Restore hanya ke owned local `_test` database (prosedur `scripts/phase6-recovery-verify.py`); tidak pernah di atas pekerjaan pengguna tanpa preserve.
 - Row rollback tidak memutar sequence; sequence restore terbukti via pg_dump.
 - Rollback aplikasi = redeploy deployment ID Vercel sebelumnya (catat deployment ID tiap deploy di bukti).

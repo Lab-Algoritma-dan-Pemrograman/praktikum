@@ -1,7 +1,7 @@
 # Dokumentasi Algohub
 
-Folder ini hanya berisi dokumen yang masih berlaku. Histori lama tetap bisa
-diakses lewat git history, bukan lewat subfolder arsip.
+Folder ini hanya berisi dokumen operasional yang masih berlaku. Dokumen fase
+historis sudah dihapus dari working tree dan tetap tersedia lewat git history.
 
 ## Mulai dari sini
 
@@ -21,22 +21,7 @@ diakses lewat git history, bukan lewat subfolder arsip.
 | [staging-accounts.md](staging-accounts.md) | Akun sintetis staging |
 | [staging-dns.md](staging-dns.md) | Record DNS staging |
 | [staging-scheduler.md](staging-scheduler.md) | Scheduler rekonsiliasi Praktikum |
-| [host-migration-checklist.md](host-migration-checklist.md) | Item migrasi host/domain |
 | [dns-import-prod.txt](dns-import-prod.txt) / [dns-edit-manual-prod.txt](dns-edit-manual-prod.txt) | Record DNS produksi untuk Cloudflare |
-
-## Kontrak dan laporan fase
-
-Setiap dokumen fase menggabungkan kontrak implementasi dan laporan hasilnya.
-
-| Dokumen | Isi |
-| --- | --- |
-| [phase-1-5-closeout.md](phase-1-5-closeout.md) | Penutupan Phase 1–5 |
-| [phase-2-identity.md](phase-2-identity.md) | Identity, SSO, authorization, dan kontrak database |
-| [phase-3-practicum.md](phase-3-practicum.md) | Praktikum: kontrak, implementasi, verifikasi |
-| [phase-4-elearning.md](phase-4-elearning.md) | E-learning: kontrak, implementasi, verifikasi |
-| [phase-5-siakad.md](phase-5-siakad.md) | SIAKAD dan inventory: kontrak, implementasi, verifikasi |
-| [elearning-browser-completion-decision-2026-11-12.md](elearning-browser-completion-decision-2026-11-12.md) | Keputusan runner browser E-learning |
-| [updates/2026-11-15-praktikum-repair.md](updates/2026-11-15-praktikum-repair.md) | Perbaikan Praktikum: UI/UX, integritas data, hasil rollout |
 
 ## Subfolder
 
@@ -48,6 +33,10 @@ Setiap dokumen fase menggabungkan kontrak implementasi dan laporan hasilnya.
 
 ## Catatan
 
+- Dokumen fase lama (`phase-*.md`, closeout, decision record) tidak lagi
+  disimpan di working tree. Ambil versi lama dengan
+  `git show <commit>:docs/<nama-file>`, misalnya
+  `git show f1c0958:docs/phase-5-siakad.md`.
 - `docs/ux-visual/` **tidak** disimpan di git; itu output pengukuran lokal yang
   dibuat ulang oleh `scripts/ux-measure*.mjs`.
 - Jangan menaruh kredensial di folder ini. Nilai rahasia hanya di environment

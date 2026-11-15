@@ -56,7 +56,7 @@ Dengan JavaScript browser dimatikan, **91 pemeriksaan SSR lulus**:
 - Route: `/`, `/praktikum`, `/elearning`, `/siakad`, `/auditlog`, `/profil`, `/pengaturan`.
 - Screenshot koordinator dan PDD diperiksa secara visual: menu koordinator lengkap sesuai seed; menu PDD hanya Ringkasan/Profil. Halaman bukan sekadar blank shell hasil status HTTP.
 
-Bukti sementara berada di `E:/tmp/algohub-staging-accounts-myU3rM/`: `profiles.json`, `role-matrix.json`, dan screenshot. File kredensial tetap hanya pada lokasi privat di root workspace. Hasil SSO/revocation/scope dan status acceptance yang lebih luas dicatat pada [closeout Phase 1–5](phase-1-5-closeout.md).
+Bukti sementara berada di `E:/tmp/algohub-staging-accounts-myU3rM/`: `profiles.json`, `role-matrix.json`, dan screenshot. File kredensial tetap hanya pada lokasi privat di root workspace. Hasil SSO/revocation/scope dan status acceptance yang lebih luas dicatat pada [update log](updates/README.md).
 
 ## Bukti SSO, scope, dan revocation
 

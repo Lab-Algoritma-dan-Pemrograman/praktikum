@@ -19,7 +19,7 @@ ALGOHUB_DATABASE_URL='<PostgreSQL transaction-pooler URI using TLS>'
 - Do not change `.env.example` into a staging file: it intentionally enables isolated local fixtures.
 - Do not put `ALGOHUB_TEST_DATABASE_URL` into staging. That variable is for disposable loopback integration-test databases only.
 
-This file is a local configuration handoff, **not automatic runtime wiring**. Go does not load dotenv files by itself, and Vercel does not deploy this ignored file. Environment variables must be explicitly provided to the process or configured in the relevant Vercel project. On 2026-11-10 the owner confirmed this fresh rewrite target and explicitly approved initial schema setup. Migrations 0002–0007 were applied and their checksums/RLS metadata verified read-only; no legacy data or fixture users were imported. See [Phase 1–5 closeout](phase-1-5-closeout.md) for current evidence and remaining gates.
+This file is a local configuration handoff, **not automatic runtime wiring**. Go does not load dotenv files by itself, and Vercel does not deploy this ignored file. Environment variables must be explicitly provided to the process or configured in the relevant Vercel project. On 2026-11-10 the owner confirmed this fresh rewrite target and explicitly approved initial schema setup. Migrations 0002–0007 were applied and their checksums/RLS metadata verified read-only; no legacy data or fixture users were imported. See [the update log](updates/README.md) for current evidence and remaining gates.
 
 ## 2. Where values go on Vercel
 
@@ -35,7 +35,7 @@ Use **Project → Settings → Environment Variables** for each staging deployme
 
 Do **not** import the whole private environment file into each frontend project. Database and cron credentials belong only to the Go API. No `PUBLIC_*` variable should contain a database URI, private key, session secret or provider credential. Redeploy the relevant staging project after changing its environment configuration.
 
-The API and migrator use different connection modes to the **same fresh database**. `ALGOHUB_DATABASE_URL` is the verified transaction-pooler URI for runtime. `ALGOHUB_MIGRATION_DATABASE_URL` retains the direct/session-pooler URI locally; never deploy that variable to the API or frontends. The migration command prefers the migration-specific variable, falls back to the original runtime variable for backward compatibility, and rejects Supavisor transaction-pooler port 6543. Migrations `0002` through `0007` were applied with owner approval and checksums verified on 2026-11-10. Migrations 0005 and 0007 were changed during local development; a different target with older applied checksums requires a forward migration rather than checksum edits. See [Phase 1–5 closeout](phase-1-5-closeout.md).
+The API and migrator use different connection modes to the **same fresh database**. `ALGOHUB_DATABASE_URL` is the verified transaction-pooler URI for runtime. `ALGOHUB_MIGRATION_DATABASE_URL` retains the direct/session-pooler URI locally; never deploy that variable to the API or frontends. The migration command prefers the migration-specific variable, falls back to the original runtime variable for backward compatibility, and rejects Supavisor transaction-pooler port 6543. Migrations `0002` through `0007` were applied with owner approval and checksums verified on 2026-11-10. Migrations 0005 and 0007 were changed during local development; a different target with older applied checksums requires a forward migration rather than checksum edits. See [the update log](updates/README.md).
 
 ## 3. Proposed staging hostnames
 
@@ -59,7 +59,7 @@ Vercel hosts all six SvelteKit apps and the stateless Go API. Supabase provides 
 
 The final approved $0 design runs C through browser WASM and Python through Pyodide. E-learning browser testcase success is intentionally client-trusted for gamification XP under the documented accepted risk. It is not academic evidence. Praktikum answers remain submission-based and manually graded.
 
-Glot `/api/mux` may be configured only as an optional non-authoritative preview fallback; its result has `authoritative:false`, creates no proof, and never awards XP or grades. Judge0/RapidAPI is abandoned. Do not add `RUNNER_*`, Judge0, or RapidAPI secrets. See the [binding decision record](elearning-browser-completion-decision-2026-11-12.md) and [closeout](phase-1-5-closeout.md).
+Glot `/api/mux` may be configured only as an optional non-authoritative preview fallback; its result has `authoritative:false`, creates no proof, and never awards XP or grades. Judge0/RapidAPI is abandoned. Do not add `RUNNER_*`, Judge0, or RapidAPI secrets. See the [update log](updates/README.md); the binding decision record and closeout remain in git history.
 
 ## 5. Accepted grading scope and scheduler
 
