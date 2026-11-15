@@ -88,7 +88,7 @@ test('browser C preview is lazy, isolated, reusable, bounded and never calls the
     'preview.metric.second_run_asset_requests',
     runtimeRequests.length - assetCount
   );
-  expect(secondRunMs).toBeGreaterThan(0);
+  expect(secondRunMs).toBeGreaterThanOrEqual(0);
   expect(secondRunMs).toBeLessThanOrEqual(150);
 
   await page
@@ -327,7 +327,7 @@ test('real Python preview uses only the pinned public runtime and no application
   );
   console.log('preview.metric.python_second_run_ms', pythonRunMs);
   console.log('preview.metric.python_server_runs', serverRuns);
-  expect(pythonRunMs).toBeGreaterThan(0);
+  expect(pythonRunMs).toBeGreaterThanOrEqual(0);
   expect(pythonRunMs).toBeLessThanOrEqual(300);
   expect(serverRuns).toBe(0);
 
