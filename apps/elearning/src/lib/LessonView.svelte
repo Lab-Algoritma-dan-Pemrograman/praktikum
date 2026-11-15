@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { ApiError } from '@algohub/auth-client';
   import BrowserPreview from '@algohub/ui/BrowserPreview.svelte';
   import {
     warmupPreview,
@@ -17,6 +18,7 @@
     type BrowserTestAttestation,
     type Command,
     type LearningAchievement,
+    type LearningAIHintResponse,
     type LearningHintResponse,
     type LessonWorkspaceState
   } from '@algohub/elearning-client';
@@ -30,6 +32,10 @@
   let hintBusy = false;
   let hintIssue = '';
   let hintData: LearningHintResponse | null = null;
+  let aiPending: Command | null = null;
+  let aiBusy = false;
+  let aiIssue = '';
+  let aiData: LearningAIHintResponse | null = null;
   let completeNotice = '';
   let newlyUnlocked: LearningAchievement[] = [];
 
@@ -78,6 +84,28 @@
       hintIssue = errorMessage(error);
     } finally {
       hintBusy = false;
+    }
+  }
+
+  async function askAIHint() {
+    if (!state.view) return;
+    aiBusy = true;
+    aiIssue = '';
+    aiPending = reusableCommand(aiPending, '/learning/hint', 'POST', {
+      lesson_id: state.view.lesson.id,
+      draft_code: state.draftCode
+    });
+    try {
+      aiData = await client.aiHint(aiPending);
+      aiPending = null;
+    } catch (error) {
+      aiIssue =
+        error instanceof ApiError &&
+        (error.status === 502 || error.status === 503)
+          ? 'Layanan hint AI sedang tidak tersedia. Coba lagi nanti atau minta bantuan koordinator.'
+          : errorMessage(error);
+    } finally {
+      aiBusy = false;
     }
   }
 
@@ -253,6 +281,12 @@
         >
         <button
           class="secondary"
+          onclick={askAIHint}
+          disabled={aiBusy || state.offline}
+          >{aiBusy ? 'Menulis hint AI…' : 'Minta hint AI'}</button
+        >
+        <button
+          class="secondary"
           onclick={() => workspace.flush()}
           disabled={state.saving || state.offline || state.conflict}
           >Simpan draf</button
@@ -277,6 +311,16 @@
           <p>{hintData.hint}</p>
           <p class="muted">
             Sisa kuota hint menit ini: {hintData.remaining_quota}
+          </p>
+        </section>
+      {/if}
+      {#if aiIssue}<p class="notice error" role="alert">{aiIssue}</p>{/if}
+      {#if aiData}
+        <section class="notice" aria-label="Hint AI pelajaran">
+          <h3>Hint AI</h3>
+          <p data-testid="ai-hint-text">{aiData.hint}</p>
+          <p class="muted">
+            Sisa kuota hint AI menit ini: {aiData.remaining_quota}
           </p>
         </section>
       {/if}

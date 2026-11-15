@@ -10,6 +10,8 @@
   import CurriculumAdmin from './CurriculumAdmin.svelte';
   import BugHuntAdmin from './BugHuntAdmin.svelte';
   import MonitoringAdmin from './MonitoringAdmin.svelte';
+  import AchievementAdmin from './AchievementAdmin.svelte';
+  import XPAdmin from './XPAdmin.svelte';
   export let data: AppIdentityData;
   const client = new ElearningClient();
   let levels: LearningLevel[] = [];
@@ -26,6 +28,14 @@
   $: canMonitorAny = !!data.principal?.grants.some(
     (g) =>
       g.permission === 'learning.monitor' ||
+      g.permission === 'learning.content.manage'
+  );
+  $: canXP = !!data.principal?.grants.some(
+    (g) => g.permission === 'learning.xp.manage'
+  );
+  $: canXPManage = !!data.principal?.grants.some(
+    (g) =>
+      g.permission === 'learning.xp.manage' ||
       g.permission === 'learning.content.manage'
   );
   $: canAudit =
@@ -79,6 +89,26 @@
         aria-pressed={tab === 'monitoring'}
         onclick={() => (tab = 'monitoring')}>Monitoring peserta</button
       >{/if}
+    {#if canXPManage}<button
+        class:secondary={tab !== 'achievements'}
+        aria-pressed={tab === 'achievements'}
+        onclick={() => (tab = 'achievements')}>Katalog achievement</button
+      >{/if}
+    {#if canXPManage}<button
+        class:secondary={tab !== 'xp'}
+        aria-pressed={tab === 'xp'}
+        onclick={() => (tab = 'xp')}>XP & prestige</button
+      >{/if}
+    {#if canManageAny}<button
+        class:secondary={tab !== 'achievements'}
+        aria-pressed={tab === 'achievements'}
+        onclick={() => (tab = 'achievements')}>Katalog achievement</button
+      >{/if}
+    {#if canXP}<button
+        class:secondary={tab !== 'xp'}
+        aria-pressed={tab === 'xp'}
+        onclick={() => (tab = 'xp')}>Setel XP</button
+      >{/if}
     {#if canAudit}<a href="/auditlog">Audit sesuai scope</a>{/if}
   </nav>
 
@@ -93,5 +123,9 @@
     <BugHuntAdmin principal={data.principal} />
   {:else if tab === 'monitoring' && canMonitorAny}
     <MonitoringAdmin />
+  {:else if tab === 'achievements' && canManageAny}
+    <AchievementAdmin principal={data.principal} />
+  {:else if tab === 'xp' && canXP}
+    <XPAdmin principal={data.principal} />
   {/if}
 </section>

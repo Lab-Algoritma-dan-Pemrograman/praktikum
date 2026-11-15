@@ -52,10 +52,62 @@ export interface LearningProfile {
   completed_lessons: number;
   games_played: number;
   perfect_games: number;
+  prestige: number;
+  prestige_count: number;
   unlocked_achievements: UnlockedAchievement[];
   timezone: string;
   timezone_offset: string;
   updated_at: string;
+}
+
+export interface LearningPrestigeEntry {
+  id: string;
+  user_id: number;
+  source: 'admin_grant' | 'weekly_leaderboard';
+  amount: number;
+  reason: string;
+  created_at: string;
+}
+
+export interface LearningAchievementCatalogItem {
+  id: string;
+  title: string;
+  description: string;
+  requirement_type:
+    | 'manual'
+    | 'xp'
+    | 'lesson_count'
+    | 'streak'
+    | 'game_score'
+    | 'level_completed';
+  requirement_value: string;
+  xp_reward: number;
+  active: boolean;
+  scope: Scope;
+  version: number;
+}
+
+export interface LearningAchievementInput {
+  title: string;
+  description: string;
+  requirement_type: LearningAchievementCatalogItem['requirement_type'];
+  requirement_value: string;
+  xp_reward: number;
+  active: boolean;
+  scope: Scope;
+}
+
+export interface LearningWeeklySnapshot {
+  week_start: string;
+  generated_at: string;
+  rows: LearningLeaderboardRow[];
+}
+
+export interface LearningAIHintResponse {
+  lesson_id: string;
+  hint: string;
+  remaining_quota: number;
+  simulated: boolean;
 }
 
 export interface LearningLesson {
@@ -396,6 +448,15 @@ export class ElearningClient {
   }
   leaderboard(offset = 0): Promise<LearningLeaderboardRow[]> {
     return this.get(`/learning/leaderboard?limit=25&offset=${offset}`);
+  }
+  weeklyStandings(offset = 0): Promise<LearningWeeklySnapshot[]> {
+    return this.get(`/learning/leaderboard/weekly?limit=10&offset=${offset}`);
+  }
+  prestige(userID?: number): Promise<LearningPrestigeEntry[]> {
+    return this.get(`/learning/prestige${userID ? `?user_id=${userID}` : ''}`);
+  }
+  aiHint(command: Command): Promise<LearningAIHintResponse> {
+    return this.execute(command);
   }
   achievements(): Promise<LearningAchievementsView> {
     return this.get('/learning/achievements');

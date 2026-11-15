@@ -5,10 +5,16 @@
     errorMessage,
     jakarta,
     type LearningAchievementsView,
-    type LearningLeaderboardRow
+    type LearningLeaderboardRow,
+    type LearningPrestigeEntry,
+    type LearningProfile,
+    type LearningWeeklySnapshot
   } from '@algohub/elearning-client';
   const client = new ElearningClient();
   let rows: LearningLeaderboardRow[] = [];
+  let weekly: LearningWeeklySnapshot[] = [];
+  let prestige: LearningPrestigeEntry[] = [];
+  let profile: LearningProfile | null = null;
   let achView: LearningAchievementsView | null = null;
   let offset = 0;
   let loading = true;
@@ -18,11 +24,16 @@
     loading = true;
     issue = '';
     try {
-      const [lb, ach] = await Promise.all([
+      const [lb, ach, snaps, entries] = await Promise.all([
         client.leaderboard(next),
-        client.achievements()
+        client.achievements(),
+        client.weeklyStandings(),
+        client.prestige()
       ]);
       rows = lb;
+      weekly = snaps;
+      prestige = entries;
+      profile = ach.profile;
       achView = ach;
       offset = next;
     } catch (error) {
@@ -67,6 +78,77 @@
       </div>
     </section>
   {/if}
+
+  <section class="stack" aria-label="Papan peringkat mingguan">
+    <h2>Peringkat mingguan</h2>
+    <p class="muted">
+      Snapshot diproduksi server tiap minggu; batas minggu Senin 00:00 WIB.
+    </p>
+    {#if weekly && weekly.length === 0}
+      <p class="notice">Belum ada snapshot mingguan.</p>
+    {/if}
+    {#each weekly as snap}
+      <details class="panel stack" data-week-start={snap.week_start}>
+        <summary>
+          Minggu {snap.week_start} · {snap.rows.length} peserta
+        </summary>
+        <!-- svelte-ignore a11y_no_noninteractive_tabindex (Horizontal table scrolling must be keyboard reachable.) -->
+        <div
+          class="table-wrap"
+          role="region"
+          aria-label="Tabel peringkat minggu {snap.week_start}"
+          tabindex="0"
+        >
+          <table>
+            <caption>Peringkat minggu {snap.week_start}</caption>
+            <thead>
+              <tr>
+                <th>Peringkat</th>
+                <th>Peserta</th>
+                <th>XP minggu ini</th>
+                <th>Level</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each snap.rows as row}
+                <tr data-weekly-user={row.user_id}>
+                  <td>#{row.rank}</td>
+                  <td>{row.user_name}</td>
+                  <td>{row.xp} XP</td>
+                  <td>{row.level}</td>
+                </tr>
+              {:else}
+                <tr><td colspan="4">Belum ada peserta.</td></tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      </details>
+    {/each}
+  </section>
+
+  <section class="stack" aria-label="Riwayat prestige">
+    <h2>Prestige saya</h2>
+    {#if profile}
+      <p class="muted">
+        Total prestige: <strong>{profile.prestige}</strong> · Reset prestige:
+        <strong>{profile.prestige_count}</strong>
+      </p>
+    {/if}
+    {#each prestige as entry}
+      <article class="panel" data-prestige-id={entry.id}>
+        <p>
+          <strong>+{entry.amount}</strong> · {entry.source === 'admin_grant'
+            ? 'Dari koordinator'
+            : 'Leaderboard mingguan'}
+        </p>
+        {#if entry.reason}<p>{entry.reason}</p>{/if}
+        <p class="muted">{jakarta(entry.created_at)}</p>
+      </article>
+    {:else}
+      <p class="notice">Belum ada riwayat prestige.</p>
+    {/each}
+  </section>
 
   <section class="stack" aria-label="Tabel peringkat XP">
     <h2>Papan peringkat</h2>
