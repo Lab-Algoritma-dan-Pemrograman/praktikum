@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ThemeToggle from './ThemeToggle.svelte';
+
   type NavItem = { href: string; label: string; hint?: string };
 
   export let appName: string;
@@ -8,9 +10,14 @@
   export let userRole = '';
   export let initial = '';
   export let logoutHref = '/logout';
+  export let loginHref = '/login';
+  export let loggedIn = false;
+  export let onLogout: (() => void) | undefined = undefined;
+  export let logoutPending = false;
 
   let open = false;
 
+  $: loggedIn = loggedIn || !!userName;
   $: initial =
     initial || (userName ? userName.trim().charAt(0).toUpperCase() : 'A');
 </script>
@@ -23,20 +30,23 @@
     class:is-open={open}
     aria-label="Navigasi aplikasi"
   >
-    <a class="console-brand" href="/" aria-label="Algohub beranda">
-      <img
-        src="/logo-mark.png"
-        alt=""
-        width="55"
-        height="96"
-        decoding="async"
-      />
-      <span class="console-wordmark"
-        ><span class="console-algo">Algo</span><span class="console-hub"
-          >Hub</span
-        ></span
-      >
-    </a>
+    <div class="console-brandrow">
+      <a class="console-brand" href="/" aria-label="Algohub beranda">
+        <img
+          src="/logo-mark.png"
+          alt=""
+          width="55"
+          height="96"
+          decoding="async"
+        />
+        <span class="console-wordmark"
+          ><span class="console-algo">Algo</span><span class="console-hub"
+            >Hub</span
+          ></span
+        >
+      </a>
+      <ThemeToggle />
+    </div>
 
     <p class="console-app">{appName}</p>
 
@@ -54,14 +64,34 @@
       {/each}
     </nav>
 
-    <div class="console-account">
-      <span class="console-avatar" aria-hidden="true">{initial}</span>
-      <span class="console-identity">
-        <strong>{userName || 'Tamu'}</strong>
-        <small>{userRole || 'Belum masuk'}</small>
-      </span>
-      <a class="console-logout" href={logoutHref}>Keluar</a>
-    </div>
+    {#if loggedIn}
+      <div class="console-account">
+        <details class="user-menu">
+          <summary
+            aria-label={userName ? `Menu akun ${userName}` : 'Menu akun'}
+          >
+            <span class="console-avatar" aria-hidden="true">{initial}</span>
+            <span class="console-identity">
+              <strong>{userName || 'Tamu'}</strong>
+              <small>{userRole || 'Belum masuk'}</small>
+            </span>
+          </summary>
+          <div class="user-panel">
+            {#if onLogout}
+              <button type="button" onclick={onLogout} disabled={logoutPending}
+                >{logoutPending ? 'Mengakhiri sesi…' : 'Keluar'}</button
+              >
+            {:else}
+              <a class="console-logout" href={logoutHref}>Keluar</a>
+            {/if}
+          </div>
+        </details>
+      </div>
+    {:else}
+      <div class="console-account">
+        <a class="console-login" href={loginHref}>Masuk</a>
+      </div>
+    {/if}
   </aside>
 
   {#if open}
@@ -84,7 +114,7 @@
     {open ? 'Tutup' : 'Menu'}
   </button>
 
-  <main id="content" class="console-content">
+  <main id="content" class="console-content" tabindex="-1">
     <slot />
   </main>
 </div>
@@ -136,6 +166,13 @@
     gap: 0.5rem;
     padding-inline: 0.35rem;
     text-decoration: none;
+  }
+
+  .console-brandrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
   }
 
   .console-brand img {
@@ -194,6 +231,10 @@
     color: var(--ah-muted);
     font-size: 0.75rem;
     font-weight: 400;
+  }
+
+  .console-nav a.is-active small {
+    color: var(--ah-console-heading);
   }
 
   .console-nav a:hover {
@@ -258,12 +299,83 @@
     font-size: 0.75rem;
   }
 
-  .console-logout {
-    display: inline-flex;
+  .user-menu {
+    position: relative;
+    margin-top: 0;
+  }
+
+  .user-menu > summary {
+    display: flex;
     min-height: 44px;
     align-items: center;
+    gap: 0.55rem;
+    padding: 0.2rem 0.35rem;
+    border-radius: 0.65rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .user-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .user-menu > summary:hover {
+    background: color-mix(in srgb, var(--ah-coral) 6%, transparent);
+  }
+
+  .user-panel {
+    position: absolute;
+    bottom: calc(100% + 0.35rem);
+    left: 0;
+    z-index: 30;
+    display: grid;
+    gap: 0.4rem;
+    min-width: 12rem;
+    padding: 0.75rem;
+    border: 1px solid var(--ah-line);
+    border-radius: 0.75rem;
+    background: var(--ah-console-card);
+    box-shadow: var(--ah-shadow-float);
+  }
+
+  .user-panel button {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--ah-console-line-strong);
+    border-radius: 0.6rem;
+    color: var(--ah-console-text);
+    background: var(--ah-console-card);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .console-login {
+    display: inline-flex;
+    min-height: 44px;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--ah-console-accent);
+    border-radius: 0.65rem;
+    color: var(--ah-console-card);
+    background: var(--ah-console-accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .console-logout {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
     color: var(--ah-muted);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
     text-decoration: none;
   }

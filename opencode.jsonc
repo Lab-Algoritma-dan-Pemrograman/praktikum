@@ -9,6 +9,10 @@
         "headers": {
           "x-api-key": "{env:API_KEY_21ST}"
         }
+      },
+      "framer": {
+        "type": "remote",
+        "url": "https://mcp.framer.com/mcp"
       }
     }
   }

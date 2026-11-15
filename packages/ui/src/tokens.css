@@ -120,6 +120,49 @@
   text-rendering: optimizeLegibility;
 }
 
+/* Dark console palette; values reconciled with the Framer exploration.
+   Only the console surfaces flip; public/editorial stays light. */
+html[data-theme='dark'] {
+  --ah-console-canvas: #12151c;
+  --ah-console-canvas-gradient: linear-gradient(
+    180deg,
+    #1b1f2a 0,
+    #12151c 24rem
+  );
+  --ah-console-raised: #222938;
+  --ah-console-card: #1c2230;
+  --ah-console-sunken: #232a38;
+  --ah-console-heading: #ecebf3;
+  --ah-console-text: #d7dae3;
+  --ah-console-muted: #9aa4b5;
+  --ah-console-accent: #ce3d68;
+  --ah-console-accent-strong: #e0577f;
+  --ah-console-accent-ink: #f0a9be;
+  --ah-console-accent-soft: #2a1d25;
+  --ah-console-accent-hover: #331f29;
+  --ah-console-line: #2e3646;
+  --ah-console-line-subtle: #262d3b;
+  --ah-console-line-strong: #3d4658;
+  --ah-console-warning: #e8b33a;
+  --ah-console-warning-soft: #33290f;
+  --ah-console-danger: #f2836f;
+  --ah-console-danger-ink: #f0a9be;
+  --ah-console-danger-line: #6b3a3a;
+  --ah-console-danger-soft: #33211f;
+  --ah-console-scrim: #05060a99;
+  --ah-console-focus-color: #e0577f;
+  --ah-surface: #232a38;
+  --ah-ink: #ecebf3;
+  --ah-cream: #12151c;
+  --ah-paper: #1c2230;
+  --ah-muted: #9aa4b5;
+  --ah-coral: #ce3d68;
+  --ah-line: #2e3646;
+  --ah-line-strong: #3d4658;
+  --ah-shadow-card: 0 2px 8px -2px #00000040;
+  --ah-shadow-float: 0 10px 30px #00000066;
+}
+
 html,
 body {
   min-width: 320px;
