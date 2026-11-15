@@ -126,6 +126,6 @@ Bukti berada di `E:/tmp/algohub-load-acceptance-jbFHaP/`: `scheduler-batch.json`
 
 Pengamatan dua batch membuktikan penanganan pekerjaan yang terlambat sampai invocation berikutnya. Tidak ada penghentian layanan scheduler atau perubahan jadwal/secret selama tes ini. Sejak 12 November 2026, `Reconcile` memproses hingga 20 job per invocation; test lokal mensimulasikan 120 job sintetis dan menyelesaikannya dalam enam invocation (p95 invocation 65–105 ms pada repository memori, variasi run lokal). Angka itu bukan bukti staging: load staging, provider grading nyata, dan operational outage drill belum dijalankan, sehingga gate kapasitas tetap terbuka.
 
-Hasil aktual dan status acceptance dipelihara pada [update log](updates/README.md).
+Hasil aktual dan status acceptance dipelihara pada [update log](../updates/README.md).
 
 Referensi provider: [scheduling](https://supabase.com/docs/guides/functions/schedule-functions), [pg_net](https://supabase.com/docs/guides/database/extensions/pg_net), [Vault](https://supabase.com/docs/guides/database/vault). Signature target terpasang diperiksa langsung; `http_post` pada target ini mempunyai default timeout 5.000 ms, sehingga job menetapkan 28.000 ms secara eksplisit.

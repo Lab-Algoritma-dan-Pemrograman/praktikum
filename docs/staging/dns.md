@@ -52,4 +52,4 @@ DNS pada provider belum diubah oleh penyiapan dokumen ini. Saat record diambil, 
 - HTTPS ketujuh hostname berhasil. Portal yang sebelumnya 502 kini 200; API `/healthz` dan `/readyz` 200. Admin dan API `/v1/auth/me` menolak request tanpa sesi dengan 401. Halaman login Auth Center 200.
 - Verifikasi ini hanya menyentuh domain pada project staging rewrite; tidak mengubah DNS atau project produksi. Tidak ada login pengguna atau pengujian SSO/revocation/permission dengan akun nyata.
 
-Bukti smoke lebih lengkap dan gate berikutnya dicatat pada [update log](updates/README.md).
+Bukti smoke lebih lengkap dan gate berikutnya dicatat pada [update log](../updates/README.md).

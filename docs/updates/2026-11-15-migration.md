@@ -232,7 +232,7 @@ The initial executable contract is **synthetic only**, not an adapter for any of
 
 ### Target schema and load order
 
-[Migration catalog](../backend/migrations/migrate.go) pins the exact SQL bytes. Existing staging already applied 0002–0007; run read-only history comparison, not `Apply`, against an existing target.
+[Migration catalog](../../backend/migrations/migrate.go) pins the exact SQL bytes. Existing staging already applied 0002–0007; run read-only history comparison, not `Apply`, against an existing target.
 
 - 0002–0004: identity and seeded access catalogs.
 - 0005: eight Practicum tables.

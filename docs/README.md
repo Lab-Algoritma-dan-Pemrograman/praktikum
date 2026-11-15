@@ -1,14 +1,14 @@
 # Dokumentasi Algohub
 
-Folder ini hanya berisi dokumen operasional yang masih berlaku. Dokumen fase
-historis sudah dihapus dari working tree dan tetap tersedia lewat git history.
+Folder ini hanya berisi dokumen operasional yang masih berlaku. Catatan historis
+disimpan di [updates/](updates/) atau di git history.
 
 ## Mulai dari sini
 
 | Dokumen | Isi |
 | --- | --- |
 | [updates/](updates/) | Update log kronologis: perubahan, verifikasi, dan tindak lanjut |
-| [migration.md](migration.md) | Status migrasi legacy → v2, angka produksi, inventaris data, audit legacy |
+| [updates/2026-11-15-migration.md](updates/2026-11-15-migration.md) | Status migrasi legacy → v2, angka produksi, inventaris data, audit legacy |
 | [cutover-runbook.md](cutover-runbook.md) | Runbook cutover produksi: urutan hari-H, rollback, DNS |
 | [operations.md](operations.md) | Runbook operator staging, support playbook, dan UAT sign-off ledger |
 
@@ -16,17 +16,19 @@ historis sudah dihapus dari working tree dan tetap tersedia lewat git history.
 
 | Dokumen | Isi |
 | --- | --- |
-| [staging-checklist.md](staging-checklist.md) | Checklist staging (Bahasa Indonesia), mulai dari sini |
-| [staging-setup.md](staging-setup.md) | Setup teknis per project Vercel |
-| [staging-accounts.md](staging-accounts.md) | Akun sintetis staging |
-| [staging-dns.md](staging-dns.md) | Record DNS staging |
-| [staging-scheduler.md](staging-scheduler.md) | Scheduler rekonsiliasi Praktikum |
-| [dns-import-prod.txt](dns-import-prod.txt) / [dns-edit-manual-prod.txt](dns-edit-manual-prod.txt) | Record DNS produksi untuk Cloudflare |
+| [staging/checklist.md](staging/checklist.md) | Checklist staging (Bahasa Indonesia), mulai dari sini |
+| [staging/setup.md](staging/setup.md) | Setup teknis per project Vercel |
+| [staging/accounts.md](staging/accounts.md) | Akun sintetis staging |
+| [staging/dns.md](staging/dns.md) | Record DNS staging |
+| [staging/scheduler.md](staging/scheduler.md) | Scheduler rekonsiliasi Praktikum |
+| [dns/import-prod.txt](dns/import-prod.txt) / [dns/edit-manual-prod.txt](dns/edit-manual-prod.txt) | Record DNS produksi untuk Cloudflare |
 
 ## Subfolder
 
 | Folder | Isi |
 | --- | --- |
+| [staging/](staging/) | Checklist, setup, akun, DNS, dan scheduler staging |
+| [dns/](dns/) | File record DNS produksi |
 | [updates/](updates/) | Update log dan template entri baru |
 | [openapi/](openapi/) | Sumber OpenAPI 3.1 dan bundel hasil generate |
 | [evidence/](evidence/) | Screenshot bukti untuk laporan yang masih aktif |

@@ -6,13 +6,13 @@ Akun sintetis dibuat pada 11 November 2026 setelah pemilik menyerahkan pemilihan
 
 - Login admin: <https://admin.staging.algohub.web.id/login>
 - Portal landing: <https://staging.algohub.web.id>
-- Email dan password acak berada di file privat [`.env.staging.accounts.local`](../.env.staging.accounts.local). File ini dikecualikan oleh `.gitignore` dan `.vercelignore`.
+- Email dan password acak berada di file privat [`.env.staging.accounts.local`](../../.env.staging.accounts.local). File ini dikecualikan oleh `.gitignore` dan `.vercelignore`.
 - Password tidak dicantumkan di dokumen, chat, source, atau log pengujian. Jangan mengunggah file kredensial bersama bukti/screenshot.
 - Domain `algohub.test` adalah domain sintetis. Tidak ada inbox, pengiriman email, atau bukti kelulusan SMTP/reset-password. Konfirmasi email global project tidak dimatikan.
 
 ## Model akses yang dipakai
 
-Mengikuti [roles-permissions.md](../plan/roles-permissions.md) dan [sitemap admin](../plan/sitemap.md#3-centralized-admin--adminalgohubwebid):
+Mengikuti [roles-permissions.md](../../plan/roles-permissions.md) dan [sitemap admin](../../plan/sitemap.md#3-centralized-admin--adminalgohubwebid):
 
 - Role identity hanya `koordinator`, `asisten`, `mahasiswa`, `peminjam`.
 - Tidak dibuat role baru bernama `admin`, `pengajar`, `superadmin`, atau nama divisi.
@@ -56,7 +56,7 @@ Dengan JavaScript browser dimatikan, **91 pemeriksaan SSR lulus**:
 - Route: `/`, `/praktikum`, `/elearning`, `/siakad`, `/auditlog`, `/profil`, `/pengaturan`.
 - Screenshot koordinator dan PDD diperiksa secara visual: menu koordinator lengkap sesuai seed; menu PDD hanya Ringkasan/Profil. Halaman bukan sekadar blank shell hasil status HTTP.
 
-Bukti sementara berada di `E:/tmp/algohub-staging-accounts-myU3rM/`: `profiles.json`, `role-matrix.json`, dan screenshot. File kredensial tetap hanya pada lokasi privat di root workspace. Hasil SSO/revocation/scope dan status acceptance yang lebih luas dicatat pada [update log](updates/README.md).
+Bukti sementara berada di `E:/tmp/algohub-staging-accounts-myU3rM/`: `profiles.json`, `role-matrix.json`, dan screenshot. File kredensial tetap hanya pada lokasi privat di root workspace. Hasil SSO/revocation/scope dan status acceptance yang lebih luas dicatat pada [update log](../updates/README.md).
 
 ## Bukti SSO, scope, dan revocation
 

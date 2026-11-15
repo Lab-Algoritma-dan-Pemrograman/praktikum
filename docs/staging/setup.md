@@ -1,6 +1,6 @@
 # Staging setup — Phase 2–5 acceptance
 
-For manual preparation, start with the [Indonesian staging and environment checklist](staging-checklist.md). This document is the technical reference for environment placement, migration safeguards, domains and remaining acceptance gates. Preparing documentation or filling the local file does not authorize remote changes.
+For manual preparation, start with the [Indonesian staging and environment checklist](checklist.md). This document is the technical reference for environment placement, migration safeguards, domains and remaining acceptance gates. Preparing documentation or filling the local file does not authorize remote changes.
 
 ## 1. Where to put values now
 
@@ -19,7 +19,7 @@ ALGOHUB_DATABASE_URL='<PostgreSQL transaction-pooler URI using TLS>'
 - Do not change `.env.example` into a staging file: it intentionally enables isolated local fixtures.
 - Do not put `ALGOHUB_TEST_DATABASE_URL` into staging. That variable is for disposable loopback integration-test databases only.
 
-This file is a local configuration handoff, **not automatic runtime wiring**. Go does not load dotenv files by itself, and Vercel does not deploy this ignored file. Environment variables must be explicitly provided to the process or configured in the relevant Vercel project. On 2026-11-10 the owner confirmed this fresh rewrite target and explicitly approved initial schema setup. Migrations 0002–0007 were applied and their checksums/RLS metadata verified read-only; no legacy data or fixture users were imported. See [the update log](updates/README.md) for current evidence and remaining gates.
+This file is a local configuration handoff, **not automatic runtime wiring**. Go does not load dotenv files by itself, and Vercel does not deploy this ignored file. Environment variables must be explicitly provided to the process or configured in the relevant Vercel project. On 2026-11-10 the owner confirmed this fresh rewrite target and explicitly approved initial schema setup. Migrations 0002–0007 were applied and their checksums/RLS metadata verified read-only; no legacy data or fixture users were imported. See [the update log](../updates/README.md) for current evidence and remaining gates.
 
 ## 2. Where values go on Vercel
 
@@ -35,7 +35,7 @@ Use **Project → Settings → Environment Variables** for each staging deployme
 
 Do **not** import the whole private environment file into each frontend project. Database and cron credentials belong only to the Go API. No `PUBLIC_*` variable should contain a database URI, private key, session secret or provider credential. Redeploy the relevant staging project after changing its environment configuration.
 
-The API and migrator use different connection modes to the **same fresh database**. `ALGOHUB_DATABASE_URL` is the verified transaction-pooler URI for runtime. `ALGOHUB_MIGRATION_DATABASE_URL` retains the direct/session-pooler URI locally; never deploy that variable to the API or frontends. The migration command prefers the migration-specific variable, falls back to the original runtime variable for backward compatibility, and rejects Supavisor transaction-pooler port 6543. Migrations `0002` through `0007` were applied with owner approval and checksums verified on 2026-11-10. Migrations 0005 and 0007 were changed during local development; a different target with older applied checksums requires a forward migration rather than checksum edits. See [the update log](updates/README.md).
+The API and migrator use different connection modes to the **same fresh database**. `ALGOHUB_DATABASE_URL` is the verified transaction-pooler URI for runtime. `ALGOHUB_MIGRATION_DATABASE_URL` retains the direct/session-pooler URI locally; never deploy that variable to the API or frontends. The migration command prefers the migration-specific variable, falls back to the original runtime variable for backward compatibility, and rejects Supavisor transaction-pooler port 6543. Migrations `0002` through `0007` were applied with owner approval and checksums verified on 2026-11-10. Migrations 0005 and 0007 were changed during local development; a different target with older applied checksums requires a forward migration rather than checksum edits. See [the update log](../updates/README.md).
 
 ## 3. Proposed staging hostnames
 
@@ -51,7 +51,7 @@ The public landing uses the apex staging host. The old `portal.staging` hostname
 | SIAKAD            | `siakad.staging.algohub.web.id`    |
 | Shared Go API     | `api.staging.algohub.web.id`       |
 
-The project owner approved staging operations in the dedicated rewrite Vercel account, `lab-algoritma-pemrograman` (Hobby), on 2026-11-10. Seven isolated `algohub-v2-staging-*` projects are configured for `sin1`, bounded 30-second functions, and responsibility-scoped encrypted environments. Their custom staging domains passed DNS/ownership/HTTPS verification. See [staging-dns.md](staging-dns.md#4-hasil-verifikasi--10-november-2026-2338-wib) for recorded evidence, not instructions to reapply records. The previous personal Vercel account is not the deployment target; production DNS/projects remain outside this scope.
+The project owner approved staging operations in the dedicated rewrite Vercel account, `lab-algoritma-pemrograman` (Hobby), on 2026-11-10. Seven isolated `algohub-v2-staging-*` projects are configured for `sin1`, bounded 30-second functions, and responsibility-scoped encrypted environments. Their custom staging domains passed DNS/ownership/HTTPS verification. See [dns.md](dns.md#4-hasil-verifikasi--10-november-2026-2338-wib) for recorded evidence, not instructions to reapply records. The previous personal Vercel account is not the deployment target; production DNS/projects remain outside this scope.
 
 ## 4. Browser runner and optional preview fallback
 
@@ -59,13 +59,13 @@ Vercel hosts all six SvelteKit apps and the stateless Go API. Supabase provides 
 
 The final approved $0 design runs C through browser WASM and Python through Pyodide. E-learning browser testcase success is intentionally client-trusted for gamification XP under the documented accepted risk. It is not academic evidence. Praktikum answers remain submission-based and manually graded.
 
-Glot `/api/mux` may be configured only as an optional non-authoritative preview fallback; its result has `authoritative:false`, creates no proof, and never awards XP or grades. Judge0/RapidAPI is abandoned. Do not add `RUNNER_*`, Judge0, or RapidAPI secrets. See the [update log](updates/README.md); the binding decision record and closeout remain in git history.
+Glot `/api/mux` may be configured only as an optional non-authoritative preview fallback; its result has `authoritative:false`, creates no proof, and never awards XP or grades. Judge0/RapidAPI is abandoned. Do not add `RUNNER_*`, Judge0, or RapidAPI secrets. See the [update log](../updates/README.md); the binding decision record and closeout remain in git history.
 
 ## 5. Accepted grading scope and scheduler
 
 On 2026-11-06, the project owner accepted **manual grading for Phase 3**, with real AI grading deferred. Manual review/publication is implemented; no AI or execution-provider key is needed. Browser execution supports practice, while academic publication remains manual.
 
-Scheduled reconciliation is configured through Supabase `pg_cron`/`pg_net` with a dedicated Vault/API secret, one-minute cadence and 28-second HTTP timeout. The authenticated endpoint remains `POST /v1/internal/practicum/reconcile`. Delivery, the historical 102-attempt batch, and the newer six-invocation × 20 acceptance for 120 attempts have recorded evidence, including synthetic expired-lease recovery. Follow [the scheduler runbook](staging-scheduler.md); do not reinstall or rotate its secret as part of ordinary verification.
+Scheduled reconciliation is configured through Supabase `pg_cron`/`pg_net` with a dedicated Vault/API secret, one-minute cadence and 28-second HTTP timeout. The authenticated endpoint remains `POST /v1/internal/practicum/reconcile`. Delivery, the historical 102-attempt batch, and the newer six-invocation × 20 acceptance for 120 attempts have recorded evidence, including synthetic expired-lease recovery. Follow [the scheduler runbook](scheduler.md); do not reinstall or rotate its secret as part of ordinary verification.
 
 ## 6. Next steps after the three values are filled
 
@@ -76,4 +76,4 @@ Scheduled reconciliation is configured through Supabase `pg_cron`/`pg_net` with 
 5. Verify real Supabase login, five-application SSO, revocation, RLS, authorization, Practicum persistence/manual grading, E-learning progression, and SIAKAD attendance, stock/rental concurrency and scoped finance/CSV.
 6. Verify browser C/Python completion, scheduler/manual grading, and staging concurrency/load/UI acceptance, then update the Phase 2–5 reports.
 
-Existing staging has 30 synthetic identities and a configured coordinator. See [the account guide](staging-accounts.md); do not repeat account provisioning or request a new initial coordinator for this environment. Email/password login is the accepted baseline; OAuth can be added if separately selected. Staging permission does not authorize changes to production.
+Existing staging has 30 synthetic identities and a configured coordinator. See [the account guide](accounts.md); do not repeat account provisioning or request a new initial coordinator for this environment. Email/password login is the accepted baseline; OAuth can be added if separately selected. Staging permission does not authorize changes to production.

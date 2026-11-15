@@ -99,4 +99,4 @@ ORDER BY id;
 \echo ''
 \echo '==================== DONE ===================='
 \echo 'Save the output to scripts/prod-audit/results/<db-name>-<date>.txt'
-\echo 'Diff against docs/migration.md (Lampiran A) and plan/database-migration.md findings.'
+\echo 'Diff against docs/updates/2026-11-15-migration.md (Lampiran A) and plan/database-migration.md findings.'

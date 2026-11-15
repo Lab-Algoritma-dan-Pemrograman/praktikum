@@ -42,7 +42,7 @@ E2E harus memiliki seluruh target server. Jika port default dipakai project lain
 - Job: `algohub-staging-practicum-reconcile`, per menit, POST `/v1/internal/practicum/reconcile`, secret dari Vault.
 - Verifikasi: `cron.job`, `cron.job_run_details`, `net._http_response` (retensi ~6 jam!). `succeeded` di cron hanya berarti enqueue; sukses HTTP lihat `net._http_response`.
 - Pause/resume: `cron.alter_job(..., active := false/true)` — **butuh izin pemilik**.
-- Jangan ubah cadence/secret tanpa izin. Prosedur rotasi ada di [staging-scheduler.md](staging-scheduler.md).
+- Jangan ubah cadence/secret tanpa izin. Prosedur rotasi ada di [scheduler.md](staging/scheduler.md).
 
 ### 5. Recovery dan rollback limits
 

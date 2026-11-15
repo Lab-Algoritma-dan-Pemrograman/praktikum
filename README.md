@@ -62,6 +62,6 @@ Current work is limited to closing Phase 1–5; Phase 6 and later are not starte
 
 ## Staging preparation
 
-Start with the [manual staging and environment checklist (Bahasa Indonesia)](docs/staging-checklist.md): what to prepare, where to put `.env.staging.local`, which values to fill, and the read-only preflight required before any remote changes.
+Start with the [manual staging and environment checklist (Bahasa Indonesia)](docs/staging/checklist.md): what to prepare, where to put `.env.staging.local`, which values to fill, and the read-only preflight required before any remote changes.
 
-Use the [technical staging setup guide](docs/staging-setup.md) for per-project Vercel variables, migration safeguards, domains and acceptance gates. The secret-free [.env.staging.example](.env.staging.example) is a reference only. Actual credentials belong in the ignored [.env.staging.local](.env.staging.local) or the appropriate Vercel project's environment settings. Never use the local fixture template for staging, and do not paste secrets into chat or documentation.
+Use the [technical staging setup guide](docs/staging/setup.md) for per-project Vercel variables, migration safeguards, domains and acceptance gates. The secret-free [.env.staging.example](.env.staging.example) is a reference only. Actual credentials belong in the ignored [.env.staging.local](.env.staging.local) or the appropriate Vercel project's environment settings. Never use the local fixture template for staging, and do not paste secrets into chat or documentation.

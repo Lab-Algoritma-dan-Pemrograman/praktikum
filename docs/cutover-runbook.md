@@ -94,7 +94,7 @@ situs lama. Bila perlu mengulang impor di target, `legacy-migrate apply` idempot
 1. Freeze penulisan ke DB legacy (jangan dihapus; simpan minimal satu semester).
 2. Pantau `audit_logs` produksi dan error rate API satu jam pertama.
 3. Baru setelah stabil: arsipkan `legacy_preserve.rows` ke dump, lalu truncate
-   (lihat [migration.md](migration.md)).
+   (lihat [migration.md](updates/2026-11-15-migration.md)).
 4. Rotasi ulang kredensial yang pernah muncul di transkrip/chat.
 
 ## Hasil deploy produksi (2026-11-15)

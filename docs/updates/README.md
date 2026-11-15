@@ -28,4 +28,5 @@ Terbaru di atas.
 | Tanggal | Entri | Ringkasan |
 | --- | --- | --- |
 | 2026-11-15 | [2026-11-15.md](2026-11-15.md) | Produksi live, migrasi terverifikasi, perbaikan Praktikum, konsolidasi docs |
+| 2026-11-15 | [2026-11-15-migration.md](2026-11-15-migration.md) | Status migrasi legacy → v2, angka produksi, inventaris, audit legacy |
 | 2026-11-15 | [2026-11-15-praktikum-repair.md](2026-11-15-praktikum-repair.md) | Detail perbaikan Praktikum: UI/UX dan integritas data |

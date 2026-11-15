@@ -4,7 +4,7 @@ Panduan pengisian manual untuk Algohub Rewrite, Phase 2–5.
 
 **Batas pekerjaan:** isi konfigurasi secara lokal terlebih dahulu. Dokumen ini bukan perintah atau persetujuan untuk menjalankan migrasi, membuat user, deploy, atau mengubah DNS. Preflight berikutnya tetap read-only sampai hasilnya diperiksa dan perubahan disetujui.
 
-Implementasi sampai Phase 5 memakai keputusan final $0: C/WASM dan Pyodide di browser, Glot preview-only, serta completion gamifikasi E-learning yang client-trusted. Judge0/RapidAPI tidak diperlukan. Migration rehearsal dan UAT/cutover tetap terpisah. Ringkasan terbaru ada di [update log](updates/README.md).
+Implementasi sampai Phase 5 memakai keputusan final $0: C/WASM dan Pyodide di browser, Glot preview-only, serta completion gamifikasi E-learning yang client-trusted. Judge0/RapidAPI tidak diperlukan. Migration rehearsal dan UAT/cutover tetap terpisah. Ringkasan terbaru ada di [update log](../updates/README.md).
 
 ## 1. File mana yang harus diisi?
 
@@ -18,9 +18,9 @@ File ini sudah tersedia. Buka dan edit file tersebut, bukan file di project lega
 
 Perbedaan ketiga file environment:
 
-- [`.env.staging.local`](../.env.staging.local): nilai staging asli yang kamu isi manual. Bersifat pribadi dan diabaikan oleh `.gitignore`.
-- [`.env.staging.example`](../.env.staging.example): template tanpa secret, untuk referensi nama variabel dan default staging. Jangan masukkan credential asli ke sini.
-- [`.env.example`](../.env.example): konfigurasi fixture lokal untuk pengembangan. Jangan dipakai untuk staging.
+- [`.env.staging.local`](../../.env.staging.local): nilai staging asli yang kamu isi manual. Bersifat pribadi dan diabaikan oleh `.gitignore`.
+- [`.env.staging.example`](../../.env.staging.example): template tanpa secret, untuk referensi nama variabel dan default staging. Jangan masukkan credential asli ke sini.
+- [`.env.example`](../../.env.example): konfigurasi fixture lokal untuk pengembangan. Jangan dipakai untuk staging.
 
 Jika nanti membuat checkout baru dan file pribadi belum ada, salin template staging menjadi `.env.staging.local` **hanya jika file tujuan belum ada**. Jangan menimpa file yang sudah berisi konfigurasi.
 
@@ -92,7 +92,7 @@ ALGOHUB_ELEARNING_ENABLED=true
 ALGOHUB_SIAKAD_ENABLED=true
 ```
 
-Pada pemeriksaan 9 November 2026, file pribadi lama belum memuat flag E-learning dan SIAKAD. Kedua flag telah ditambahkan pada 10 November 2026, bersama persyaratan TLS pada URI database. Untuk file lain/checkout baru, pastikan flag tetap ada; default backend tanpa flag adalah `false`. Schema staging kemudian diterapkan dengan persetujuan terpisah, bukan otomatis karena flag aktif. Lihat [update log](updates/README.md).
+Pada pemeriksaan 9 November 2026, file pribadi lama belum memuat flag E-learning dan SIAKAD. Kedua flag telah ditambahkan pada 10 November 2026, bersama persyaratan TLS pada URI database. Untuk file lain/checkout baru, pastikan flag tetap ada; default backend tanpa flag adalah `false`. Schema staging kemudian diterapkan dengan persetujuan terpisah, bukan otomatis karena flag aktif. Lihat [update log](../updates/README.md).
 
 - [ ] Pertahankan API/Auth origin dan kedua allowlist HTTPS sesuai hostname staging yang disepakati.
 - [ ] Pertahankan timeout, session TTL, rate limits, dan batas pool dari template kecuali ada perubahan yang dibahas khusus.
@@ -163,7 +163,7 @@ Pembagian penting:
 - Jangan membuat variabel `PUBLIC_*` untuk credential.
 - OAuth Auth Center, jika dipilih nanti, mempunyai konfigurasi tersendiri.
 
-Daftar variabel per tujuan dan tujuh hostname yang diusulkan ada di [panduan teknis staging](staging-setup.md#2-where-values-go-on-vercel). Hostname dalam template adalah konfigurasi yang direncanakan, bukan bukti DNS/deployment sudah tersedia.
+Daftar variabel per tujuan dan tujuh hostname yang diusulkan ada di [panduan teknis staging](setup.md#2-where-values-go-on-vercel). Hostname dalam template adalah konfigurasi yang direncanakan, bukan bukti DNS/deployment sudah tersedia.
 
 ### Browser runner, scheduler, dan acceptance
 
@@ -181,6 +181,6 @@ Pengisian manual selesai ketika tiga credential tersimpan di file yang tepat, fl
 
 Referensi:
 
-- [Template environment staging](../.env.staging.example)
-- [Panduan teknis staging](staging-setup.md)
-- [Update log](updates/README.md)
+- [Template environment staging](../../.env.staging.example)
+- [Panduan teknis staging](setup.md)
+- [Update log](../updates/README.md)
