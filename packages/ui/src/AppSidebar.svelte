@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+
   type NavItem = { href: string; label: string; hint?: string };
 
   export let appName: string;
@@ -8,8 +10,16 @@
   export let userRole = '';
   export let initial = '';
   export let logoutHref = '/logout';
+  /** Saat diisi, "Keluar" menjadi tombol yang mencabut sesi lewat handler ini. */
+  export let onLogout: (() => void) | undefined = undefined;
+  export let logoutPending = false;
 
   let open = false;
+  // Kontrol berbasis JS baru aktif setelah hidrasi, sama seperti AppShell.
+  let ready = false;
+  onMount(() => {
+    ready = true;
+  });
 
   $: initial =
     initial || (userName ? userName.trim().charAt(0).toUpperCase() : 'A');
@@ -60,7 +70,17 @@
         <strong>{userName || 'Tamu'}</strong>
         <small>{userRole || 'Belum masuk'}</small>
       </span>
-      <a class="console-logout" href={logoutHref}>Keluar</a>
+      {#if onLogout}
+        <button
+          class="console-logout"
+          type="button"
+          onclick={onLogout}
+          disabled={!ready || logoutPending}
+          >{logoutPending ? 'Mengakhiri sesi…' : 'Keluar'}</button
+        >
+      {:else}
+        <a class="console-logout" href={logoutHref}>Keluar</a>
+      {/if}
     </div>
   </aside>
 
@@ -78,6 +98,7 @@
     type="button"
     aria-expanded={open}
     aria-controls="content"
+    disabled={!ready}
     onclick={() => (open = !open)}
   >
     <span aria-hidden="true">{open ? '×' : '☰'}</span>
@@ -262,15 +283,30 @@
     display: inline-flex;
     min-height: 44px;
     align-items: center;
+    padding: 0;
+    border: 0;
     color: var(--ah-muted);
+    background: none;
+    font: inherit;
     font-size: 0.75rem;
     font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
   }
 
   .console-logout:hover,
   .console-logout:focus-visible {
     color: var(--ah-coral);
+  }
+
+  .console-logout:disabled {
+    cursor: progress;
+    opacity: 0.7;
+  }
+
+  .console-logout:focus-visible {
+    outline: var(--ah-focus-brand);
+    outline-offset: 2px;
   }
 
   .console-content {
