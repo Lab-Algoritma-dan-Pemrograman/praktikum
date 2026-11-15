@@ -159,7 +159,7 @@ async function start(page: Page, sessionId: string, activationId: string) {
   await page.goto(`${hosts.praktikum}/sesi/${sessionId}`);
   await page
     .locator(`[data-activation-id="${activationId}"]`)
-    .getByRole('button', { name: 'Mulai / lanjutkan attempt' })
+    .getByRole('button', { name: 'Mulai / lanjutkan pengerjaan' })
     .click();
   await expect(page).toHaveURL(/\/attempts\/[^/]+$/);
   await expect(
@@ -226,7 +226,7 @@ for (const width of [320, 768, 1280]) {
       await sessionCard.getByRole('link', { name: 'Buka sesi' }).click();
       await page
         .locator(`[data-activation-id="${activation.id}"]`)
-        .getByRole('button', { name: 'Mulai / lanjutkan attempt' })
+        .getByRole('button', { name: 'Mulai / lanjutkan pengerjaan' })
         .click();
       await expect(page).toHaveURL(/\/attempts\/[^/]+$/);
       const attemptId = new URL(page.url()).pathname.split('/').at(-1)!;
@@ -267,19 +267,41 @@ for (const width of [320, 768, 1280]) {
       expect(resumed.deadline_at).toBe(before.deadline_at);
       expect(resumed.revision).toBe(before.revision);
       await expect(page.getByRole('timer')).not.toHaveText('00:00');
+      await page
+        .getByText('Opsi runner server · bukan penilaian', { exact: true })
+        .click();
       await expect(
         page.getByRole('button', { name: 'Jalankan kode' })
       ).toBeEnabled();
       await page.getByLabel(/^Input standar soal \d+$/).fill('2 3');
       await page.getByRole('button', { name: 'Jalankan kode' }).click();
       await expect(
-        page.getByRole('heading', { name: 'Hasil: success' })
+        page.getByRole('heading', { name: 'Hasil: Berhasil' })
       ).toBeVisible();
       await expect(
         page.getByRole('region', { name: /^Hasil runner soal \d+$/ })
       ).toContainText('SIMULASI');
-      await page.getByRole('button', { name: 'Kumpulkan jawaban' }).click();
-      await page.getByRole('button', { name: 'Ya, kumpulkan' }).focus();
+      const submit = page.getByRole('button', { name: 'Kumpulkan jawaban' });
+      await submit.click();
+      const confirmation = page.getByRole('dialog', {
+        name: 'Kumpulkan sekarang?'
+      });
+      await expect(confirmation).toBeVisible();
+      await expect(
+        confirmation.getByRole('button', { name: 'Batal', exact: true })
+      ).toBeFocused();
+      await page.keyboard.press('Escape');
+      await expect(confirmation).not.toBeVisible();
+      await expect(submit).toBeFocused();
+      await page.keyboard.press('Enter');
+      await expect(confirmation).toBeVisible();
+      await expect(
+        confirmation.getByRole('button', { name: 'Batal', exact: true })
+      ).toBeFocused();
+      await page.keyboard.press('Tab');
+      await expect(
+        confirmation.getByRole('button', { name: 'Ya, kumpulkan' })
+      ).toBeFocused();
       await page.keyboard.press('Enter');
       await expect(
         page.getByText('Pengumpulan dikonfirmasi server', { exact: false })
@@ -331,8 +353,17 @@ for (const width of [320, 768, 1280]) {
       await grade
         .getByRole('link', { name: 'Lihat jawaban dan feedback' })
         .click();
+      await expect(page).toHaveURL(`${hosts.praktikum}/attempts/${attemptId}`);
       await expect(
-        page.getByText('Nilai dipublikasikan', { exact: true })
+        page.getByRole('heading', {
+          name: 'Jawaban & hasil praktikum',
+          exact: true
+        })
+      ).toBeVisible();
+      await expect(
+        page
+          .getByRole('region', { name: 'Status attempt' })
+          .getByText('Nilai dipublikasikan', { exact: true })
       ).toBeVisible();
       await expect(
         page.getByLabel(/^Kode soal \d+$/, { exact: true })
@@ -460,9 +491,12 @@ test('practicum scoped assistant activation, monitoring, permanent close and sco
     ).toBe(200);
     await student.context.setOffline(false);
     await expect(
-      student.page.getByText('Pengumpulan dikonfirmasi server (closed)', {
-        exact: false
-      })
+      student.page.getByText(
+        'Pengumpulan dikonfirmasi server: aktivasi ditutup pengajar',
+        {
+          exact: false
+        }
+      )
     ).toBeVisible();
     await expect(
       student.page.getByLabel(/^Jawaban soal \d+$/, { exact: true })
@@ -585,16 +619,19 @@ test('practicum reconnect resolves real revision conflict, retry keeps one save,
       .getByLabel(/^Kode soal \d+$/, { exact: true })
       .fill('/* simulated only */');
     await page
+      .getByText('Opsi runner server · bukan penilaian', { exact: true })
+      .click();
+    await page
       .getByLabel(/^Input standar soal \d+$/)
       .fill('[fixture:compile_error]');
     await page.getByRole('button', { name: 'Jalankan kode' }).click();
     await expect(
-      page.getByRole('heading', { name: 'Hasil: compile_error' })
+      page.getByRole('heading', { name: 'Hasil: Kompilasi gagal' })
     ).toBeVisible();
     await page.getByLabel(/^Input standar soal \d+$/).fill('[fixture:outage]');
     await page.getByRole('button', { name: 'Jalankan kode' }).click();
     await expect(
-      page.getByRole('heading', { name: 'Hasil: provider_error' })
+      page.getByRole('heading', { name: 'Hasil: Runner belum tersedia' })
     ).toBeVisible();
     await expect(
       page.getByRole('region', { name: /^Hasil runner soal \d+$/ })
@@ -605,7 +642,7 @@ test('practicum reconnect resolves real revision conflict, retry keeps one save,
     await page.getByRole('button', { name: 'Jalankan kode' }).click();
     await repeatedRun;
     await expect(
-      page.getByRole('heading', { name: 'Hasil: provider_error' })
+      page.getByRole('heading', { name: 'Hasil: Runner belum tersedia' })
     ).toBeVisible();
     expect(runKeys).toHaveLength(3);
     expect(runKeys[2]).not.toBe(runKeys[1]);
@@ -623,7 +660,7 @@ test('practicum reconnect resolves real revision conflict, retry keeps one save,
     await expect(page.getByRole('alert')).toContainText('Koneksi');
     await page.getByRole('button', { name: 'Jalankan kode' }).click();
     await expect(
-      page.getByRole('heading', { name: 'Hasil: provider_error' })
+      page.getByRole('heading', { name: 'Hasil: Runner belum tersedia' })
     ).toBeVisible();
     expect(runKeys).toHaveLength(5);
     expect(runKeys[3]).toBe(runKeys[4]);
@@ -664,9 +701,12 @@ test('practicum deadline uses real server closure, not browser time, and refuses
     );
     await student.page.clock.setFixedTime(new Date('2001-01-01T00:00:00Z'));
     await expect(
-      student.page.getByText('Pengumpulan dikonfirmasi server (deadline)', {
-        exact: false
-      })
+      student.page.getByText(
+        'Pengumpulan dikonfirmasi server: waktu pengerjaan habis',
+        {
+          exact: false
+        }
+      )
     ).toBeVisible({ timeout: 30_000 });
     await expect(
       student.page.getByLabel(/^Jawaban soal \d+$/, { exact: true })
@@ -716,7 +756,7 @@ test('practicum empty, non-roster, ownership and direct-route authorization rema
     const id = await start(student.page, f.session.id, activation.id);
     await login(outsider, 'praktikum', 'asisten@example.test');
     await expect(
-      outsider.getByText('Akun ini tidak memiliki penugasan mahasiswa aktif.', {
+      outsider.getByText('Belum ada penugasan mahasiswa aktif', {
         exact: false
       })
     ).toBeVisible();
@@ -745,7 +785,12 @@ test('practicum empty, non-roster, ownership and direct-route authorization rema
         .status
     ).toBe(404);
     await outsider.goto(`${hosts.praktikum}/nilai`);
-    await expect(outsider.getByText('Belum ada hasil attempt.')).toBeVisible();
+    await expect(
+      outsider.getByRole('heading', {
+        name: 'Belum ada riwayat pengerjaan',
+        exact: true
+      })
+    ).toBeVisible();
   } finally {
     await student.context.close();
     await outsiderContext.close();

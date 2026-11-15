@@ -79,6 +79,28 @@ Attendance: 657 + 21 = 678 baris legacy, semuanya terhitung.
 6. Metadata ukuran objek `laporan-besar` di DB legacy rusak (13/5/13/15 byte);
    ukuran sebenarnya diambil dari byte hasil unduhan (ada di `legacy_preserve.objects`).
 
+## Perbaikan 2026-11-15: mahasiswa tidak melihat data praktikum (produksi)
+
+Gejala: mahasiswa bisa login, tetapi kelas/nilai/sesi/shift praktikum kosong. Data
+sebenarnya lengkap (users 396, courses 15, questions 211, sessions 5, activations 104,
+attempts 1.634, jawaban 3.746, presensi 657). Penyebabnya bukan import, tetapi bentuk
+scope: `practicum_activations.scope` (kolom) memuat `shift`, sedangkan salinan di
+`data->'activation'->'scope'` tidak. `practicumEligible` -> `Scope.Contains` membandingkan
+scope role mahasiswa (yang membawa shift 1/2) dengan JSON itu, sehingga **0 dari 1.590**
+pasangan activation-mahasiswa lolos cek.
+
+- Generator `cmd/legacy-migrate/sql/030_practicum.sql` diperbaiki agar JSON scope
+  memuat `shift` dari sumber yang sama.
+- Migrasi `0009_activation_scope_shift.sql` mem-backfill `shift` ke 104 activation
+  yang sudah termigrasi (idempoten, diverifikasi 0 mismatch).
+- Setelah backfill: 1.590/1.590 pasangan class+shift cocok. Kelas/schedule/presensi
+  akademik memakai filter MemberID/OwnerID sehingga tidak terdampak.
+- Catatan nilai: `pengerjaan_course.total_nilai`, `jawaban_mahasiswa.nilai` dan `feedback`
+  memang **NULL di sumber legacy** (0 dari 3.746), jadi v2 nullable = sama dengan legacy.
+  Nilai versi aplikasi elearning tersimpan di `assessment_attempts` project
+  `tvsawtkevzfqobsfkiag` yang kini **tidak resolve (mati)** dan tidak punya export lokal;
+  perlu dicek di dashboard Supabase apakah paused (bisa dipulihkan) atau deleted.
+
 ## Integritas akhir staging
 
 - 300 mahasiswa tercakup di 13 kelas (9 kelas berisi, sisanya kosong di legacy).

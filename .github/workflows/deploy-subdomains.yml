@@ -1,0 +1,152 @@
+name: Deploy subdomains
+
+# Auto-deploy every subdomain on push to main. Each app is a separate Vercel
+# project; path filters keep a change from rebuilding apps it cannot affect.
+# The shared packages feed several apps, so they are included where relevant.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Limit the deploy to one target
+        type: choice
+        default: all
+        options: [all, api, portal, auth, admin, siakad, elearning, praktikum]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'backend/**'
+            portal:
+              - 'apps/portal/**'
+              - 'packages/ui/**'
+              - 'packages/auth-client/**'
+            auth:
+              - 'apps/auth/**'
+              - 'packages/auth-client/**'
+            admin:
+              - 'apps/admin/**'
+              - 'packages/ui/**'
+              - 'packages/auth-client/**'
+              - 'packages/practicum-client/**'
+            siakad:
+              - 'apps/siakad/**'
+              - 'packages/ui/**'
+              - 'packages/auth-client/**'
+              - 'packages/siakad-client/**'
+            elearning:
+              - 'apps/elearning/**'
+              - 'packages/ui/**'
+              - 'packages/auth-client/**'
+              - 'packages/elearning-client/**'
+            praktikum:
+              - 'apps/praktikum/**'
+              - 'packages/ui/**'
+              - 'packages/auth-client/**'
+              - 'packages/practicum-client/**'
+
+  # Resolves the exact set of apps to deploy in one place, so the matrix cannot
+  # silently drift from the path filters above.
+  plan:
+    needs: changes
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+      any: ${{ steps.resolve.outputs.any }}
+    steps:
+      - id: resolve
+        env:
+          MANUAL: ${{ github.event_name == 'workflow_dispatch' }}
+          REQUESTED: ${{ inputs.target }}
+          CHANGED: ${{ needs.changes.outputs.targets }}
+        run: |
+          ALL='["api","portal","auth","admin","siakad","elearning","praktikum"]'
+          if [ "$MANUAL" = "true" ]; then
+            if [ "$REQUESTED" = "all" ]; then LIST="$ALL"; else LIST="[\"$REQUESTED\"]"; fi
+          else
+            LIST="$CHANGED"
+          fi
+          [ -z "$LIST" ] && LIST='[]'
+          echo "matrix={\"target\":$LIST}" >> "$GITHUB_OUTPUT"
+          if [ "$LIST" = '[]' ]; then echo "any=false" >> "$GITHUB_OUTPUT"; else echo "any=true" >> "$GITHUB_OUTPUT"; fi
+
+  deploy:
+    needs: plan
+    if: needs.plan.outputs.any == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        if: matrix.target != 'api'
+        with:
+          node-version: 24
+
+      - uses: actions/setup-go@v5
+        if: matrix.target == 'api'
+        with:
+          go-version: '1.26.11'
+          cache-dependency-path: backend/go.mod
+
+      - name: Install dependencies
+        if: matrix.target != 'api'
+        run: npm ci --no-audit --no-fund
+
+      # Fail before the deploy step rather than shipping a broken build.
+      - name: Build web app
+        if: matrix.target != 'api'
+        working-directory: apps/${{ matrix.target }}
+        run: npm run build
+
+      - name: Build API
+        if: matrix.target == 'api'
+        working-directory: backend
+        run: |
+          go vet ./...
+          go build -o /tmp/api ./cmd/api
+
+      # Runs from the repository root: each Vercel project sets its own Root
+      # Directory, which is what resolves the correct app.
+      - name: Deploy to Vercel production
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets[format('VERCEL_PROJECT_ID_{0}', matrix.target)] }}
+        run: npx --yes vercel@latest deploy --prod --yes --token "${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Smoke check
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          case "$TARGET" in
+            api) URL="https://api.algohub.web.id/readyz" ;;
+            portal) URL="https://algohub.web.id/" ;;
+            *) URL="https://$TARGET.algohub.web.id/" ;;
+          esac
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$URL")
+          echo "$TARGET -> $URL -> $code"
+          case "$TARGET:$code" in
+            api:200|portal:200|auth:200|praktikum:200) ;;
+            admin:200|admin:401|siakad:200|siakad:401|elearning:200|elearning:401) ;;
+            *) echo "Unexpected smoke status for $TARGET"; exit 1 ;;
+          esac

@@ -30,7 +30,11 @@ func (r *PostgresPracticumRepository) Transaction(ctx context.Context, fn func(P
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(context.WithoutCancel(ctx))
+	defer func() {
+		cleanup, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+		defer cancel()
+		_ = tx.Rollback(cleanup)
+	}()
 	// A transaction-level domain mutex bounds concurrency and serializes shared
 	// idempotency/lease admission. It never spans a runner/grader network call.
 	// Row locks below always acquire activation before attempt; clock_timestamp
@@ -85,13 +89,17 @@ func (tx *postgresPracticumTx) List(k PracticumKind, f PracticumFilter) ([]Pract
 	if err != nil {
 		return nil, err
 	}
-	rows, err := tx.tx.Query(tx.ctx, `select id,parent_id,owner_id,scope,status,unique_key,expires_at,data from `+table+`
- where ($1::text='' or parent_id=$1) and ($2::bigint=0 or owner_id=$2)
- and ($3::text='' or status=$3) and ($4::text='' or unique_key=$4) and id>$5
- and ($6::timestamptz is null or expires_at<=$6)
- and ($7::jsonb='null'::jsonb or exists(select 1 from jsonb_array_elements(case when $7::jsonb='null'::jsonb then '[]'::jsonb else $7::jsonb end) g where public.practicum_scope_matches(g,scope,$8)))
- and ($9::bigint=0 or (data->'activation'->'student_ids') @> jsonb_build_array($9::bigint))
- order by id limit $10 offset $11`, f.ParentID, f.OwnerID, f.Status, f.UniqueKey, f.AfterID, f.DueBefore, string(scopes), f.Overlap, f.MemberID, practicumLimit(f.Limit), max(0, f.Offset))
+	if f.ActivationScope && k != PracticumAttempts {
+		return nil, ErrConflict
+	}
+	rows, err := tx.tx.Query(tx.ctx, `select r.id,r.parent_id,r.owner_id,r.scope,r.status,r.unique_key,r.expires_at,r.data from `+table+` r
+ where ($1::text='' or r.parent_id=$1) and ($2::bigint=0 or r.owner_id=$2)
+ and ($3::text='' or r.status=$3) and ($4::text='' or r.unique_key=$4) and r.id>$5
+ and ($6::timestamptz is null or r.expires_at<=$6)
+ and ($7::jsonb='null'::jsonb or exists(select 1 from jsonb_array_elements(case when $7::jsonb='null'::jsonb then '[]'::jsonb else $7::jsonb end) g where public.practicum_scope_matches(g,case when $12 then (select a.scope from public.practicum_activations a where a.id=r.parent_id) else r.scope end,$8)))
+ and ($9::bigint=0 or (r.data->'activation'->'student_ids') @> jsonb_build_array($9::bigint))
+ and ($13::timestamptz is null or r.expires_at>$13)
+ order by r.id limit $10 offset $11`, f.ParentID, f.OwnerID, f.Status, f.UniqueKey, f.AfterID, f.DueBefore, string(scopes), f.Overlap, f.MemberID, practicumLimit(f.Limit), max(0, f.Offset), f.ActivationScope, f.LiveAfter)
 	if err != nil {
 		return nil, err
 	}
@@ -110,6 +118,33 @@ func (tx *postgresPracticumTx) List(k PracticumKind, f PracticumFilter) ([]Pract
 	}
 	return out, rows.Err()
 }
+func (tx *postgresPracticumTx) EligibleStudents(ids []int64, scope entity.Scope) ([]int64, error) {
+	raw, err := json.Marshal(scope)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := tx.tx.Query(tx.ctx, `select distinct u.id
+ from public.users u join public.user_role_assignments a on a.user_id=u.id
+ left join public.divisions d on d.code=a.division_code
+ where u.id=any($1::bigint[]) and u.is_active and a.is_active
+ and a.role_code='mahasiswa' and (a.division_code is null or d.is_active)
+ and public.practicum_scope_matches(a.scope,$2::jsonb,false)
+ order by u.id`, ids, string(raw))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []int64{}
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		out = append(out, id)
+	}
+	return out, rows.Err()
+}
+
 func (tx *postgresPracticumTx) Put(k PracticumKind, r PracticumRecord) error {
 	table, err := practicumTable(k)
 	if err != nil {

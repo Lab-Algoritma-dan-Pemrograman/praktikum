@@ -40,6 +40,37 @@ type practicumRunClaim struct {
 func practicumSaveRun(tx repository.PracticumTx, run practicumRunRecord, scope entity.Scope) error {
 	return practicumPut(tx, repository.PracticumRuns, run.ID, run.AttemptID, run.UserID, scope, run.Status, run.ID, &run.LeaseUntil, run)
 }
+
+// Stale cleanup commits separately from admission: an over-quota request cannot
+// roll back cleanup and strand every subsequent run behind expired leases.
+func (s *PracticumService) expireRunnerLeases(ctx context.Context) error {
+	return s.options.Repository.Transaction(ctx, func(tx repository.PracticumTx) error {
+		now, err := tx.Now()
+		if err != nil {
+			return err
+		}
+		rows, err := tx.List(repository.PracticumRuns, repository.PracticumFilter{Status: "running", DueBefore: &now, Limit: 100})
+		if err != nil {
+			return err
+		}
+		for _, row := range rows {
+			var lease practicumRunRecord
+			if err := json.Unmarshal(row.Data, &lease); err != nil {
+				return err
+			}
+			if now.Before(lease.LeaseUntil) {
+				continue
+			}
+			lease.Status = "finished"
+			lease.Result.Status = "provider_error"
+			if err := practicumSaveRun(tx, lease, row.Scope); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
 func (s *PracticumService) Run(ctx context.Context, p *entity.Principal, c PracticumCommand, id string, in PracticumRunInput) (entity.RunResult, error) {
 	if in.QuestionID == "" || len(in.Source) < 1 || len(in.Source) > 64<<10 || len(in.Stdin) > 16<<10 || len(in.Language) > 32 || len(in.Version) > 32 {
 		return entity.RunResult{}, ErrValidation
@@ -50,7 +81,7 @@ func (s *PracticumService) Run(ctx context.Context, p *entity.Principal, c Pract
 			err = e
 			return
 		}
-		scope = a.Scope
+		scope = activation.Activation.Scope
 		if err = practicumOwn(p, a, activation); err != nil {
 			return
 		}
@@ -109,7 +140,7 @@ func (s *PracticumService) Run(ctx context.Context, p *entity.Principal, c Pract
 			err = ErrValidation
 			return
 		}
-		leases, e := tx.List(repository.PracticumRuns, repository.PracticumFilter{Status: "running", Limit: 1000})
+		leases, e := tx.List(repository.PracticumRuns, repository.PracticumFilter{Status: "running", LiveAfter: &now, Limit: 1000})
 		if e != nil {
 			err = e
 			return

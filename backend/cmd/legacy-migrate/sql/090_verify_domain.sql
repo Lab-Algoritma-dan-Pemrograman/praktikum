@@ -83,6 +83,52 @@ begin
   got := (select count(*) from public.practicum_attempts where id like 'legacy-attempt-%');
   if got <> expected then failures := failures || format('practicum_attempts %s <> %s', got, expected); end if;
 
+  -- Counts alone cannot prove canonical context, correct ancestry or grader scope.
+  got := (select count(*) from public.practicum_sessions s
+    where s.id like 'legacy-session-%' and (
+      s.scope->>'domain' is distinct from 'praktikum'
+      or s.scope->>'session_id' is distinct from s.id
+      or s.data->'scope' is distinct from s.scope or s.data->>'id' is distinct from s.id));
+  if got <> 0 then failures := failures || format('session context mismatch %s', got); end if;
+
+  got := (select count(*) from public.practicum_courses c
+    left join public.practicum_sessions s on s.id=c.parent_id
+    where c.id like 'legacy-course-%' and (s.id is null
+      or c.scope is distinct from s.scope or c.data->>'id' is distinct from c.id
+      or c.data->>'session_id' is distinct from s.id));
+  if got <> 0 then failures := failures || format('course context mismatch %s', got); end if;
+
+  got := (select count(*) from public.practicum_questions q
+    left join public.practicum_courses c on c.id=q.parent_id
+    left join public.practicum_sessions s on s.id=c.parent_id
+    where q.id like 'legacy-question-%' and (s.id is null
+      or q.scope is distinct from s.scope or q.data->>'id' is distinct from q.id
+      or q.data->>'course_id' is distinct from c.id));
+  if got <> 0 then failures := failures || format('question context mismatch %s', got); end if;
+
+  got := (select count(*) from public.practicum_activations ac
+    left join public.practicum_sessions s on s.id=ac.parent_id
+    left join public.practicum_courses c on c.id=ac.data->'activation'->>'course_id'
+    where ac.id like 'legacy-activation-%' and (s.id is null or c.id is null
+      or c.parent_id is distinct from s.id
+      or ac.scope->>'domain' is distinct from 'praktikum'
+      or ac.scope->>'session_id' is distinct from s.id
+      or ac.data->'activation'->'scope' is distinct from ac.scope
+      or ac.data->'activation'->>'id' is distinct from ac.id
+      or ac.data->'activation'->>'session_id' is distinct from s.id));
+  if got <> 0 then failures := failures || format('activation context mismatch %s', got); end if;
+
+  got := (select count(*) from public.practicum_attempts at
+    left join public.practicum_activations ac on ac.id=at.parent_id
+    where at.id like 'legacy-attempt-%' and (ac.id is null
+      or at.data->'attempt'->>'attempt_id' is distinct from at.id
+      or at.data->'attempt'->>'session_id' is distinct from ac.parent_id
+      or at.scope is distinct from ac.scope or at.data->'scope' is distinct from ac.scope
+      or at.data->'attempt'->>'activation_id' is distinct from ac.id
+      or at.data->'attempt'->>'course_id' is distinct from ac.data->'activation'->>'course_id'
+      or (at.data->'attempt'->>'user_id')::bigint is distinct from at.owner_id));
+  if got <> 0 then failures := failures || format('attempt ancestry/scope mismatch %s', got); end if;
+
   expected := (select count(*) from legacy_preserve.rows where source_table = 'public.jawaban_mahasiswa');
   got := (select coalesce(sum(jsonb_array_length(data->'attempt'->'answers')), 0)
           from public.practicum_attempts where id like 'legacy-attempt-%');

@@ -1949,7 +1949,7 @@
         "tags": [
           "practicum"
         ],
-        "summary": "List owned submitted grade summaries",
+        "summary": "List owned attempt history and published grade summaries",
         "description": "Unpublished scores/percentages are null; no private suggestions or reference answers.",
         "parameters": [
           {
@@ -1961,7 +1961,7 @@
         ],
         "responses": {
           "200": {
-            "description": "List owned submitted grade summaries",
+            "description": "List owned attempt history and published grade summaries",
             "headers": {
               "X-Request-ID": {
                 "$ref": "#/components/headers/RequestID"
@@ -8030,7 +8030,8 @@
               "",
               "manual",
               "deadline",
-              "closed"
+              "closed",
+              "legacy_submit"
             ]
           },
           "revision": {
@@ -8315,6 +8316,8 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
+          "status",
+          "can_open",
           "attempt_id",
           "session_id",
           "session_title",
@@ -8327,6 +8330,13 @@
           "submitted_at"
         ],
         "properties": {
+          "status": {
+            "$ref": "#/components/schemas/PracticumAttemptStatus"
+          },
+          "can_open": {
+            "type": "boolean",
+            "description": "Terminal owned work remains readable after assignment changes; active work still requires current eligibility."
+          },
           "attempt_id": {
             "type": "string",
             "minLength": 1,

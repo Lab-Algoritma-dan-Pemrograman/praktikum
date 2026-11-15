@@ -18,7 +18,12 @@ type practicumGradeClaim struct {
 }
 
 func practicumReview(tx repository.PracticumTx, a entity.PracticumAttemptRecord, now time.Time) (entity.PracticumAttemptReview, error) {
+	activation, err := tx.Get(repository.PracticumActivations, a.Attempt.ActivationID)
+	if err != nil {
+		return entity.PracticumAttemptReview{}, err
+	}
 	out := entity.PracticumAttemptReview{Attempt: practicumAttemptView(a, now), Questions: append([]entity.PracticumQuestion{}, a.Attempt.Questions...), Suggestions: []entity.SuggestedGrade{}}
+	out.Attempt.SessionID = activation.ParentID
 	for _, grade := range a.ManualGrades {
 		found := false
 		for i := range out.Attempt.Answers {
@@ -56,7 +61,7 @@ func (s *PracticumService) Review(ctx context.Context, p *entity.Principal, id s
 		if err != nil {
 			return err
 		}
-		if err = practicumRequire(p, practicumGrade, a.Scope); err != nil {
+		if err = practicumRequire(p, practicumGrade, activation.Activation.Scope); err != nil {
 			return err
 		}
 		now, err := tx.Now()
@@ -82,7 +87,7 @@ func (s *PracticumService) ManualGrade(ctx context.Context, p *entity.Principal,
 			return
 		}
 		target = id
-		scope = a.Scope
+		scope = activation.Activation.Scope
 		if err = practicumRequire(p, practicumGrade, scope); err != nil {
 			return
 		}
@@ -190,7 +195,7 @@ func (s *PracticumService) BulkGrade(ctx context.Context, p *entity.Principal, c
 				err = e
 				return
 			}
-			if err = practicumRequire(p, practicumGrade, a.Scope); err != nil {
+			if err = practicumRequire(p, practicumGrade, activation.Activation.Scope); err != nil {
 				return
 			}
 			now, e := tx.Now()
@@ -357,7 +362,7 @@ func (s *PracticumService) Grade(ctx context.Context, p *entity.Principal, c Pra
 			return
 		}
 		target = id
-		scope = a.Scope
+		scope = activation.Activation.Scope
 		if err = practicumRequire(p, practicumGrade, scope); err != nil {
 			return
 		}
@@ -404,6 +409,9 @@ type PracticumReconcileResult struct {
 // cannot drain an unbounded queue.
 func (s *PracticumService) Reconcile(ctx context.Context, c PracticumCommand) (PracticumReconcileResult, error) {
 	var out PracticumReconcileResult
+	if err := s.expireRunnerLeases(ctx); err != nil {
+		return out, err
+	}
 	if err := s.expireDueAttempts(ctx, c, &out); err != nil {
 		return out, err
 	}

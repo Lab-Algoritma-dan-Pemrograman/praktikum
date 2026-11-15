@@ -39,17 +39,19 @@ type PracticumRecord struct {
 	Data      json.RawMessage
 }
 type PracticumFilter struct {
-	ParentID  string
-	OwnerID   int64
-	Status    string
-	UniqueKey string
-	AfterID   string
-	Limit     int
-	Offset    int
-	Scopes    []entity.Scope // nil means internal unrestricted; empty means deny all.
-	Overlap   bool
-	MemberID  int64
-	DueBefore *time.Time
+	ParentID        string
+	OwnerID         int64
+	Status          string
+	UniqueKey       string
+	AfterID         string
+	Limit           int
+	Offset          int
+	Scopes          []entity.Scope // nil means internal unrestricted; empty means deny all.
+	Overlap         bool
+	MemberID        int64
+	DueBefore       *time.Time
+	LiveAfter       *time.Time
+	ActivationScope bool // Attempts: filter against the parent activation before pagination.
 }
 type PracticumTx interface {
 	Get(PracticumKind, string) (PracticumRecord, error)
@@ -59,6 +61,13 @@ type PracticumTx interface {
 	Now() (time.Time, error)
 	Audit(entity.AuditEvent) error
 }
+
+// PracticumRosterTx validates a roster on the already acquired DB connection.
+// Memory test repositories may use their injected identity adapter instead.
+type PracticumRosterTx interface {
+	EligibleStudents([]int64, entity.Scope) ([]int64, error)
+}
+
 type PracticumRepository interface {
 	Transaction(context.Context, func(PracticumTx) error) error
 }
@@ -160,6 +169,9 @@ func practicumMatches(r PracticumRecord, f PracticumFilter) bool {
 	if f.DueBefore != nil && (r.ExpiresAt == nil || r.ExpiresAt.After(*f.DueBefore)) {
 		return false
 	}
+	if f.LiveAfter != nil && (r.ExpiresAt == nil || !r.ExpiresAt.After(*f.LiveAfter)) {
+		return false
+	}
 	if f.Scopes != nil {
 		ok := false
 		for _, s := range f.Scopes {
@@ -196,7 +208,18 @@ func practicumMatches(r PracticumRecord, f PracticumFilter) bool {
 func (tx *memoryPracticumTx) List(kind PracticumKind, f PracticumFilter) ([]PracticumRecord, error) {
 	out := []PracticumRecord{}
 	for _, r := range tx.records[kind] {
-		if practicumMatches(r, f) {
+		match := r
+		if f.ActivationScope {
+			if kind != PracticumAttempts {
+				return nil, ErrConflict
+			}
+			parent, ok := tx.records[PracticumActivations][r.ParentID]
+			if !ok {
+				continue
+			}
+			match.Scope = parent.Scope
+		}
+		if practicumMatches(match, f) {
 			out = append(out, clonePracticumRecord(r))
 		}
 	}

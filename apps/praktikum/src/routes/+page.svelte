@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { AppIdentityData } from '@algohub/auth-client';
+  import {
+    canAccessAdminRoute,
+    type AppIdentityData
+  } from '@algohub/auth-client';
   import {
     PracticumClient,
     errorMessage,
@@ -8,13 +11,16 @@
   } from '@algohub/practicum-client';
   export let data: AppIdentityData;
   let sessions: Session[] = [];
-  let loading = false;
+  let loading = true;
   let issue = '';
   let offset = 0;
   $: student = data.principal?.assignments.some(
     (a) => a.active && a.role === 'mahasiswa'
   );
-  $: admin = data.applications.find((a) => a.name === 'admin');
+  $: admin =
+    data.principal && canAccessAdminRoute(data.principal, '/praktikum')
+      ? data.applications.find((a) => a.name === 'admin')
+      : undefined;
   async function load(next = offset) {
     loading = true;
     issue = '';
@@ -29,58 +35,103 @@
   }
   onMount(() => {
     if (student) void load();
+    else loading = false;
   });
 </script>
 
 <svelte:head><title>Sesi Praktikum — Algohub</title></svelte:head>
-<section aria-labelledby="sessions-title" class="stack">
-  <h2 id="sessions-title">Sesi praktikum saya</h2>
-  {#if !data.principal}
-    <p class="notice">
-      Anda belum masuk. Gunakan tautan Masuk di atas untuk membuka sesi yang
-      terdaftar.
+<header class="page-heading">
+  <p class="eyebrow">PRAKTIKUM</p>
+  <h1>Sesi praktikum saya</h1>
+  <p class="muted">
+    Pilih sesi kelas Anda, buka kegiatan yang tersedia, lalu kerjakan sesuai
+    waktu yang ditetapkan pengajar.
+  </p>
+</header>
+{#if !data.principal}
+  <section class="panel empty-state">
+    <h2>Masuk untuk melihat sesi Anda</h2>
+    <p>
+      Gunakan identitas AlgoHub yang terdaftar pada kelas dan shift praktikum.
     </p>
-  {:else if !student}
-    <div class="notice">
-      <p>
-        Akun ini tidak memiliki penugasan mahasiswa aktif. Tidak ada sesi
-        mahasiswa untuk ditampilkan.
-      </p>
-      {#if admin}<a href={`${admin.origin}/login?return_to=/praktikum`}
+    <a class="button" href="/login">Masuk ke Praktikum</a>
+  </section>
+{:else if !student}
+  <section class="panel empty-state">
+    <h2>Belum ada penugasan mahasiswa aktif</h2>
+    <p>
+      Sesi baru mengikuti penugasan kelas Anda. Riwayat pengerjaan milik Anda
+      tetap dapat dilihat.
+    </p>
+    <div class="actions">
+      <a class="button secondary" href="/nilai">Lihat nilai & riwayat</a>
+      {#if admin}<a
+          class="button"
+          href={`${admin.origin}/login?return_to=/praktikum`}
           >Buka Admin Praktikum</a
         >{/if}
     </div>
-  {:else}
-    {#if loading}<p role="status">Memuat sesi…</p>{/if}
-    {#if issue}<div role="alert" class="notice error">
-        {issue}
-        <button onclick={() => load()} disabled={loading}>Coba lagi</button>
-      </div>{/if}
-    {#if !loading && !issue && sessions.length === 0}<p class="notice">
-        Belum ada sesi yang tersedia dalam roster Anda. Hubungi pengajar untuk
-        akses kelas/shift.
-      </p>{/if}
-    <div class="grid">
-      {#each sessions as session}<article class="panel">
-          <p class="muted">
-            Sesi {session.sequence} · {session.active ? 'Aktif' : 'Tidak aktif'}
-          </p>
-          <h3>{session.title}</h3>
-          <a class="button" href={`/sesi/${encodeURIComponent(session.id)}`}
-            >Buka sesi</a
-          >
-        </article>{/each}
-    </div>
-    <div class="actions">
-      <button
-        class="secondary"
-        disabled={offset === 0 || loading}
-        onclick={() => load(offset - 25)}>Sebelumnya</button
-      ><button
-        class="secondary"
-        disabled={sessions.length < 25 || loading}
-        onclick={() => load(offset + 25)}>Berikutnya</button
+  </section>
+{:else}
+  <section aria-label="Daftar sesi" aria-busy={loading}>
+    <div class="section-heading">
+      <h2>Sesi kelas Anda</h2>
+      <button class="secondary" onclick={() => load()} disabled={loading}
+        >Perbarui sesi</button
       >
     </div>
-  {/if}
-</section>
+    {#if loading}<p role="status" class="muted">Memuat sesi…</p>{/if}
+    {#if issue}<div role="alert" class="notice error">
+        {issue}<button
+          class="secondary"
+          onclick={() => load()}
+          disabled={loading}>Coba lagi</button
+        >
+      </div>{/if}
+    {#if !loading && !issue && sessions.length === 0}
+      <div class="panel empty-state">
+        <h3>Belum ada sesi tersedia</h3>
+        <p>
+          Pastikan Anda terdaftar pada kelas dan shift yang benar. Hubungi
+          pengajar jika sesi seharusnya sudah dibuka.
+        </p>
+        <a href="/nilai">Lihat riwayat pengerjaan sebelumnya</a>
+      </div>
+    {/if}
+    <div class="session-grid">
+      {#each sessions as session (session.id)}
+        <article class="panel session-card">
+          <div class="card-meta">
+            <span class="eyebrow">Sesi {session.sequence}</span><span
+              class="badge">{session.active ? 'Aktif' : 'Tidak aktif'}</span
+            >
+          </div>
+          <h3>{session.title}</h3>
+          <p class="muted">
+            {session.active
+              ? 'Lihat kegiatan dan aktivasi yang tersedia untuk kelas Anda.'
+              : 'Sesi ini belum aktif. Lihat detail untuk informasi kegiatan.'}
+          </p>
+          <a
+            class="button"
+            href={`/sesi/${encodeURIComponent(session.id)}`}
+            aria-label={`Buka sesi ${session.title}`}>Buka sesi</a
+          >
+        </article>
+      {/each}
+    </div>
+    {#if sessions.length > 0 || offset > 0}
+      <div class="pagination" aria-label="Halaman sesi">
+        <button
+          class="secondary"
+          disabled={offset === 0 || loading}
+          onclick={() => load(offset - 25)}>Sebelumnya</button
+        ><span class="muted">Halaman {Math.floor(offset / 25) + 1}</span><button
+          class="secondary"
+          disabled={sessions.length < 25 || loading}
+          onclick={() => load(offset + 25)}>Berikutnya</button
+        >
+      </div>
+    {/if}
+  </section>
+{/if}

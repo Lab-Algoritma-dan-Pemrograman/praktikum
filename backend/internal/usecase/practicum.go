@@ -256,6 +256,18 @@ func practicumPut(tx repository.PracticumTx, k repository.PracticumKind, id, par
 	return tx.Put(k, repository.PracticumRecord{ID: id, ParentID: parent, OwnerID: owner, Scope: scope, Status: status, UniqueKey: unique, ExpiresAt: expires, Data: raw})
 }
 func practicumAudit(tx repository.PracticumTx, p *entity.Principal, c PracticumCommand, action, id string, scope entity.Scope) error {
+	if strings.HasPrefix(action, "practicum.attempt.") || strings.HasPrefix(action, "practicum.grade.") {
+		row, err := tx.Get(repository.PracticumAttempts, id)
+		if err == nil {
+			parent, err := tx.Get(repository.PracticumActivations, row.ParentID)
+			if err != nil {
+				return err
+			}
+			scope = parent.Scope
+		} else if !errors.Is(err, repository.ErrPracticumNotFound) {
+			return err
+		}
+	}
 	now, err := tx.Now()
 	if err != nil {
 		return err

@@ -5,6 +5,10 @@
     PracticumClient,
     errorMessage,
     jakarta,
+    attemptLabels,
+    questionTypeLabels,
+    difficultyLabels,
+    submissionLabel,
     type RunnerInfo
   } from '@algohub/practicum-client';
   import {
@@ -22,6 +26,24 @@
   let runner: RunnerInfo | null = null;
   let runnerIssue = '';
   let confirmSubmit = false;
+  let submitDialog: HTMLDialogElement | undefined;
+  let submitTrigger: HTMLButtonElement | undefined;
+  let cancelSubmit: HTMLButtonElement | undefined;
+  function openConfirmation() {
+    confirmSubmit = true;
+    if (submitDialog?.isConnected && !submitDialog.open) {
+      submitDialog.showModal();
+      cancelSubmit?.focus();
+    }
+  }
+  function closeConfirmation() {
+    submitDialog?.close();
+    confirmSubmit = false;
+    if (submitTrigger?.isConnected) submitTrigger.focus();
+    else document.getElementById('praktikum-content')?.focus();
+  }
+  $: if (confirmSubmit && state.attempt?.status !== 'in_progress')
+    closeConfirmation();
   let nextDeadlineRetry = 0;
   let mounted = false;
   $: lastSaved =
@@ -36,7 +58,17 @@
     !state.blocked &&
     !state.conflict &&
     !state.submitting;
-  beforeNavigate(({ cancel }) => {
+  beforeNavigate(({ cancel, from, to, willUnload }) => {
+    // In-page question links retain this workspace and all drafts.
+    if (
+      !willUnload &&
+      from &&
+      to &&
+      from.url.origin === to.url.origin &&
+      from.url.pathname === to.url.pathname &&
+      from.url.search === to.url.search
+    )
+      return;
     if (
       (state.dirty || state.saving || state.submitting) &&
       !window.confirm('Perubahan belum tersimpan. Tetap tinggalkan halaman?')
@@ -54,8 +86,13 @@
   onMount(() => {
     mounted = true;
     workspace.setOffline(!navigator.onLine);
-    void workspace.refresh();
-    void loadRunner();
+    workspace.refresh().then(() => {
+      if (
+        state.attempt?.status === 'in_progress' &&
+        state.attempt.questions.some((question) => question.type === 'coding')
+      )
+        void loadRunner();
+    });
     const tick = setInterval(() => {
       remaining = workspace.clock.milliseconds();
       if (
@@ -98,7 +135,22 @@
   });
 </script>
 
-<h1>Ruang pengerjaan</h1>
+<div class="workspace-heading">
+  <div>
+    <a class="back-link" href="/nilai">← Nilai & riwayat</a>
+    <p class="eyebrow">PENGERJAAN PRAKTIKUM</p>
+    <h1>
+      {state.attempt && state.attempt.status !== 'in_progress'
+        ? 'Jawaban & hasil praktikum'
+        : 'Ruang pengerjaan'}
+    </h1>
+  </div>
+  {#if state.attempt}<a
+      class="back-link"
+      href={`/sesi/${encodeURIComponent(state.attempt.session_id)}`}
+      >Lihat sesi</a
+    >{/if}
+</div>
 {#if state.offline}<p class="notice" role="status">
     Offline. Perubahan tetap di memori tab ini. Jangan tutup atau muat ulang
     halaman sampai tersimpan.
@@ -118,28 +170,25 @@
     </div>
   </div>{/if}
 {#if !state.attempt}<p role="status">
-    {state.syncing ? 'Memuat attempt…' : 'Attempt belum dapat dibuka.'}
+    {state.syncing ? 'Memuat pengerjaan…' : 'Pengerjaan belum dapat dibuka.'}
   </p>{:else}
   <section class="panel workspace-status" aria-label="Status attempt">
     <div>
       <strong
-        >{state.attempt.status === 'in_progress'
-          ? 'Sedang dikerjakan'
-          : state.attempt.status === 'graded'
-            ? 'Nilai dipublikasikan'
-            : 'Terkumpul'}</strong
+        >{attemptLabels[state.attempt.status] ??
+          'Status pengerjaan belum tersedia'}</strong
       >
       <p class="muted">
         Deadline: {jakarta(state.attempt.deadline_at)}<br />Waktu mengikuti
         server, bukan jam perangkat.
       </p>
     </div>
-    <div>
-      <span class="muted">Sisa waktu</span>
-      <p class="countdown" role="timer" aria-label="Sisa waktu">
-        {timerLabel(remaining)}
-      </p>
-    </div>
+    {#if state.attempt.status === 'in_progress'}<div>
+        <span class="muted">Sisa waktu</span>
+        <p class="countdown" role="timer" aria-label="Sisa waktu">
+          {timerLabel(remaining)}
+        </p>
+      </div>{/if}
   </section>
   <p role="status" data-testid="save-status">
     {state.saving
@@ -183,21 +232,29 @@
       Jawaban yang terlambat tidak dapat disimpan.
     </p>{/if}
   {#if state.attempt.status !== 'in_progress'}<p class="notice">
-      Pengumpulan dikonfirmasi server ({state.attempt.submission_reason ??
-        'selesai'}). Jawaban terkunci. <a href="/nilai">Lihat status nilai</a>
+      Pengumpulan dikonfirmasi server: {submissionLabel(
+        state.attempt.submission_reason
+      )}. Jawaban terkunci. <a href="/nilai">Lihat status nilai</a>
     </p>{/if}
   {#if runnerIssue}<p class="notice">
       Runner: {runnerIssue}
       <button class="secondary" onclick={loadRunner}>Muat ulang runner</button>
     </p>{/if}
+  <nav class="question-nav" aria-label="Navigasi soal">
+    {#each state.attempt.questions as question, index}<a
+        href={`#question-${question.id}`}>Soal {index + 1}</a
+      >{/each}
+  </nav>
   <div class="stack">
-    {#each state.attempt.questions as question, index}
+    {#each state.attempt.questions as question, index (question.id)}
       <section class="panel stack" aria-labelledby={`question-${question.id}`}>
         <h2 id={`question-${question.id}`}>
           Soal {index + 1} · {question.points} poin
         </h2>
         <p class="muted">
-          {question.type} · {question.difficulty}
+          {questionTypeLabels[question.type] ?? 'Soal'} · {difficultyLabels[
+            question.difficulty
+          ] ?? 'Tingkat tidak tersedia'}
           {question.category ? `· ${question.category}` : ''}
         </p>
         <p class="prompt">{question.prompt}</p>
@@ -266,36 +323,63 @@
           remaining <= 0}
         onclick={() => workspace.flush()}>Simpan sekarang</button
       ><button
+        bind:this={submitTrigger}
         disabled={!editable || state.offline}
-        onclick={() => (confirmSubmit = true)}>Kumpulkan jawaban</button
+        onclick={openConfirmation}>Kumpulkan jawaban</button
       >
     </div>
-    {#if confirmSubmit}<section
-        class="notice"
-        aria-label="Konfirmasi pengumpulan"
-      >
-        <h2>Kumpulkan sekarang?</h2>
-        <p>
-          Semua perubahan disimpan terlebih dahulu. Setelah server
-          mengonfirmasi, jawaban tidak dapat diubah.
-        </p>
-        <div class="actions">
-          <button
-            disabled={state.submitting || state.offline || state.conflict}
-            onclick={async () => {
-              if (await workspace.submit()) confirmSubmit = false;
-            }}
-            >{state.submitting
-              ? 'Menyimpan dan mengumpulkan…'
-              : 'Ya, kumpulkan'}</button
-          ><button
-            class="secondary"
-            disabled={state.submitting}
-            onclick={() => (confirmSubmit = false)}>Batal</button
-          >
-        </div>
-      </section>{/if}
   {/if}
+  <dialog
+    class="submit-dialog"
+    bind:this={submitDialog}
+    aria-labelledby="submit-title"
+    aria-describedby="submit-description"
+    oncancel={(event) => {
+      if (state.submitting) event.preventDefault();
+    }}
+    onclose={() => {
+      // Native close events are queued; an earlier Escape must not close a
+      // confirmation that the user has already opened again.
+      if (submitDialog?.open) return;
+      confirmSubmit = false;
+      if (submitTrigger?.isConnected) submitTrigger.focus();
+    }}
+  >
+    <h2 id="submit-title">Kumpulkan sekarang?</h2>
+    <p id="submit-description">
+      Semua perubahan disimpan terlebih dahulu. Setelah server mengonfirmasi,
+      jawaban tidak dapat diubah.
+    </p>
+    {#if state.issue}<p class="notice error" role="alert">
+        {state.issue}
+      </p>{/if}
+    {#if state.offline}<p class="notice" role="status">
+        Anda sedang offline. Sambungkan kembali sebelum mengumpulkan.
+      </p>{/if}
+    {#if state.conflict}<p class="notice" role="status">
+        Batalkan konfirmasi dan selesaikan konflik jawaban terlebih dahulu.
+      </p>{/if}
+    <div class="actions">
+      <button
+        class="secondary"
+        bind:this={cancelSubmit}
+        disabled={state.submitting}
+        onclick={closeConfirmation}>Batal</button
+      >
+      <button
+        disabled={state.submitting ||
+          state.offline ||
+          state.conflict ||
+          state.blocked}
+        onclick={async () => {
+          if (await workspace.submit()) closeConfirmation();
+        }}
+        >{state.submitting
+          ? 'Menyimpan dan mengumpulkan…'
+          : 'Ya, kumpulkan'}</button
+      >
+    </div>
+  </dialog>
 {/if}
 
 <style>
@@ -304,9 +388,6 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 1;
     border-color: var(--ah-console-line-strong);
   }
   .countdown {

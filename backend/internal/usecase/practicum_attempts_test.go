@@ -586,3 +586,27 @@ func TestPracticumRequiredAuditFailureRollsBackAggregate(t *testing.T) {
 		t.Fatal("failed transaction committed attempt/job")
 	}
 }
+
+func TestPracticumGradesKeepOwnAttemptAfterScopeChange(t *testing.T) {
+	h := newPracticumHarness(t, "pretest", "individual", false)
+	h.start(t, 0)
+
+	before, err := h.s.Grades(t.Context(), h.students[0], PracticumPage{Limit: 25})
+	if err != nil || len(before) != 1 {
+		t.Fatalf("baseline grades: %+v %v", before, err)
+	}
+
+	// Simulate a legacy shift change: the student's current role scope no longer
+	// contains the activation scope. Their own submitted work must still appear.
+	h.students[0].Assignments[0].Scope.Shift = 2
+	after, err := h.s.Grades(t.Context(), h.students[0], PracticumPage{Limit: 25})
+	if err != nil || len(after) != 1 {
+		t.Fatalf("own attempt hidden after scope change: %+v %v", after, err)
+	}
+
+	// Cross-user isolation must be preserved.
+	other, err := h.s.Grades(t.Context(), h.students[1], PracticumPage{Limit: 25})
+	if err != nil || len(other) != 0 {
+		t.Fatalf("cross-user grade leak: %+v %v", other, err)
+	}
+}

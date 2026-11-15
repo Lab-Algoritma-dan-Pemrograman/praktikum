@@ -194,6 +194,10 @@ export async function checkPracticumContract({
   assert.equal(attempt.status, 'in_progress');
   assert.equal(attempt.revision, 0);
   unpublished(attempt);
+  const activeHistory = data(await s('get', '/v1/practicum/grades'));
+  assert.equal(activeHistory[0].status, 'in_progress');
+  assert.equal(activeHistory[0].can_open, true);
+  assert.equal(activeHistory[0].score, null);
   const attemptPath = `/v1/practicum/attempts/${attempt.attempt_id}`;
   for (const startRetryKey of [startKey, key()]) {
     const retry = data(

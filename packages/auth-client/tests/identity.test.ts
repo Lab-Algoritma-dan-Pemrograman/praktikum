@@ -209,6 +209,76 @@ test('return paths and origins are explicit allowlists', () => {
     assert.equal(safeReturnTo(target, origins), null);
 });
 
+test('Praktikum deep links preserve the cookie-bound SSO destination', async () => {
+  for (const path of [
+    '/nilai',
+    '/sesi/legacy-session-12',
+    '/attempts/attempt-Synthetic_123'
+  ]) {
+    const app = event(
+      `/api/auth/start?${new URLSearchParams({ return_to: path })}`,
+      { origin: origins[5] }
+    );
+    const target = new URL(await location(() => startAppSSO(app)));
+    assert.equal(target.searchParams.get('return_to'), `${origins[5]}${path}`);
+    const responseCookies = new Headers();
+    responseCookies.append(
+      'set-cookie',
+      'algohub_session=synthetic_session; Path=/; HttpOnly; SameSite=Lax; Max-Age=120'
+    );
+    mock.method(
+      globalThis,
+      'fetch',
+      async (_input: unknown, init?: RequestInit) => {
+        assert.equal(
+          JSON.parse(init?.body as string).return_to,
+          `${origins[5]}${path}`
+        );
+        return envelope({ user: principal.user }, { headers: responseCookies });
+      }
+    );
+    const callback = `/callback?${new URLSearchParams({ code: 'synthetic-code', return_to: `${origins[5]}${path}` })}`;
+    assert.equal(
+      await location(() =>
+        completeAppSSO(event(callback, { origin: origins[5], jar: app.jar }))
+      ),
+      `${origins[5]}${path}`
+    );
+    await assert.rejects(
+      () =>
+        completeAppSSO(event(callback, { origin: origins[5], jar: app.jar })),
+      status(400)
+    );
+  }
+});
+
+test('Praktikum return routes reject traversal and unbounded or encoded IDs', () => {
+  for (const path of [
+    '/attempts/',
+    '/attempts/..',
+    '/sesi/a/b',
+    '/sesi/a%2Fb',
+    '/sesi/a\\b',
+    '/sesi/a?token=x',
+    '/sesi/a#x',
+    `/attempts/${'a'.repeat(129)}`,
+    '//evil.test/sesi/a'
+  ]) {
+    assert.equal(safeRelativePath(path), null, path);
+    assert.equal(safeReturnTo(`${origins[5]}${path}`, origins), null, path);
+  }
+  assert.equal(safeReturnTo('https://evil.test/attempts/a', origins), null);
+  assert.throws(
+    () =>
+      startAppSSO(
+        event('/api/auth/start?return_to=/nilai&return_to=/attempts/a', {
+          origin: origins[5]
+        })
+      ),
+    status(422)
+  );
+});
+
 test('local HTTP and fixture activation fail closed outside isolated local origins', () => {
   assert.equal(identityConfig(new URL(origins[2]), localEnv).secure, false);
   assert.throws(

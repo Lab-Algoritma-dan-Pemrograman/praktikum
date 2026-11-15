@@ -257,29 +257,45 @@ func (s *PracticumService) Activate(ctx context.Context, p *entity.Principal, c 
 				return
 			}
 			students[studentID] = true
-			if s.options.IdentityRepository == nil {
-				err = ErrPracticumUnavailable
-				return
-			}
-			user, e := s.options.IdentityRepository.FindUserByID(ctx, studentID)
-			if e != nil || !user.Active {
-				err = ErrValidation
-				return
-			}
-			assignments, e := s.options.IdentityRepository.ListAssignments(ctx, studentID)
+		}
+		if roster, ok := tx.(repository.PracticumRosterTx); ok {
+			eligible, e := roster.EligibleStudents(in.StudentIDs, scope)
 			if e != nil {
 				err = e
 				return
 			}
-			eligible := false
-			for _, a := range assignments {
-				if a.Active && a.Role == entity.RoleMahasiswa && a.Scope.Contains(scope) {
-					eligible = true
-				}
-			}
-			if !eligible {
+			if len(eligible) != len(students) {
 				err = ErrValidation
 				return
+			}
+		} else {
+			// Only isolated memory/test adapters take this path. PostgreSQL uses
+			// the transaction connection above, avoiding pool starvation.
+			if s.options.IdentityRepository == nil {
+				err = ErrPracticumUnavailable
+				return
+			}
+			for _, studentID := range in.StudentIDs {
+				user, e := s.options.IdentityRepository.FindUserByID(ctx, studentID)
+				if e != nil || !user.Active {
+					err = ErrValidation
+					return
+				}
+				assignments, e := s.options.IdentityRepository.ListAssignments(ctx, studentID)
+				if e != nil {
+					err = e
+					return
+				}
+				eligible := false
+				for _, a := range assignments {
+					if a.Active && a.Role == entity.RoleMahasiswa && a.Scope.Contains(scope) {
+						eligible = true
+					}
+				}
+				if !eligible {
+					err = ErrValidation
+					return
+				}
 			}
 		}
 		approved := map[int64]bool{}
@@ -345,7 +361,28 @@ func (s *PracticumService) Activate(ctx context.Context, p *entity.Principal, c 
 	})
 }
 func practicumSaveActivation(tx repository.PracticumTx, a entity.PracticumActivationRecord) error {
-	return practicumPut(tx, repository.PracticumActivations, a.Activation.ID, a.Activation.SessionID, 0, a.Activation.Scope, "", "", a.Activation.ClosesAt, a)
+	previous, err := tx.Get(repository.PracticumActivations, a.Activation.ID)
+	if errors.Is(err, repository.ErrPracticumNotFound) {
+		return practicumPut(tx, repository.PracticumActivations, a.Activation.ID, a.Activation.SessionID, 0, a.Activation.Scope, "", "", a.Activation.ClosesAt, a)
+	}
+	if err != nil {
+		return err
+	}
+	if previous.ParentID != a.Activation.SessionID || previous.OwnerID != 0 {
+		return repository.ErrConflict
+	}
+	raw, err := practicumMergeActivationData(previous.Data, a)
+	if err != nil {
+		return err
+	}
+	status := previous.Status
+	if status == "open" || status == "closed" {
+		status = "closed"
+		if a.Activation.IsOpen {
+			status = "open"
+		}
+	}
+	return tx.Put(repository.PracticumActivations, repository.PracticumRecord{ID: previous.ID, ParentID: previous.ParentID, OwnerID: previous.OwnerID, Scope: previous.Scope, Status: status, UniqueKey: previous.UniqueKey, ExpiresAt: a.Activation.ClosesAt, Data: raw})
 }
 func (s *PracticumService) Sessions(ctx context.Context, p *entity.Principal, admin bool, page PracticumPage) ([]entity.PracticumSession, error) {
 	out := []entity.PracticumSession{}

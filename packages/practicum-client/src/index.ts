@@ -82,7 +82,8 @@ export interface Attempt {
   course_id: string;
   user_id: number;
   status: 'in_progress' | 'submitted' | 'graded';
-  submission_reason: 'manual' | 'deadline' | 'closed' | null;
+  submission_reason:
+    'manual' | 'deadline' | 'closed' | 'legacy_submit' | '' | null;
   revision: number;
   grade_revision: number;
   grading_status: 'pending' | 'running' | 'needs_manual' | 'graded';
@@ -134,6 +135,8 @@ export interface MonitoringRow {
   submitted_at: string | null;
 }
 export interface GradeSummary {
+  status?: Attempt['status'];
+  can_open?: boolean;
   attempt_id: string;
   session_id: string;
   session_title: string;
@@ -202,6 +205,48 @@ export function permitted(
     (grant) =>
       grant.permission === permission && scopeContains(grant.scope, scope)
   );
+}
+export const runLabels: Record<RunResult['status'], string> = {
+  success: 'Berhasil',
+  compile_error: 'Kompilasi gagal',
+  runtime_error: 'Program berhenti karena error',
+  timeout: 'Batas waktu terlampaui',
+  quota_exceeded: 'Batas penggunaan tercapai',
+  provider_error: 'Runner belum tersedia'
+};
+export const attemptLabels: Record<Attempt['status'], string> = {
+  in_progress: 'Sedang dikerjakan',
+  submitted: 'Jawaban terkumpul',
+  graded: 'Nilai dipublikasikan'
+};
+export const gradingLabels: Record<Attempt['grading_status'], string> = {
+  pending: 'Menunggu penilaian',
+  running: 'Sedang ditinjau',
+  needs_manual: 'Menunggu tinjauan pengajar',
+  graded: 'Nilai dipublikasikan'
+};
+export const questionTypeLabels: Record<QuestionType, string> = {
+  essay: 'Uraian',
+  coding: 'Pemrograman'
+};
+export const difficultyLabels: Record<Question['difficulty'], string> = {
+  easy: 'Dasar',
+  medium: 'Menengah',
+  hard: 'Lanjutan'
+};
+export function submissionLabel(reason: string | null): string {
+  switch (reason) {
+    case 'manual':
+      return 'dikumpulkan oleh Anda';
+    case 'deadline':
+      return 'waktu pengerjaan habis';
+    case 'closed':
+      return 'aktivasi ditutup pengajar';
+    case 'legacy_submit':
+      return 'riwayat pengumpulan sebelumnya';
+    default:
+      return 'pengumpulan selesai';
+  }
 }
 export const courseLabels: Record<CourseKind, string> = {
   pretest: 'Pretest',

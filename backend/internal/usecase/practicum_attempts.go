@@ -12,7 +12,18 @@ import (
 )
 
 func practicumSaveAttempt(tx repository.PracticumTx, a entity.PracticumAttemptRecord) error {
-	return practicumPut(tx, repository.PracticumAttempts, a.Attempt.AttemptID, a.Attempt.ActivationID, a.Attempt.UserID, a.Scope, a.Attempt.Status, practicumAttemptKey(a.Attempt.ActivationID, a.Attempt.UserID), &a.Attempt.DeadlineAt, a)
+	previous, err := tx.Get(repository.PracticumAttempts, a.Attempt.AttemptID)
+	if errors.Is(err, repository.ErrPracticumNotFound) {
+		return practicumPut(tx, repository.PracticumAttempts, a.Attempt.AttemptID, a.Attempt.ActivationID, a.Attempt.UserID, a.Scope, a.Attempt.Status, practicumAttemptKey(a.Attempt.ActivationID, a.Attempt.UserID), &a.Attempt.DeadlineAt, a)
+	}
+	if err != nil {
+		return err
+	}
+	raw, err := practicumMergeAttemptData(previous.Data, a)
+	if err != nil {
+		return err
+	}
+	return tx.Put(repository.PracticumAttempts, repository.PracticumRecord{ID: a.Attempt.AttemptID, ParentID: a.Attempt.ActivationID, OwnerID: a.Attempt.UserID, Scope: a.Scope, Status: a.Attempt.Status, UniqueKey: previous.UniqueKey, ExpiresAt: &a.Attempt.DeadlineAt, Data: raw})
 }
 func practicumSaveJob(tx repository.PracticumTx, j entity.PracticumGradingJob, scope entity.Scope) error {
 	return practicumPut(tx, repository.PracticumJobs, j.ID, j.AttemptID, 0, scope, j.Status, j.AttemptID, j.LeaseUntil, j)
@@ -25,11 +36,23 @@ func practicumLockAttempt(tx repository.PracticumTx, id string) (entity.Practicu
 	if err != nil {
 		return a, activation, err
 	}
-	activation, err = practicumRead[entity.PracticumActivationRecord](tx, repository.PracticumActivations, row.ParentID, true)
+	parent, err := tx.Lock(repository.PracticumActivations, row.ParentID)
 	if err != nil {
 		return a, activation, err
 	}
+	if err = json.Unmarshal(parent.Data, &activation); err != nil {
+		return a, activation, err
+	}
+	if activation.Activation.ID != parent.ID || activation.Activation.SessionID != parent.ParentID || activation.Course.SessionID != parent.ParentID {
+		return a, activation, repository.ErrConflict
+	}
+	// Indexed activation metadata, not a student's latest membership, owns the
+	// assessment scope. Do not rewrite a frozen legacy attempt during a read.
+	activation.Activation.Scope = parent.Scope
 	a, err = practicumRead[entity.PracticumAttemptRecord](tx, repository.PracticumAttempts, id, true)
+	if err == nil && (a.Attempt.AttemptID != row.ID || a.Attempt.ActivationID != row.ParentID || a.Attempt.UserID != row.OwnerID || a.Attempt.CourseID != activation.Course.ID) {
+		err = repository.ErrConflict
+	}
 	return a, activation, err
 }
 func practicumOwn(p *entity.Principal, a entity.PracticumAttemptRecord, activation entity.PracticumActivationRecord) error {
@@ -83,7 +106,7 @@ func (s *PracticumService) Start(ctx context.Context, p *entity.Principal, c Pra
 			err = authorization.ErrNotFound
 			return
 		}
-		rows, e := tx.List(repository.PracticumAttempts, repository.PracticumFilter{UniqueKey: practicumAttemptKey(in.ActivationID, p.User.ID), Limit: 1})
+		rows, e := tx.List(repository.PracticumAttempts, repository.PracticumFilter{ParentID: in.ActivationID, OwnerID: p.User.ID, Limit: 1})
 		if e != nil {
 			err = e
 			return
@@ -168,8 +191,9 @@ func (s *PracticumService) Attempt(ctx context.Context, p *entity.Principal, id 
 		if err != nil {
 			return err
 		}
-		if err = practicumOwn(p, a, activation); err != nil {
-			return err
+		terminal := a.Attempt.Status == "submitted" || a.Attempt.Status == "graded"
+		if a.Attempt.UserID != p.User.ID || (!terminal && !practicumEligible(p, activation)) {
+			return authorization.ErrNotFound
 		}
 		now, err := tx.Now()
 		if err != nil {
@@ -179,6 +203,7 @@ func (s *PracticumService) Attempt(ctx context.Context, p *entity.Principal, id 
 			return err
 		}
 		out = practicumAttemptView(a, now)
+		out.SessionID = activation.Activation.SessionID
 		return nil
 	})
 	return out, err
@@ -370,7 +395,7 @@ func (s *PracticumService) Monitoring(ctx context.Context, p *entity.Principal, 
 			}
 			scopes = narrowed
 		}
-		rows, err := tx.List(repository.PracticumAttempts, repository.PracticumFilter{ParentID: activationID, Scopes: scopes, Limit: page.Limit, Offset: page.Offset})
+		rows, err := tx.List(repository.PracticumAttempts, repository.PracticumFilter{ParentID: activationID, Scopes: scopes, ActivationScope: true, Limit: page.Limit, Offset: page.Offset})
 		if err != nil {
 			return err
 		}
@@ -387,6 +412,7 @@ func (s *PracticumService) Monitoring(ctx context.Context, p *entity.Principal, 
 				return err
 			}
 			v := a.Attempt
+			v.SessionID = activation.Activation.SessionID
 			out = append(out, entity.PracticumMonitoringRow{AttemptID: v.AttemptID, UserID: v.UserID, UserName: a.UserName, ActivationID: v.ActivationID, SessionID: v.SessionID, CourseID: v.CourseID, Status: v.Status, GradingStatus: v.GradingStatus, AnswerCount: len(v.Answers), QuestionCount: len(v.Questions), DeadlineAt: v.DeadlineAt, SubmittedAt: v.SubmittedAt})
 		}
 		return nil
@@ -402,28 +428,25 @@ func (s *PracticumService) Grades(ctx context.Context, p *entity.Principal, page
 		return nil, ErrValidation
 	}
 	err := s.options.Repository.Transaction(ctx, func(tx repository.PracticumTx) error {
-		rows, err := tx.List(repository.PracticumAttempts, repository.PracticumFilter{OwnerID: p.User.ID, Scopes: practicumStudentScopes(p), Limit: page.Limit, Offset: page.Offset})
+		rows, err := tx.List(repository.PracticumAttempts, repository.PracticumFilter{OwnerID: p.User.ID, Limit: page.Limit, Offset: page.Offset})
 		if err != nil {
 			return err
 		}
 		for _, r := range rows {
-			var a entity.PracticumAttemptRecord
-			if err = json.Unmarshal(r.Data, &a); err != nil {
-				return err
-			}
-			activation, err := practicumRead[entity.PracticumActivationRecord](tx, repository.PracticumActivations, a.Attempt.ActivationID, false)
+			a, activation, err := practicumLockAttempt(tx, r.ID)
 			if err != nil {
 				return err
 			}
-			if !practicumEligible(p, activation) {
+			// Personal history survives assignment changes; mutations do not.
+			if a.Attempt.UserID != p.User.ID {
 				continue
 			}
-			session, err := practicumRead[entity.PracticumSession](tx, repository.PracticumSessions, a.Attempt.SessionID, false)
+			session, err := practicumRead[entity.PracticumSession](tx, repository.PracticumSessions, activation.Activation.SessionID, false)
 			if err != nil {
 				return err
 			}
 			v := practicumAttemptView(a, time.Time{})
-			out = append(out, entity.PracticumGradeSummary{AttemptID: v.AttemptID, SessionID: v.SessionID, SessionTitle: session.Title, CourseTitle: activation.Course.Title, CourseKind: activation.Course.Kind, GradingStatus: v.GradingStatus, Score: v.Score, MaxScore: v.MaxScore, Percentage: v.Percentage, SubmittedAt: v.SubmittedAt})
+			out = append(out, entity.PracticumGradeSummary{Status: v.Status, CanOpen: v.Status != "in_progress" || practicumEligible(p, activation), AttemptID: v.AttemptID, SessionID: activation.Activation.SessionID, SessionTitle: session.Title, CourseTitle: activation.Course.Title, CourseKind: activation.Course.Kind, GradingStatus: v.GradingStatus, Score: v.Score, MaxScore: v.MaxScore, Percentage: v.Percentage, SubmittedAt: v.SubmittedAt})
 		}
 		return nil
 	})

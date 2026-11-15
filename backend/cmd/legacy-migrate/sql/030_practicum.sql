@@ -22,12 +22,14 @@ create temp view legacy_answer as
 select row_data, (row_data->>'id')::bigint as legacy_id from legacy_preserve.rows where source_table = 'public.jawaban_mahasiswa';
 
 insert into public.practicum_sessions (id, parent_id, owner_id, scope, status, unique_key, data)
-select 'legacy-session-' || s.legacy_id, '', 0, '{}'::jsonb, 'active', 'legacy:sesi_praktikum:' || s.legacy_id,
+select 'legacy-session-' || s.legacy_id, '', 0,
+  jsonb_build_object('domain','praktikum','session_id','legacy-session-' || s.legacy_id),
+  'active', 'legacy:sesi_praktikum:' || s.legacy_id,
   jsonb_build_object(
     'id', 'legacy-session-' || s.legacy_id,
     'title', coalesce(nullif(btrim(s.row_data->>'judul_sesi'), ''), 'Sesi ' || s.legacy_id),
     'sequence', coalesce((s.row_data->>'urutan')::int, s.legacy_id),
-    'scope', '{}'::jsonb,
+    'scope', jsonb_build_object('domain','praktikum','session_id','legacy-session-' || s.legacy_id),
     'active', true,
     'version', 1,
     'created_at', coalesce((s.row_data->>'created_at')::timestamptz, now()),
@@ -37,10 +39,10 @@ select 'legacy-session-' || s.legacy_id, '', 0, '{}'::jsonb, 'active', 'legacy:s
     'legacy', s.row_data
   )
 from legacy_session s
-on conflict (id) do update set data = excluded.data, status = excluded.status;
+on conflict (id) do update set scope = excluded.scope, data = excluded.data, status = excluded.status;
 
 insert into public.practicum_courses (id, parent_id, owner_id, scope, status, unique_key, data)
-select 'legacy-course-' || c.legacy_id, 'legacy-session-' || (c.row_data->>'sesi_praktikum_id'), 0, '{}'::jsonb, 'active',
+select 'legacy-course-' || c.legacy_id, parent.id, 0, parent.scope, 'active',
   'legacy:course:' || c.legacy_id,
   jsonb_build_object(
     'id', 'legacy-course-' || c.legacy_id,
@@ -54,11 +56,11 @@ select 'legacy-course-' || c.legacy_id, 'legacy-session-' || (c.row_data->>'sesi
     'legacy', c.row_data
   )
 from legacy_course c
-where exists (select 1 from public.practicum_sessions s where s.id = 'legacy-session-' || (c.row_data->>'sesi_praktikum_id'))
-on conflict (id) do update set parent_id = excluded.parent_id, data = excluded.data, status = excluded.status;
+join public.practicum_sessions parent on parent.id = 'legacy-session-' || (c.row_data->>'sesi_praktikum_id')
+on conflict (id) do update set parent_id = excluded.parent_id, scope = excluded.scope, data = excluded.data, status = excluded.status;
 
 insert into public.practicum_questions (id, parent_id, owner_id, scope, status, unique_key, data)
-select 'legacy-question-' || q.legacy_id, 'legacy-course-' || (q.row_data->>'course_id'), 0, '{}'::jsonb,
+select 'legacy-question-' || q.legacy_id, parent.id, 0, parent.scope,
   case when coalesce((q.row_data->>'is_arsip')::boolean, false) then 'archived' else 'active' end,
   'legacy:soal:' || q.legacy_id,
   jsonb_build_object(
@@ -77,14 +79,16 @@ select 'legacy-question-' || q.legacy_id, 'legacy-course-' || (q.row_data->>'cou
     'legacy', q.row_data
   )
 from legacy_question q
-where exists (select 1 from public.practicum_courses c where c.id = 'legacy-course-' || (q.row_data->>'course_id'))
-on conflict (id) do update set parent_id = excluded.parent_id, data = excluded.data, status = excluded.status;
+join public.practicum_courses parent on parent.id = 'legacy-course-' || (q.row_data->>'course_id')
+on conflict (id) do update set parent_id = excluded.parent_id, scope = excluded.scope, data = excluded.data, status = excluded.status;
 
 insert into public.practicum_activations (id, parent_id, owner_id, scope, status, unique_key, data)
 select 'legacy-activation-' || ac.legacy_id,
   'legacy-session-' || (s.row_data->>'sesi_praktikum_id'),
   0,
   jsonb_strip_nulls(jsonb_build_object(
+    'domain', 'praktikum',
+    'session_id', 'legacy-session-' || (s.row_data->>'sesi_praktikum_id'),
     'class_id', case when s.row_data->>'kelas_id' is not null then 'legacy-class-' || (s.row_data->>'kelas_id') end,
     'shift', case when s.row_data->>'shift' ~ '^[0-9]+$' then (s.row_data->>'shift')::int end)),
   case when coalesce((ac.row_data->>'is_open')::boolean, false) then 'open' else 'closed' end,
@@ -94,7 +98,11 @@ select 'legacy-activation-' || ac.legacy_id,
       'id', 'legacy-activation-' || ac.legacy_id,
       'session_id', 'legacy-session-' || (s.row_data->>'sesi_praktikum_id'),
       'course_id', 'legacy-course-' || (ac.row_data->>'course_id'),
-      'scope', jsonb_build_object('class_id', 'legacy-class-' || coalesce(s.row_data->>'kelas_id', '')),
+      'scope', jsonb_strip_nulls(jsonb_build_object(
+        'domain', 'praktikum',
+        'session_id', 'legacy-session-' || (s.row_data->>'sesi_praktikum_id'),
+        'class_id', case when s.row_data->>'kelas_id' is not null then 'legacy-class-' || (s.row_data->>'kelas_id') end,
+        'shift', case when s.row_data->>'shift' ~ '^[0-9]+$' then (s.row_data->>'shift')::int end)),
       'timer_mode', 'shared',
       'is_open', coalesce((ac.row_data->>'is_open')::boolean, false),
       'started_at', coalesce((ac.row_data->>'started_at')::timestamptz, (ac.row_data->>'opened_at')::timestamptz),
@@ -137,16 +145,14 @@ insert into public.practicum_attempts (id, parent_id, owner_id, scope, status, u
 select 'legacy-attempt-' || p.legacy_id,
   'legacy-activation-' || ac.legacy_id,
   (p.row_data->>'mahasiswa_id')::bigint,
-  jsonb_strip_nulls(jsonb_build_object(
-    'class_id', case when km.row_data->>'kelas_id' is not null then 'legacy-class-' || (km.row_data->>'kelas_id') end,
-    'shift', case when km.row_data->>'shift' ~ '^[0-9]+$' then (km.row_data->>'shift')::int end)),
+  act.scope,
   case when p.row_data->>'status' = 'selesai' then 'submitted' else 'in_progress' end,
   'legacy:pengerjaan_course:' || p.legacy_id,
   jsonb_build_object(
     'attempt', jsonb_build_object(
       'attempt_id', 'legacy-attempt-' || p.legacy_id,
       'activation_id', 'legacy-activation-' || ac.legacy_id,
-      'session_id', 'legacy-session-' || (ac.row_data->>'aktivasi_sesi_id'),
+      'session_id', act.parent_id,
       'course_id', 'legacy-course-' || (p.row_data->>'course_id'),
       'user_id', (p.row_data->>'mahasiswa_id')::bigint,
       'status', case when p.row_data->>'status' = 'selesai' then 'submitted' else 'in_progress' end,
@@ -167,9 +173,7 @@ select 'legacy-attempt-' || p.legacy_id,
                              from jsonb_array_elements(coalesce(act.data->'questions', '[]'::jsonb)) as q(el)), 0),
       'percentage', (p.row_data->>'total_nilai')::numeric
     ),
-    'scope', jsonb_strip_nulls(jsonb_build_object(
-      'class_id', case when km.row_data->>'kelas_id' is not null then 'legacy-class-' || (km.row_data->>'kelas_id') end,
-      'shift', case when km.row_data->>'shift' ~ '^[0-9]+$' then (km.row_data->>'shift')::int end)),
+    'scope', act.scope,
     'user_name', coalesce(u.name, ''),
     'submitted_answers', coalesce(j.answers, '[]'::jsonb),
     'manual_grades', coalesce(j.manual_grades, '[]'::jsonb),
@@ -180,11 +184,6 @@ from legacy_attempt p
 join legacy_activation ac on ac.row_data->>'aktivasi_sesi_id' = p.row_data->>'aktivasi_sesi_id'
                          and ac.row_data->>'course_id' = p.row_data->>'course_id'
 join public.users u on u.id = (p.row_data->>'mahasiswa_id')::bigint
-left join lateral (
-  select k.row_data from legacy_preserve.rows k
-  where k.source_table = 'public.keanggotaan' and (k.row_data->>'user_id')::bigint = (p.row_data->>'mahasiswa_id')::bigint
-  order by (k.row_data->>'created_at')::timestamptz desc nulls last limit 1
-) km on true
 join lateral (
   select
     jsonb_agg(jsonb_build_object(
@@ -210,8 +209,8 @@ join lateral (
     and (st.row_data->>'course_id')::bigint = (p.row_data->>'course_id')::bigint
     and (a.row_data->>'mahasiswa_id')::bigint = (p.row_data->>'mahasiswa_id')::bigint
 ) j on true
-left join lateral (
-  select act2.data from public.practicum_activations act2
+join lateral (
+  select act2.data, act2.scope, act2.parent_id from public.practicum_activations act2
   where act2.id = 'legacy-activation-' || ac.legacy_id
 ) act on true
 on conflict (parent_id, owner_id) do nothing;

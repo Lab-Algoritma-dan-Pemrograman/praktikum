@@ -7,6 +7,7 @@
     command,
     reusableCommand,
     errorMessage,
+    runLabels,
     type Command,
     type RunnerInfo,
     type RunResult
@@ -32,9 +33,7 @@
     ? selectedVersion
     : (choices[0]?.version ?? '');
   $: languages = [
-    ...new Map(
-      (runner?.languages ?? []).map((item) => [item.language, item.label])
-    ).entries()
+    ...new Map(choices.map((item) => [item.language, item.label])).entries()
   ];
   async function run() {
     busy = true;
@@ -97,7 +96,9 @@
       {value}
       readonly={disabled}
       oninput={(event) => update(event.currentTarget.value, language)}
-      onfocusin={() => warmupPreview(runtimeOrigin, language)}
+      onfocusin={() => {
+        if (!disabled) warmupPreview(runtimeOrigin, language);
+      }}
     ></textarea></label
   >
   <label
@@ -109,78 +110,96 @@
       {disabled}
     ></textarea></label
   >
-  <BrowserPreview
-    {runtimeOrigin}
-    {language}
-    source={value}
-    {stdin}
-    {disabled}
-    serverRun={(input) =>
-      new PracticumClient().execute<PlaygroundFallbackResult>(
-        command('/playground/run', 'POST', input)
-      )}
-  />
-  {#if runner?.simulated}<p class="notice">
-      Runner simulasi — tidak ada eksekusi kode nyata. Output hanya fixture
-      pengujian, bukan bukti program benar.
-    </p>{/if}
-  {#if runner?.available}
-    <button
-      class="secondary"
-      onclick={run}
-      disabled={disabled || offline || busy || !version}
-      >{busy ? 'Memproses…' : 'Jalankan kode di server'}</button
-    >
-    {#if issue}<p class="notice error" role="alert">
-        {issue} Tekan Jalankan kode untuk mencoba kembali permintaan yang sama.
-      </p>{/if}
-    {#if result}
-      <section
-        class="panel"
-        aria-label={`Hasil runner soal ${number}`}
-        aria-live="polite"
-      >
-        <h3>Hasil: {result.status}</h3>
-        {#if result.simulated}<p class="notice">
-            SIMULASI · Tidak ada eksekusi nyata.
-          </p>{/if}
-        <p class="muted">
-          {result.duration_ms} ms · Exit {result.exit_code ?? '—'} · {result.runner_version}
-        </p>
-        <button class="secondary" onclick={() => (result = null)}
-          >Bersihkan output soal {number}</button
-        >
-        <h4>stdout</h4>
-        <!-- svelte-ignore a11y_no_noninteractive_tabindex (Scrollable output must be keyboard reachable.) -->
-        <pre
-          class="runner-output"
-          tabindex="0"
-          aria-label={`stdout soal ${number}`}>{result.stdout ||
-            '(kosong)'}</pre>
-        <h4>stderr</h4>
-        <!-- svelte-ignore a11y_no_noninteractive_tabindex (Scrollable output must be keyboard reachable.) -->
-        <pre
-          class="runner-output"
-          tabindex="0"
-          aria-label={`stderr soal ${number}`}>{result.stderr ||
-            '(kosong)'}</pre>
-        {#if result.truncated}<p>Output dipotong sesuai batas ukuran.</p>{/if}
-        <details>
-          <summary>Metadata permintaan</summary>
-          <p class="prompt">
-            ID: {result.request_id}<br />Hash source: {result.source_hash}
-          </p>
-        </details>
-        {#if result.status === 'provider_error'}<p>
-            Provider gagal. Anda boleh mencoba lagi dengan input yang sama;
-            jawaban tersimpan tidak berubah.
-          </p>{/if}
-      </section>
-    {/if}
-  {:else}
-    <p class="notice">
-      Preview browser hanya untuk latihan. Jawaban tersimpan tetap masuk ke alur
-      penilaian manual dan hasil preview tidak menetapkan nilai akademik.
+  {#if !disabled}
+    <p class="muted">
+      Preview membantu memeriksa program. Output preview tidak menetapkan nilai
+      praktikum.
     </p>
+    <BrowserPreview
+      {runtimeOrigin}
+      {language}
+      source={value}
+      {stdin}
+      {disabled}
+      serverRun={offline
+        ? undefined
+        : (input) =>
+            new PracticumClient().execute<PlaygroundFallbackResult>(
+              command('/playground/run', 'POST', input)
+            )}
+    />
+    {#if runner?.simulated}<p class="notice">
+        Runner simulasi — tidak ada eksekusi kode nyata. Output hanya fixture
+        pengujian, bukan bukti program benar.
+      </p>{/if}
+    {#if runner?.available}
+      <details class="runner-tools">
+        <summary>Opsi runner server · bukan penilaian</summary>
+        <p class="muted">
+          Gunakan sebagai preview tambahan. Jawaban tetap dinilai pengajar.
+        </p>
+        <button
+          class="secondary"
+          onclick={run}
+          disabled={disabled || offline || busy || !version}
+          >{busy ? 'Memproses…' : 'Jalankan kode di server'}</button
+        >
+        {#if issue}<p class="notice error" role="alert">
+            {issue} Tekan Jalankan kode untuk mencoba kembali permintaan yang sama.
+          </p>{/if}
+        {#if result}
+          <section
+            class="panel"
+            aria-label={`Hasil runner soal ${number}`}
+            aria-live="polite"
+          >
+            <h3>
+              Hasil: {runLabels[result.status] ?? 'Status belum tersedia'}
+            </h3>
+            {#if result.simulated}<p class="notice">
+                SIMULASI · Tidak ada eksekusi nyata.
+              </p>{/if}
+            <p class="muted">
+              {result.duration_ms} ms · Exit {result.exit_code ?? '—'} · {result.runner_version}
+            </p>
+            <button class="secondary" onclick={() => (result = null)}
+              >Bersihkan output soal {number}</button
+            >
+            <h4>stdout</h4>
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex (Scrollable output must be keyboard reachable.) -->
+            <pre
+              class="runner-output"
+              tabindex="0"
+              aria-label={`stdout soal ${number}`}>{result.stdout ||
+                '(kosong)'}</pre>
+            <h4>stderr</h4>
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex (Scrollable output must be keyboard reachable.) -->
+            <pre
+              class="runner-output"
+              tabindex="0"
+              aria-label={`stderr soal ${number}`}>{result.stderr ||
+                '(kosong)'}</pre>
+            {#if result.truncated}<p>
+                Output dipotong sesuai batas ukuran.
+              </p>{/if}
+            <details>
+              <summary>Metadata permintaan</summary>
+              <p class="prompt">
+                ID: {result.request_id}<br />Hash source: {result.source_hash}
+              </p>
+            </details>
+            {#if result.status === 'provider_error'}<p>
+                Provider gagal. Anda boleh mencoba lagi dengan input yang sama;
+                jawaban tersimpan tidak berubah.
+              </p>{/if}
+          </section>
+        {/if}
+      </details>
+    {:else}
+      <p class="notice">
+        Preview browser hanya untuk latihan. Jawaban tersimpan tetap masuk ke
+        alur penilaian manual dan hasil preview tidak menetapkan nilai akademik.
+      </p>
+    {/if}
   {/if}
 </div>

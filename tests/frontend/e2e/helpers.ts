@@ -62,7 +62,7 @@ export async function login(
     new URL(page.url()).origin === hosts.auth &&
     new URL(page.url()).pathname === '/login'
   ) {
-    await page.getByLabel('Email', { exact: true }).fill(email);
+    await page.getByLabel('Email atau NIM', { exact: true }).fill(email);
     await page.getByLabel('Password', { exact: true }).fill('fixture-password');
     const submission = page.waitForRequest(
       (request) =>

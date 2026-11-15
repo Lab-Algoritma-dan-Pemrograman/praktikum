@@ -145,8 +145,14 @@ func TestPostgresMigrationRepeatChecksumAndConcurrentApply(t *testing.T) {
 		return items
 	}
 	before := readHistory()
-	if len(before) != 6 || before[0].Name != "0002_identity.sql" || before[2].Name != "0004_identity_hardening.sql" || before[3].Name != "0005_practicum_core.sql" || before[4].Name != "0006_elearning_core.sql" || before[5].Name != "0007_siakad_inventory_core.sql" {
-		t.Fatalf("unexpected ordered history: %+v", before)
+	catalog := migrations.Catalog()
+	if len(before) != len(catalog) {
+		t.Fatalf("migration history length %d differs from catalog %d", len(before), len(catalog))
+	}
+	for i, expected := range catalog {
+		if before[i].Name != expected.Name || before[i].Checksum != expected.Checksum {
+			t.Fatalf("unexpected migration history at %d: %+v, want %+v", i, before[i], expected)
+		}
 	}
 	errs := make(chan error, 4)
 	for range 4 {

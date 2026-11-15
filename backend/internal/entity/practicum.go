@@ -143,6 +143,8 @@ type PracticumMonitoringRow struct {
 	SubmittedAt   *time.Time `json:"submitted_at"`
 }
 type PracticumGradeSummary struct {
+	Status        string     `json:"status"`
+	CanOpen       bool       `json:"can_open"`
 	AttemptID     string     `json:"attempt_id"`
 	SessionID     string     `json:"session_id"`
 	SessionTitle  string     `json:"session_title"`

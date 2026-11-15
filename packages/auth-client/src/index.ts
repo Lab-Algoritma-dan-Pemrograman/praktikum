@@ -373,7 +373,8 @@ export function canAccessAdminRoute(
 export const identityWorkspacePath = '/workspace';
 
 export function safeRelativePath(value: string): string | null {
-  if (value === identityWorkspacePath) return value;
+  if (value === identityWorkspacePath || value === '/nilai') return value;
+  if (/^\/(?:sesi|attempts)\/[A-Za-z0-9_-]{1,128}$/.test(value)) return value;
   return adminNavigation.some((item) => item.href === value) ? value : null;
 }
 

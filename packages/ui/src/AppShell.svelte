@@ -21,6 +21,8 @@
    * fold; account details and logout move into a compact account menu.
    */
   export let variant: 'identity' | 'app' = 'identity';
+  export let renderAppHeading = true;
+  export let loginReturnTo = '';
   let ready = false;
   let busy = false;
   onMount(() => {
@@ -90,12 +92,17 @@
           </div>
         </details>
       {:else}
-        <a class="button" href="/login">Masuk</a>
+        <a
+          class="button"
+          href={loginReturnTo
+            ? `/login?${new URLSearchParams({ return_to: loginReturnTo })}`
+            : '/login'}>Masuk</a
+        >
       {/if}
     </div>
   </header>
   {#if variant === 'app'}
-    <h1 class="visually-hidden">{appName}</h1>
+    {#if renderAppHeading}<h1 class="visually-hidden">{appName}</h1>{/if}
     {#if issue}<div class="shell-alert">
         <RequestError error={issue} />
       </div>{/if}
