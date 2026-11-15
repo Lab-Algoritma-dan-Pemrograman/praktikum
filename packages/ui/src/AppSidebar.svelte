@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import ThemeToggle from './ThemeToggle.svelte';
 
   type NavItem = { href: string; label: string; hint?: string };
@@ -12,10 +13,16 @@
   export let logoutHref = '/logout';
   export let loginHref = '/login';
   export let loggedIn = false;
+  /** Saat diisi, "Keluar" menjadi tombol yang mencabut sesi lewat handler ini. */
   export let onLogout: (() => void) | undefined = undefined;
   export let logoutPending = false;
 
   let open = false;
+  // Kontrol berbasis JS baru aktif setelah hidrasi, sama seperti AppShell.
+  let ready = false;
+  onMount(() => {
+    ready = true;
+  });
 
   $: loggedIn = loggedIn || !!userName;
   $: initial =
@@ -78,7 +85,11 @@
           </summary>
           <div class="user-panel">
             {#if onLogout}
-              <button type="button" onclick={onLogout} disabled={logoutPending}
+              <button
+                class="console-logout"
+                type="button"
+                onclick={onLogout}
+                disabled={!ready || logoutPending}
                 >{logoutPending ? 'Mengakhiri sesi…' : 'Keluar'}</button
               >
             {:else}
@@ -108,6 +119,7 @@
     type="button"
     aria-expanded={open}
     aria-controls="content"
+    disabled={!ready}
     onclick={() => (open = !open)}
   >
     <span aria-hidden="true">{open ? '×' : '☰'}</span>
@@ -378,11 +390,22 @@
     font-size: 0.8rem;
     font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
   }
 
   .console-logout:hover,
   .console-logout:focus-visible {
     color: var(--ah-coral);
+  }
+
+  .console-logout:disabled {
+    cursor: progress;
+    opacity: 0.7;
+  }
+
+  .console-logout:focus-visible {
+    outline: var(--ah-focus-brand);
+    outline-offset: 2px;
   }
 
   .console-content {

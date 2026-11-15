@@ -312,6 +312,33 @@
     {/if}
   </section>
 
+  <section class="block" aria-labelledby="notif-list-title">
+    <div class="block-head">
+      <h2 id="notif-list-title">Notifikasi SIAKAD</h2>
+      <span class="card-count">{notifications.length}</span>
+    </div>
+    <ul class="notif-list">
+      {#each notifications as notif (notif.id)}
+        <li data-notification-id={notif.id}>
+          <strong>{notif.title}</strong>
+          <p>{notif.message}</p>
+          <small>{jakarta(notif.created_at)}</small>
+        </li>
+      {:else}
+        <li class="mini-empty">
+          {loading ? 'Memuat notifikasi…' : 'Belum ada notifikasi baru.'}
+        </li>
+      {/each}
+    </ul>
+    {#if notificationPage.hasMore}
+      <button
+        class="btn-ghost"
+        disabled={loading}
+        onclick={() => load('notifications')}>Muat notifikasi lainnya</button
+      >
+    {/if}
+  </section>
+
   <div class="quick">
     <a class="quick-link" href="/penyewaan">
       <strong>Inventaris & sewa</strong>
@@ -324,14 +351,6 @@
       </a>
     {/if}
   </div>
-
-  {#if notificationPage.hasMore}
-    <button
-      class="btn-ghost"
-      disabled={loading}
-      onclick={() => load('notifications')}>Muat notifikasi lainnya</button
-    >
-  {/if}
 {/if}
 
 <style>
@@ -666,6 +685,45 @@
     color: var(--ah-muted);
     font-size: 0.82rem;
     white-space: normal;
+  }
+
+  .notif-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--ah-line);
+    border-radius: 0.9rem;
+    background: #ffffff;
+    list-style: none;
+  }
+
+  .notif-list li {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.7rem 0.9rem;
+    border-top: 1px solid color-mix(in srgb, var(--ah-line) 70%, transparent);
+  }
+
+  .notif-list li:first-child {
+    border-top: 0;
+  }
+
+  .notif-list strong {
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .notif-list p {
+    margin: 0;
+    color: var(--ah-ink);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .notif-list small {
+    color: var(--ah-muted);
+    font-size: 0.75rem;
   }
 
   .quick {

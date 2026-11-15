@@ -120,6 +120,10 @@
           <li>{badge}</li>
         {/each}
       </ul>
+    {:else}
+      <p class="badges-empty">
+        Belum ada penugasan. Hubungi koordinator untuk akses.
+      </p>
     {/if}
 
     {#if issue}
@@ -295,6 +299,12 @@
     font-weight: 650;
     color: var(--ah-ink);
     background: #fff;
+  }
+
+  .badges-empty {
+    margin: 1.5rem 0 0;
+    font-size: 0.875rem;
+    color: var(--ah-muted);
   }
 
   .issue {

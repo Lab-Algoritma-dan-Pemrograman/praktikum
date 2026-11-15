@@ -57,7 +57,7 @@ test('wrong password can be retried without losing the app-bound return target',
 }) => {
   await page.goto(`${hosts.admin}/login?return_to=/profil`);
   await page
-    .getByLabel('Email', { exact: true })
+    .getByLabel('Email atau NIM', { exact: true })
     .fill('koordinator@example.test');
   await page.getByLabel('Password', { exact: true }).fill('wrong-password');
   await page.getByRole('button', { name: 'Masuk', exact: true }).click();
@@ -65,7 +65,7 @@ test('wrong password can be retried without losing the app-bound return target',
     'Email atau password tidak sesuai'
   );
   await page
-    .getByLabel('Email', { exact: true })
+    .getByLabel('Email atau NIM', { exact: true })
     .fill('koordinator@example.test');
   await page.getByLabel('Password', { exact: true }).fill('fixture-password');
   await page.getByRole('button', { name: 'Masuk', exact: true }).click();
