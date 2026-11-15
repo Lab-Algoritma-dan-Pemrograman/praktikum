@@ -3197,6 +3197,196 @@
         }
       }
     },
+    "/v1/admin/praktikum/questions/{id}/rumpang": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Origin"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      ],
+      "post": {
+        "operationId": "practicum.admin.questions.rumpang",
+        "tags": [
+          "practicum-admin"
+        ],
+        "summary": "Generate starter code for a coding question",
+        "description": "Idempotent; regenerating returns the existing starter code. Non-coding or already-configured questions return 422. Requires host-bound session, allowed Origin, matching CSRF and Idempotency-Key.",
+        "x-permissions": [
+          "question.manage"
+        ],
+        "x-permission-match": "any",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CSRFToken"
+          },
+          {
+            "$ref": "#/components/parameters/PracticumIdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question with generated starter code",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "private, no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PracticumQuestionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/PracticumConflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PracticumBodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/PracticumRateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/PracticumUnavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "x-max-bytes": 262144,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PracticumEmptyRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/praktikum/rekap": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Origin"
+        }
+      ],
+      "get": {
+        "operationId": "practicum.admin.rekap",
+        "tags": [
+          "practicum-admin"
+        ],
+        "summary": "List graded recap rows for one course",
+        "x-permissions": [
+          "practicum.grade.write"
+        ],
+        "x-permission-match": "any",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PracticumLimit"
+          },
+          {
+            "$ref": "#/components/parameters/PracticumOffset"
+          },
+          {
+            "name": "course_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Graded recap rows for one course",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "private, no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PracticumRekapResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/PracticumConflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PracticumBodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/PracticumRateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/PracticumUnavailable"
+          }
+        }
+      }
+    },
     "/v1/admin/praktikum/penilaian/{attemptId}": {
       "parameters": [
         {
@@ -5365,7 +5555,7 @@
         "tags": [
           "learning-admin"
         ],
-        "summary": "List the achievement catalog for authoring",
+        "summary": "List scoped achievement catalog entries for authoring",
         "x-permissions": [
           "learning.content.manage",
           "learning.monitor"
@@ -5373,17 +5563,49 @@
         "x-permission-match": "any",
         "responses": {
           "200": {
-            "description": "Achievement catalog sorted by title",
+            "description": "Achievement catalog entries",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LearningAdminAchievementListResponse"
+                  "$ref": "#/components/schemas/LearningAchievementCatalogListResponse"
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       },
@@ -5392,7 +5614,7 @@
         "tags": [
           "learning-admin"
         ],
-        "summary": "Create an achievement catalog entry",
+        "summary": "Create a scoped achievement catalog entry",
         "x-permissions": [
           "learning.content.manage"
         ],
@@ -5417,17 +5639,49 @@
         },
         "responses": {
           "201": {
-            "description": "Created achievement",
+            "description": "Created achievement catalog entry",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LearningAdminAchievementResponse"
+                  "$ref": "#/components/schemas/LearningAchievementCatalogResponse"
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -5478,17 +5732,49 @@
         },
         "responses": {
           "200": {
-            "description": "Updated achievement",
+            "description": "Updated achievement catalog entry",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LearningAdminAchievementResponse"
+                  "$ref": "#/components/schemas/LearningAchievementCatalogResponse"
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -5504,7 +5790,7 @@
         "tags": [
           "learning-admin"
         ],
-        "summary": "Set a student XP balance with audit trail and idempotent replay",
+        "summary": "Set a student's XP to an exact value with a required audit reason",
         "x-permissions": [
           "learning.xp.manage"
         ],
@@ -5518,7 +5804,7 @@
         ],
         "requestBody": {
           "required": true,
-          "x-max-bytes": 16384,
+          "x-max-bytes": 262144,
           "content": {
             "application/json": {
               "schema": {
@@ -5531,7 +5817,9 @@
           "200": {
             "description": "Updated learning profile",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
@@ -5540,6 +5828,36 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -5555,7 +5873,7 @@
         "tags": [
           "learning-admin"
         ],
-        "summary": "Reset a student XP balance to zero with audit trail",
+        "summary": "Reset a student's XP to zero with a required audit reason",
         "x-permissions": [
           "learning.xp.manage"
         ],
@@ -5569,7 +5887,7 @@
         ],
         "requestBody": {
           "required": true,
-          "x-max-bytes": 16384,
+          "x-max-bytes": 262144,
           "content": {
             "application/json": {
               "schema": {
@@ -5580,9 +5898,11 @@
         },
         "responses": {
           "200": {
-            "description": "Reset learning profile",
+            "description": "Updated learning profile",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
@@ -5591,6 +5911,36 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -5606,7 +5956,7 @@
         "tags": [
           "learning-admin"
         ],
-        "summary": "Grant prestige to a student with reason and audit trail",
+        "summary": "Grant prestige points to a student with a required audit reason",
         "x-permissions": [
           "learning.xp.manage"
         ],
@@ -5620,7 +5970,7 @@
         ],
         "requestBody": {
           "required": true,
-          "x-max-bytes": 16384,
+          "x-max-bytes": 262144,
           "content": {
             "application/json": {
               "schema": {
@@ -5633,7 +5983,9 @@
           "201": {
             "description": "Created prestige entry",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
@@ -5642,6 +5994,36 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -5657,11 +6039,11 @@
         "tags": [
           "learning"
         ],
-        "summary": "List prestige entries for a student (own history or staff view by user_id)",
+        "summary": "List prestige history for a student (self by default, others with monitor or XP manage)",
         "x-permissions": [
           "learning.content.read",
-          "learning.content.manage",
-          "learning.monitor"
+          "learning.monitor",
+          "learning.xp.manage"
         ],
         "x-permission-match": "any",
         "parameters": [
@@ -5673,13 +6055,21 @@
               "type": "integer",
               "minimum": 1
             }
+          },
+          {
+            "$ref": "#/components/parameters/PracticumLimit"
+          },
+          {
+            "$ref": "#/components/parameters/PracticumOffset"
           }
         ],
         "responses": {
           "200": {
-            "description": "Prestige history, newest first",
+            "description": "Prestige history",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
@@ -5688,6 +6078,36 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -5703,7 +6123,11 @@
         "tags": [
           "learning"
         ],
-        "summary": "List frozen weekly leaderboard snapshots (Monday 00:00 WIB boundary)",
+        "summary": "List weekly WIB-boundary leaderboard snapshots",
+        "description": "Snapshots are generated per Monday 00:00 Asia/Jakarta and stay frozen once the week has passed.",
+        "x-permissions": [
+          "learning.content.read"
+        ],
         "parameters": [
           {
             "$ref": "#/components/parameters/PracticumLimit"
@@ -5714,9 +6138,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Weekly standings snapshots, newest week first",
+            "description": "Weekly leaderboard snapshots, newest first",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
@@ -5725,6 +6151,36 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -5740,8 +6196,10 @@
         "tags": [
           "learning"
         ],
-        "summary": "Ask the AI hint provider for guidance without revealing answers or quiz keys",
-        "description": "Provider-neutral AI hint. The system prompt forbids final answers, complete solutions and quiz keys. Per-user 10/minute quota applies and the provider is optional (503 when unconfigured).",
+        "summary": "Request an AI hint that never reveals final answers",
+        "x-permissions": [
+          "learning.content.read"
+        ],
         "parameters": [
           {
             "$ref": "#/components/parameters/CSRFToken"
@@ -5752,20 +6210,22 @@
         ],
         "requestBody": {
           "required": true,
-          "x-max-bytes": 262144,
+          "x-max-bytes": 131072,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LearningAIHintRequest"
+                "$ref": "#/components/schemas/LearningHintAIRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Generated hint and remaining per-minute quota",
+            "description": "Generated hint and remaining quota",
             "headers": {
-              "$ref": "#/components/headers/RequestID"
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              }
             },
             "content": {
               "application/json": {
@@ -5775,11 +6235,35 @@
               }
             }
           },
-          "502": {
-            "$ref": "#/components/responses/PracticumUnavailable"
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/BodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
           },
           "503": {
-            "$ref": "#/components/responses/PracticumUnavailable"
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }
@@ -14112,7 +14596,7 @@
           "title": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 200
+            "maxLength": 120
           },
           "description": {
             "type": "string",
@@ -14187,26 +14671,100 @@
         }
       },
       "LearningAchievementCreateRequest": {
-        "$ref": "#/components/schemas/LearningAchievementInput"
-      },
-      "LearningAchievementUpdateRequest": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "version",
           "title",
           "description",
           "requirement_type",
           "requirement_value",
           "xp_reward",
-          "active"
-        ],
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/LearningAchievementInput"
-          }
+          "active",
+          "scope"
         ],
         "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "requirement_type": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "xp",
+              "lesson_count",
+              "streak",
+              "game_score",
+              "level_completed"
+            ]
+          },
+          "requirement_value": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "xp_reward": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/LearningScope"
+          }
+        }
+      },
+      "LearningAchievementUpdateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "title",
+          "description",
+          "requirement_type",
+          "requirement_value",
+          "xp_reward",
+          "active",
+          "version"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "requirement_type": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "xp",
+              "lesson_count",
+              "streak",
+              "game_score",
+              "level_completed"
+            ]
+          },
+          "requirement_value": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "xp_reward": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          },
+          "active": {
+            "type": "boolean"
+          },
           "version": {
             "type": "integer",
             "minimum": 1
@@ -14233,6 +14791,7 @@
           },
           "reason": {
             "type": "string",
+            "minLength": 1,
             "maxLength": 500
           }
         }
@@ -14251,6 +14810,7 @@
           },
           "reason": {
             "type": "string",
+            "minLength": 1,
             "maxLength": 500
           }
         }
@@ -14271,11 +14831,12 @@
           "amount": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 100000
+            "maximum": 10000
           },
           "reason": {
             "type": "string",
-            "maxLength": 500
+            "minLength": 3,
+            "maxLength": 200
           }
         }
       },
@@ -14301,19 +14862,19 @@
             "minimum": 1
           },
           "source": {
-            "type": "string",
-            "enum": [
-              "admin_grant",
-              "weekly_leaderboard"
-            ]
+            "type": "string"
           },
           "amount": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 0,
+            "maximum": 100000
           },
           "reason": {
-            "type": "string",
-            "maxLength": 500
+            "type": "string"
+          },
+          "meta": {
+            "type": "object",
+            "additionalProperties": true
           },
           "created_at": {
             "type": "string",
@@ -14347,7 +14908,7 @@
         "properties": {
           "data": {
             "type": "array",
-            "maxItems": 200,
+            "maxItems": 100,
             "items": {
               "$ref": "#/components/schemas/LearningPrestigeEntry"
             }
@@ -14368,7 +14929,7 @@
         "properties": {
           "week_start": {
             "type": "string",
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            "pattern": "^\\\\d{4}-\\\\d{2}-\\\\d{2}$"
           },
           "generated_at": {
             "type": "string",
@@ -14393,6 +14954,7 @@
         "properties": {
           "data": {
             "type": "array",
+            "maxItems": 100,
             "items": {
               "$ref": "#/components/schemas/LearningWeeklySnapshot"
             }
@@ -15914,6 +16476,7 @@
         }
       },
       "AcademicReportSummaryResponse": {
+        "type": "object",
         "additionalProperties": false,
         "required": [
           "data",
@@ -15928,7 +16491,7 @@
           }
         }
       },
-      "LearningAdminAchievementListResponse": {
+      "PracticumRekapResponse": {
         "type": "object",
         "additionalProperties": false,
         "required": [
@@ -15939,7 +16502,53 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/LearningAchievementCatalogItem"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "attempt_id",
+                "user_id",
+                "user_name",
+                "status",
+                "score",
+                "max_score",
+                "percentage",
+                "submitted_at"
+              ],
+              "properties": {
+                "attempt_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "user_id": {
+                  "type": "integer"
+                },
+                "user_name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "max_score": {
+                  "type": "integer"
+                },
+                "percentage": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "keaktifan": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "submitted_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                }
+              }
             }
           },
           "meta": {
@@ -15947,7 +16556,285 @@
           }
         }
       },
-      "LearningAdminAchievementResponse": {
+      "LaporanTarget": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "class_id",
+          "shift",
+          "deadline_at"
+        ],
+        "properties": {
+          "class_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "shift": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "buka_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deadline_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "late_until": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "LaporanBesar": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "judul",
+          "deskripsi",
+          "butuh_laporan",
+          "butuh_analisa",
+          "active",
+          "targets",
+          "created_by",
+          "created_at",
+          "scope",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "judul": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanTarget"
+            }
+          },
+          "created_by": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "scope": {
+            "$ref": "#/components/schemas/AcademicScope"
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "LaporanStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "laporan_id",
+          "judul",
+          "deskripsi",
+          "butuh_laporan",
+          "butuh_analisa",
+          "shift",
+          "fase",
+          "sisa_detik",
+          "bisa_kumpul",
+          "status",
+          "sumber",
+          "terlambat",
+          "has_laporan",
+          "has_analisa"
+        ],
+        "properties": {
+          "laporan_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "judul": {
+            "type": "string"
+          },
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
+          },
+          "class_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "shift": {
+            "type": "integer"
+          },
+          "buka_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deadline_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "late_until": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fase": {
+            "type": "string",
+            "enum": [
+              "belum_dibuka",
+              "dibuka",
+              "telat",
+              "ditutup"
+            ]
+          },
+          "sisa_detik": {
+            "type": "integer"
+          },
+          "bisa_kumpul": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "belum",
+              "terkumpul"
+            ]
+          },
+          "sumber": {
+            "type": "string"
+          },
+          "terlambat": {
+            "type": "boolean"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "has_laporan": {
+            "type": "boolean"
+          },
+          "has_analisa": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LaporanPengumpulanRow": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "user_name",
+          "shift",
+          "status",
+          "sumber",
+          "is_late",
+          "version"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "class_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "shift": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "belum",
+              "terkumpul"
+            ]
+          },
+          "sumber": {
+            "type": "string"
+          },
+          "laporan_path": {
+            "type": "string"
+          },
+          "analisa_path": {
+            "type": "string"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "is_late": {
+            "type": "boolean"
+          },
+          "manual_oleh": {
+            "type": "integer",
+            "nullable": true
+          },
+          "manual_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "manual_catatan": {
+            "type": "string"
+          },
+          "override_oleh": {
+            "type": "integer",
+            "nullable": true
+          },
+          "override_alasan": {
+            "type": "string"
+          },
+          "override_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "LaporanStatusResponse": {
         "type": "object",
         "additionalProperties": false,
         "required": [
@@ -15956,81 +16843,400 @@
         ],
         "properties": {
           "data": {
-            "$ref": "#/components/schemas/LearningAchievementCatalogItem"
+            "$ref": "#/components/schemas/LaporanStatus"
           },
           "meta": {
             "$ref": "#/components/schemas/Meta"
           }
         }
       },
-      "LearningAchievementInput": {
+      "LaporanUploadURLRequest": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "title",
-          "description",
-          "requirement_type",
-          "requirement_value",
-          "xp_reward",
-          "active",
-          "scope"
+          "jenis",
+          "ext"
         ],
         "properties": {
-          "title": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200,
-            "x-max-bytes": 200
-          },
-          "description": {
-            "type": "string",
-            "maxLength": 2000
-          },
-          "requirement_type": {
+          "jenis": {
             "type": "string",
             "enum": [
-              "manual",
-              "xp",
-              "lesson_count",
-              "streak",
-              "game_score",
-              "level_completed"
+              "laporan",
+              "analisa"
             ]
           },
-          "requirement_value": {
+          "ext": {
             "type": "string",
+            "enum": [
+              "pdf",
+              "docx"
+            ]
+          }
+        }
+      },
+      "LaporanUploadURLResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "upload_url",
+              "path"
+            ],
+            "properties": {
+              "upload_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanKumpulRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "laporan_path": {
+            "type": "string"
+          },
+          "analisa_path": {
+            "type": "string"
+          }
+        }
+      },
+      "LaporanEmptyRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "LaporanPengumpulan": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "laporan_id",
+          "user_id",
+          "status",
+          "sumber",
+          "is_late",
+          "shift",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
             "maxLength": 128
           },
-          "xp_reward": {
+          "laporan_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "belum",
+              "terkumpul"
+            ]
+          },
+          "sumber": {
+            "type": "string"
+          },
+          "laporan_path": {
+            "type": "string"
+          },
+          "analisa_path": {
+            "type": "string"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "is_late": {
+            "type": "boolean"
+          },
+          "class_id": {
+            "type": "string"
+          },
+          "shift": {
+            "type": "integer"
+          },
+          "manual_oleh": {
             "type": "integer",
-            "minimum": 0,
-            "maximum": 10000
+            "nullable": true
+          },
+          "manual_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "manual_catatan": {
+            "type": "string"
+          },
+          "override_oleh": {
+            "type": "integer",
+            "nullable": true
+          },
+          "override_alasan": {
+            "type": "string"
+          },
+          "override_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "LaporanPengumpulanResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LaporanPengumpulan"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanEmptyResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "null"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanBerkasResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "url",
+              "filename"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "filename": {
+                "type": "string"
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanBesar"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LaporanBesar"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "judul",
+          "butuh_laporan",
+          "butuh_analisa",
+          "active",
+          "targets"
+        ],
+        "properties": {
+          "judul": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
           },
           "active": {
             "type": "boolean"
           },
-          "scope": {
-            "$ref": "#/components/schemas/LearningScope"
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanTarget"
+            }
           }
         }
       },
-      "LearningAIHintRequest": {
+      "LaporanUpdateRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": [],
+        "required": [
+          "version",
+          "judul",
+          "butuh_laporan",
+          "butuh_analisa",
+          "active",
+          "targets"
+        ],
         "properties": {
-          "lesson_id": {
-            "type": "string",
-            "maxLength": 128
+          "version": {
+            "type": "integer"
           },
-          "question": {
+          "judul": {
             "type": "string",
-            "maxLength": 4000
+            "maxLength": 200
           },
-          "draft_code": {
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanTarget"
+            }
+          }
+        }
+      },
+      "LaporanPengumpulanListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanPengumpulanRow"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanMarkRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "status"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer"
+          },
+          "status": {
             "type": "string",
-            "maxLength": 65536,
-            "x-max-bytes": 65536
+            "enum": [
+              "terkumpul",
+              "belum"
+            ]
+          },
+          "catatan": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "LaporanOverrideRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "alasan"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer"
+          },
+          "alasan": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
           }
         }
       }

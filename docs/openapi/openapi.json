@@ -3197,6 +3197,196 @@
         }
       }
     },
+    "/v1/admin/praktikum/questions/{id}/rumpang": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Origin"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      ],
+      "post": {
+        "operationId": "practicum.admin.questions.rumpang",
+        "tags": [
+          "practicum-admin"
+        ],
+        "summary": "Generate starter code for a coding question",
+        "description": "Idempotent; regenerating returns the existing starter code. Non-coding or already-configured questions return 422. Requires host-bound session, allowed Origin, matching CSRF and Idempotency-Key.",
+        "x-permissions": [
+          "question.manage"
+        ],
+        "x-permission-match": "any",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CSRFToken"
+          },
+          {
+            "$ref": "#/components/parameters/PracticumIdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question with generated starter code",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "private, no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PracticumQuestionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/PracticumConflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PracticumBodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/PracticumRateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/PracticumUnavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "x-max-bytes": 262144,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PracticumEmptyRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/praktikum/rekap": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Origin"
+        }
+      ],
+      "get": {
+        "operationId": "practicum.admin.rekap",
+        "tags": [
+          "practicum-admin"
+        ],
+        "summary": "List graded recap rows for one course",
+        "x-permissions": [
+          "practicum.grade.write"
+        ],
+        "x-permission-match": "any",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PracticumLimit"
+          },
+          {
+            "$ref": "#/components/parameters/PracticumOffset"
+          },
+          {
+            "name": "course_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Graded recap rows for one course",
+            "headers": {
+              "X-Request-ID": {
+                "$ref": "#/components/headers/RequestID"
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "private, no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PracticumRekapResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "409": {
+            "$ref": "#/components/responses/PracticumConflict"
+          },
+          "413": {
+            "$ref": "#/components/responses/PracticumBodyTooLarge"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "429": {
+            "$ref": "#/components/responses/PracticumRateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/PracticumUnavailable"
+          }
+        }
+      }
+    },
     "/v1/admin/praktikum/penilaian/{attemptId}": {
       "parameters": [
         {
@@ -16286,6 +16476,7 @@
         }
       },
       "AcademicReportSummaryResponse": {
+        "type": "object",
         "additionalProperties": false,
         "required": [
           "data",
@@ -16297,6 +16488,755 @@
           },
           "meta": {
             "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "PracticumRekapResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "attempt_id",
+                "user_id",
+                "user_name",
+                "status",
+                "score",
+                "max_score",
+                "percentage",
+                "submitted_at"
+              ],
+              "properties": {
+                "attempt_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "user_id": {
+                  "type": "integer"
+                },
+                "user_name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "max_score": {
+                  "type": "integer"
+                },
+                "percentage": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "keaktifan": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "submitted_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                }
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanTarget": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "class_id",
+          "shift",
+          "deadline_at"
+        ],
+        "properties": {
+          "class_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "shift": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "buka_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deadline_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "late_until": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "LaporanBesar": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "judul",
+          "deskripsi",
+          "butuh_laporan",
+          "butuh_analisa",
+          "active",
+          "targets",
+          "created_by",
+          "created_at",
+          "scope",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "judul": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanTarget"
+            }
+          },
+          "created_by": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "scope": {
+            "$ref": "#/components/schemas/AcademicScope"
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "LaporanStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "laporan_id",
+          "judul",
+          "deskripsi",
+          "butuh_laporan",
+          "butuh_analisa",
+          "shift",
+          "fase",
+          "sisa_detik",
+          "bisa_kumpul",
+          "status",
+          "sumber",
+          "terlambat",
+          "has_laporan",
+          "has_analisa"
+        ],
+        "properties": {
+          "laporan_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "judul": {
+            "type": "string"
+          },
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
+          },
+          "class_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "shift": {
+            "type": "integer"
+          },
+          "buka_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deadline_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "late_until": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fase": {
+            "type": "string",
+            "enum": [
+              "belum_dibuka",
+              "dibuka",
+              "telat",
+              "ditutup"
+            ]
+          },
+          "sisa_detik": {
+            "type": "integer"
+          },
+          "bisa_kumpul": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "belum",
+              "terkumpul"
+            ]
+          },
+          "sumber": {
+            "type": "string"
+          },
+          "terlambat": {
+            "type": "boolean"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "has_laporan": {
+            "type": "boolean"
+          },
+          "has_analisa": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LaporanPengumpulanRow": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "user_id",
+          "user_name",
+          "shift",
+          "status",
+          "sumber",
+          "is_late",
+          "version"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "class_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "shift": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "belum",
+              "terkumpul"
+            ]
+          },
+          "sumber": {
+            "type": "string"
+          },
+          "laporan_path": {
+            "type": "string"
+          },
+          "analisa_path": {
+            "type": "string"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "is_late": {
+            "type": "boolean"
+          },
+          "manual_oleh": {
+            "type": "integer",
+            "nullable": true
+          },
+          "manual_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "manual_catatan": {
+            "type": "string"
+          },
+          "override_oleh": {
+            "type": "integer",
+            "nullable": true
+          },
+          "override_alasan": {
+            "type": "string"
+          },
+          "override_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "LaporanStatusResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LaporanStatus"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanUploadURLRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "jenis",
+          "ext"
+        ],
+        "properties": {
+          "jenis": {
+            "type": "string",
+            "enum": [
+              "laporan",
+              "analisa"
+            ]
+          },
+          "ext": {
+            "type": "string",
+            "enum": [
+              "pdf",
+              "docx"
+            ]
+          }
+        }
+      },
+      "LaporanUploadURLResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "upload_url",
+              "path"
+            ],
+            "properties": {
+              "upload_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanKumpulRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "laporan_path": {
+            "type": "string"
+          },
+          "analisa_path": {
+            "type": "string"
+          }
+        }
+      },
+      "LaporanEmptyRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "LaporanPengumpulan": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "laporan_id",
+          "user_id",
+          "status",
+          "sumber",
+          "is_late",
+          "shift",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "laporan_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "belum",
+              "terkumpul"
+            ]
+          },
+          "sumber": {
+            "type": "string"
+          },
+          "laporan_path": {
+            "type": "string"
+          },
+          "analisa_path": {
+            "type": "string"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "is_late": {
+            "type": "boolean"
+          },
+          "class_id": {
+            "type": "string"
+          },
+          "shift": {
+            "type": "integer"
+          },
+          "manual_oleh": {
+            "type": "integer",
+            "nullable": true
+          },
+          "manual_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "manual_catatan": {
+            "type": "string"
+          },
+          "override_oleh": {
+            "type": "integer",
+            "nullable": true
+          },
+          "override_alasan": {
+            "type": "string"
+          },
+          "override_pada": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "LaporanPengumpulanResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LaporanPengumpulan"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanEmptyResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "null"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanBerkasResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "url",
+              "filename"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "filename": {
+                "type": "string"
+              }
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanBesar"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/LaporanBesar"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "judul",
+          "butuh_laporan",
+          "butuh_analisa",
+          "active",
+          "targets"
+        ],
+        "properties": {
+          "judul": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanTarget"
+            }
+          }
+        }
+      },
+      "LaporanUpdateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "judul",
+          "butuh_laporan",
+          "butuh_analisa",
+          "active",
+          "targets"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer"
+          },
+          "judul": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "deskripsi": {
+            "type": "string"
+          },
+          "butuh_laporan": {
+            "type": "boolean"
+          },
+          "butuh_analisa": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "targets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanTarget"
+            }
+          }
+        }
+      },
+      "LaporanPengumpulanListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LaporanPengumpulanRow"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "LaporanMarkRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "status"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "terkumpul",
+              "belum"
+            ]
+          },
+          "catatan": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "LaporanOverrideRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "alasan"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer"
+          },
+          "alasan": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 500
           }
         }
       }

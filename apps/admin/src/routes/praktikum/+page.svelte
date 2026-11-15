@@ -14,6 +14,7 @@
   import Authoring from './Authoring.svelte';
   import Activations from './Activations.svelte';
   import Monitoring from './Monitoring.svelte';
+  import LaporanBesar from './LaporanBesar.svelte';
   import Rekap from './Rekap.svelte';
   export let data: AppIdentityData;
   const client = new PracticumClient();
@@ -54,6 +55,9 @@
       ...detail.session.scope,
       session_id: detail.session.id
     });
+  $: canLaporan = !!data.principal?.grants.some(
+    (g) => g.permission === 'laporan.manage'
+  );
   async function load(next = offset) {
     loading = true;
     issue = '';
@@ -206,6 +210,12 @@
     </details>
   {/if}
   {#if loading}<p role="status">Memuat Praktikum…</p>{/if}
+  {#if canLaporan}
+    <details class="panel" open>
+      <summary>Laporan besar (tugas akhir)</summary>
+      <LaporanBesar principal={data.principal} />
+    </details>
+  {/if}
   {#if detail}
     <nav aria-label="Panel Admin Praktikum">
       <button

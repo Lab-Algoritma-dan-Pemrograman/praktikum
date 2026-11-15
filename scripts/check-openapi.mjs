@@ -189,7 +189,7 @@ for (const file of [
     assert.ok(operation.responses[status], `Wrong success status for ${id}`);
   }
 }
-assert.equal([...ids].filter((id) => id.startsWith('practicum.')).length, 26);
+assert.equal([...ids].filter((id) => id.startsWith('practicum.')).length, 28);
 assert.equal([...ids].filter((id) => id.startsWith('learning.')).length, 21);
 assert.equal(
   [...ids].filter(

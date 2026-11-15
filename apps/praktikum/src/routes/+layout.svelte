@@ -10,6 +10,7 @@
 
   const navItems = [
     { href: '/', label: 'Sesi praktikum', hint: 'Kelas & aktivasi' },
+    { href: '/laporan', label: 'Laporan besar', hint: 'Tugas akhir' },
     { href: '/nilai', label: 'Nilai & riwayat', hint: 'Hasil pengerjaan' }
   ];
 
