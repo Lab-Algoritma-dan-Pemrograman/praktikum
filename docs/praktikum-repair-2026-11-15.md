@@ -71,11 +71,11 @@ Tes tidak dilemahkan agar hijau. Helper E2E login diselaraskan dengan label aktu
 
 ## Preview sintetis
 
-- [Daftar sesi desktop](../.tmp-shots/praktikum-audit-20261115/sessions-desktop.png)
-- [Detail sesi desktop](../.tmp-shots/praktikum-audit-20261115/detail-desktop.png)
-- [Workspace mobile](../.tmp-shots/praktikum-audit-20261115/workspace-mobile.png)
-- [Konfirmasi submit mobile](../.tmp-shots/praktikum-audit-20261115/submit-mobile.png)
-- [Riwayat mobile](../.tmp-shots/praktikum-audit-20261115/history-mobile.png)
+- [Daftar sesi desktop](evidence/praktikum-2026-11-15/sessions-desktop.png)
+- [Detail sesi desktop](evidence/praktikum-2026-11-15/detail-desktop.png)
+- [Workspace mobile](evidence/praktikum-2026-11-15/workspace-mobile.png)
+- [Konfirmasi submit mobile](evidence/praktikum-2026-11-15/submit-mobile.png)
+- [Riwayat mobile](evidence/praktikum-2026-11-15/history-mobile.png)
 
 Semua akun/jawaban pada gambar adalah fixture sintetis. Screenshot setelah perubahan, bukan pasangan before/after production. Folder preview lokal tidak otomatis ikut clean checkout.
 

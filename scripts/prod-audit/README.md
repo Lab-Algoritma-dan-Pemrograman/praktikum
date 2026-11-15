@@ -61,5 +61,5 @@ psql "$TARGET_DATABASE_URL" -f scripts/prod-audit/target-schema-map.sql \
 
 ## Setelah audit
 
-Lampirkan hasil ke `docs/prod-cutover-runbook.md` (bagian "Strategi data")
+Lampirkan hasil ke `docs/archive/prod-cutover-runbook-superseded.md` (bagian "Strategi data")
 sebagai baseline nyata sebelum owner memutuskan tanggal cutover.

@@ -4,7 +4,7 @@ Status: direvisi 12 November 2026 setelah keputusan $0 browser-trusted. Implemen
 
 ## 1. Keputusan final
 
-Rujukan mengikat: [keputusan completion browser E-learning](elearning-browser-completion-decision-2026-11-12.md).
+Rujukan mengikat: [keputusan completion browser E-learning](../elearning-browser-completion-decision-2026-11-12.md).
 
 | Area | Keputusan |
 | --- | --- |
@@ -55,13 +55,13 @@ Tidak ada migrasi schema, provisioning dataset, impor legacy, project baru, atau
 
 ## 5. Scheduler dan kapasitas
 
-Scheduler batch 20 sudah dideploy dan memproses 120 job retained melalui enam delivery cron nyata dalam 5 menit 9,265 detik. Final verification membuktikan 120 `needs_manual`, nol pending/running/lease/score, session inactive, 10 activation closed, cron aktif, dan actor logout. Satu expired lease adalah injeksi sintetis, bukan outage nyata. Detail ada di [runbook scheduler](staging-scheduler.md#acceptance-batch-20-pada-staging--12-november-2026).
+Scheduler batch 20 sudah dideploy dan memproses 120 job retained melalui enam delivery cron nyata dalam 5 menit 9,265 detik. Final verification membuktikan 120 `needs_manual`, nol pending/running/lease/score, session inactive, 10 activation closed, cron aktif, dan actor logout. Satu expired lease adalah injeksi sintetis, bukan outage nyata. Detail ada di [runbook scheduler](../staging-scheduler.md#acceptance-batch-20-pada-staging--12-november-2026).
 
 Bukti ini menutup acceptance scheduler yang disepakati, bukan klaim provider load atau outage authoritative runner—karena provider authoritative telah ditarik dari scope.
 
 ## 6. Status gate
 
-- 12 gate lama mempunyai bukti dan tetap tercatat di [closeout](phase-1-5-closeout.md).
+- 12 gate lama mempunyai bukti dan tetap tercatat di [closeout](../phase-1-5-closeout.md).
 - Tiga gate authoritative-runner lama **tidak ditandai lulus**. Statusnya `superseded/withdrawn by approved product-risk decision`:
   1. conformance hosted authoritative runner;
   2. hosted execution → proof → completion;

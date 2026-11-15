@@ -110,7 +110,7 @@ v2 unggul karena batas output, isolasi, dan tidak ada biaya server.
 | Frontend unit | Sedikit (Countdown, beberapa SIAKAD) | 9 file unit + Playwright |
 | Contract test | Tidak ada | OpenAPI 90 operation / 344 pemeriksaan |
 | E2E | QA manual + dokumen audit | Chromium 55/55 (bukti sesi sebelumnya) |
-| Acceptance staging | Tidak terdokumentasi terpusat | `docs/staging-acceptance-2026-11-11.md` |
+| Acceptance staging | Tidak terdokumentasi terpusat | `docs/archive/staging-acceptance-2026-11-11.md` |
 | Bukti | Laporan QA | Artefak, checksum, request ID |
 
 ## 9. Keamanan

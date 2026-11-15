@@ -15,7 +15,7 @@ Ini penutupan **rehearsal**, bukan persetujuan cutover produksi, migrasi lossles
 - Unsupported history (achievement/game/flowchart/absensi tanpa relasi/financial ledger/arsip/operational records) ditolak, tidak direkayasa. Data asli tetap utuh. Penutupan ini tidak membuat rejected rows menjadi migrated.
 - File-copy **tidak berlaku pada scope final**: target attachment model belum tersedia. Inventory/mapping dan prosedur copy aman disimpan; tidak ada download/upload objek atau klaim file sudah dipindahkan.
 
-Detail: [manifest dataset](phase-6-dataset-manifest.md), [inventory](phase-6-inventory.md), [runbook](phase-6-rehearsal.md). Keputusan runner Phase1–5 tidak dibuka ulang: E-learning browser-trusted XP dan Praktikum manual tetap final.
+Detail: [manifest dataset](phase-6-dataset-manifest.md), [inventory](../phase-6-inventory.md), [runbook](phase-6-rehearsal.md). Keputusan runner Phase1–5 tidak dibuka ulang: E-learning browser-trusted XP dan Praktikum manual tetap final.
 
 ## 2. Gate yang terbukti
 

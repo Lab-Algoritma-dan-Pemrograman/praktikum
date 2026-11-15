@@ -1,6 +1,6 @@
 # Rancangan runner legacy di v2 — 11 November 2026
 
-> **Historical/superseded for current Next Steps.** Implementasi final dan accepted risk dicatat pada [browser-completion decision](elearning-browser-completion-decision-2026-11-12.md).
+> **Historical/superseded for current Next Steps.** Implementasi final dan accepted risk dicatat pada [browser-completion decision](../elearning-browser-completion-decision-2026-11-12.md).
 
 Dokumen ini merancang penggunaan sistem code runner project lama
 (`E:\rekapProject\project_ap`) di v2. Sifatnya rancangan; belum ada source yang

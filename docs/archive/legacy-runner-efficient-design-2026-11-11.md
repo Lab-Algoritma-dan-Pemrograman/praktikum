@@ -1,6 +1,6 @@
 # Rancangan runner legacy efisien — v2
 
-> **Historical/superseded for current Next Steps.** Implementasi final dan accepted risk dicatat pada [browser-completion decision](elearning-browser-completion-decision-2026-11-12.md).
+> **Historical/superseded for current Next Steps.** Implementasi final dan accepted risk dicatat pada [browser-completion decision](../elearning-browser-completion-decision-2026-11-12.md).
 
 Status: rancangan. Belum ada source yang diubah. Phase 6 tidak disentuh.
 

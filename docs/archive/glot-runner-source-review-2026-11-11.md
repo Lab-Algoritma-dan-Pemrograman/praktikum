@@ -1,6 +1,6 @@
 # Kajian source Glot — 11 November 2026
 
-> **Historical/superseded for current Next Steps.** Keputusan final ada pada [browser-completion decision](elearning-browser-completion-decision-2026-11-12.md): Glot preview-only, Judge0/RapidAPI abandoned, dan tidak ada gate authoritative provider yang harus dikejar.
+> **Historical/superseded for current Next Steps.** Keputusan final ada pada [browser-completion decision](../elearning-browser-completion-decision-2026-11-12.md): Glot preview-only, Judge0/RapidAPI abandoned, dan tidak ada gate authoritative provider yang harus dikejar.
 
 ## Kesimpulan dan batas
 
