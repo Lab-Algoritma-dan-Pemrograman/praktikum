@@ -156,3 +156,55 @@ test('real Python matplotlib renders PNG and clears figures after failed runs', 
     page.getByRole('img', { name: /Grafik hasil preview/ })
   ).toHaveCount(0);
 });
+
+test('real Python terminal renders stderr, timeout status and input echo distinctly', async ({
+  page,
+  context
+}) => {
+  await pythonPage(page, context);
+  await page.clock.install();
+
+  // stderr lines carry the danger class contract used by the theme.
+  await run(page, 'import sys\nsys.stderr.write("stream-err")');
+  const errLine = page
+    .getByTestId('terminal-scrollback')
+    .locator('.term-line[data-kind="stderr"]')
+    .filter({ hasText: 'stream-err' });
+  await expect(errLine).toHaveCount(1, { timeout: 60000 });
+  // The theme paints stderr with --ah-console-danger; stdout stays neutral ink.
+  const stdoutLine = page
+    .getByTestId('terminal-scrollback')
+    .locator('.term-line[data-kind="stdout"]')
+    .first();
+  const [stderrColor, stdoutColor] = await Promise.all([
+    errLine.evaluate((el) => getComputedStyle(el).color),
+    stdoutLine.evaluate((el) => getComputedStyle(el).color).catch(() => null)
+  ]);
+  expect(stderrColor).toMatch(/^rgb\(/);
+  if (stdoutColor) {
+    expect(stderrColor).not.toBe(stdoutColor);
+  }
+
+  // Input echo keeps its own class, distinct from stdout.
+  await page.getByRole('checkbox', { name: /Input interaktif/ }).check();
+  await run(page, 'name = input("Echo: ")\nprint(name)');
+  const echoInput = page.getByLabel('Echo:', { exact: true });
+  await expect(echoInput).toBeVisible({ timeout: 60000 });
+  await echoInput.fill('echo-check');
+  await page.getByRole('button', { name: 'Kirim input', exact: true }).click();
+  await expect(stdout(page)).toContainText('echo-check');
+  await expect(
+    page
+      .getByTestId('terminal-scrollback')
+      .locator('.term-line[data-kind="input"]')
+      .filter({ hasText: 'Echo: echo-check' })
+  ).toHaveCount(1);
+
+  // An infinite loop hits the watchdog and maps to the timeout status.
+  await page.getByRole('checkbox', { name: /Input interaktif/ }).uncheck();
+  await run(page, 'while True: pass');
+  await expect(page.getByTestId('terminal-status')).toContainText(
+    'Preview browser: timeout',
+    { timeout: 90000 }
+  );
+});
