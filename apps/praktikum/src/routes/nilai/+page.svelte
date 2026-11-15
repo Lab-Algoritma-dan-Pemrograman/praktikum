@@ -11,7 +11,9 @@
     type GradeSummary
   } from '@algohub/practicum-client';
   export let data: AppIdentityData;
-  let grades: GradeSummary[] = [];
+  // keaktifan is optional and only present when a grader has published it.
+  type GradeWithKeaktifan = GradeSummary & { keaktifan?: number | null };
+  let grades: GradeWithKeaktifan[] = [];
   let loading = true;
   let issue = '';
   let offset = 0;
@@ -95,6 +97,9 @@
               : (gradingLabels[grade.grading_status] ??
                 'Status penilaian belum tersedia.')}
           </p>
+          {#if typeof grade.keaktifan === 'number'}<p class="muted">
+              Keaktifan: {grade.keaktifan}
+            </p>{/if}
           {#if grade.submitted_at}<p class="muted">
               Dikumpulkan: {jakarta(grade.submitted_at)}
             </p>{/if}

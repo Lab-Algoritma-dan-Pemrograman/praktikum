@@ -26,6 +26,18 @@
   let runner: RunnerInfo | null = null;
   let runnerIssue = '';
   let confirmSubmit = false;
+  // Questions the student has typed into; once edited, the draft is shown
+  // verbatim so clearing the editor does not snap back to the starter code.
+  let edited = new Set<string>();
+  function editorValue(questionId: string, starter: string): string {
+    const draft = state.drafts[questionId]?.value;
+    if (edited.has(questionId)) return draft ?? '';
+    return draft || starter || '';
+  }
+  function onEdit(questionId: string, value: string, language?: string) {
+    edited.add(questionId);
+    workspace.edit(questionId, value, language);
+  }
   let submitDialog: HTMLDialogElement | undefined;
   let submitTrigger: HTMLButtonElement | undefined;
   let cancelSubmit: HTMLButtonElement | undefined;
@@ -278,13 +290,12 @@
             attemptId={id}
             questionId={question.id}
             number={index + 1}
-            value={state.drafts[question.id]?.value ?? ''}
+            value={editorValue(question.id, question.starter_code)}
             language={state.drafts[question.id]?.language ?? question.language}
             disabled={!editable}
             offline={state.offline}
             {runner}
-            update={(value, language) =>
-              workspace.edit(question.id, value, language)}
+            update={(value, language) => onEdit(question.id, value, language)}
           />
         {:else}
           <label
