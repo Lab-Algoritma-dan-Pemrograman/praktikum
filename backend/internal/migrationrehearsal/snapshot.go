@@ -55,7 +55,7 @@ func VerifyLocalTarget(ctx context.Context, pool *pgxpool.Pool, target LocalTarg
 }
 
 var publicTables = []string{
-	"academic_attendance_records", "academic_attendance_sessions", "academic_classes", "academic_inventory_items", "academic_inventory_rentals", "academic_notifications", "academic_operations", "academic_schedules",
+	"academic_attendance_records", "academic_attendance_sessions", "academic_classes", "academic_inventory_items", "academic_inventory_rentals", "academic_laporan_besar", "academic_laporan_pengumpulan", "academic_notifications", "academic_operations", "academic_schedules",
 	"audit_logs", "auth_rate_limits", "auth_sessions", "division_permissions", "divisions",
 	"learning_bug_hunt", "learning_game_history", "learning_lessons", "learning_levels", "learning_modules", "learning_operations", "learning_profiles", "learning_progress", "learning_runner_leases",
 	"permissions", "practicum_activations", "practicum_attempts", "practicum_courses", "practicum_grading_jobs", "practicum_operations", "practicum_questions", "practicum_runner_leases", "practicum_sessions",
@@ -179,7 +179,7 @@ func schemaChecks(ctx context.Context, tx pgx.Tx) ([]Check, error) {
 	if err != nil || invalid != 0 {
 		return nil, errors.New("unsafe browser roles")
 	}
-	checks := []Check{{Name: "migration_history", Status: "passed", Reason: ReasonCheckPassed, Observed: len(migrations.Catalog()), Expected: len(migrations.Catalog())}, {Name: "exact_public_table_set_and_rls", Status: "passed", Reason: ReasonCheckPassed, Observed: len(actual), Expected: 38}}
+	checks := []Check{{Name: "migration_history", Status: "passed", Reason: ReasonCheckPassed, Observed: len(migrations.Catalog()), Expected: len(migrations.Catalog())}, {Name: "exact_public_table_set_and_rls", Status: "passed", Reason: ReasonCheckPassed, Observed: len(actual), Expected: len(publicTables)}}
 	fkChecks, err := foreignKeyChecks(ctx, tx)
 	if err != nil {
 		return nil, err

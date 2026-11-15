@@ -110,14 +110,14 @@ func reconcileTx(ctx context.Context, tx pgx.Tx, plan *Plan, result *Result) ([]
 	if snapshot.Digest != result.After.Digest {
 		return nil, errors.New("database differs from complete post-import snapshot")
 	}
-	checks = append(checks, Check{Name: "complete_input_accounting", Status: "passed", Reason: ReasonCheckPassed, Observed: len(result.Rows), Expected: len(plan.Rows)}, Check{Name: "accepted_row_fingerprints", Status: "passed", Reason: ReasonCheckPassed, Observed: accepted, Expected: plan.Counts[string(Imported)]}, Check{Name: "all_table_schema_sequence_checksums", Status: "passed", Reason: ReasonCheckPassed, Observed: len(snapshot.Tables), Expected: 39})
+	checks = append(checks, Check{Name: "complete_input_accounting", Status: "passed", Reason: ReasonCheckPassed, Observed: len(result.Rows), Expected: len(plan.Rows)}, Check{Name: "accepted_row_fingerprints", Status: "passed", Reason: ReasonCheckPassed, Observed: accepted, Expected: plan.Counts[string(Imported)]}, Check{Name: "all_table_schema_sequence_checksums", Status: "passed", Reason: ReasonCheckPassed, Observed: len(snapshot.Tables), Expected: len(publicTables) + 1})
 	return checks, nil
 }
 
 func verifySnapshot(s Snapshot) error {
 	copy := s
 	copy.Digest = ""
-	if s.Digest == "" || s.Digest != digestValue(copy) || len(s.Tables) != 39 || !sha256Pattern.MatchString(s.SchemaDigest) {
+	if s.Digest == "" || s.Digest != digestValue(copy) || len(s.Tables) != len(publicTables)+1 || !sha256Pattern.MatchString(s.SchemaDigest) {
 		return errors.New("invalid database snapshot")
 	}
 	names := append(append([]string{}, publicTables...), "auth.users")
@@ -255,7 +255,7 @@ func Rollback(ctx context.Context, pool *pgxpool.Pool, result *Result, confirmBa
 		return nil, errors.New("rollback would alter baseline rows")
 	}
 	report.Snapshot = after
-	report.Checks = []Check{{Name: "baseline_rows_and_schema_restored", Status: "passed", Reason: ReasonCheckPassed, Observed: 39, Expected: 39}, {Name: "identity_sequences_not_rewound", Status: "informational", Reason: "monotonic_sequences_preserved_use_backup_for_exact_restore"}}
+	report.Checks = []Check{{Name: "baseline_rows_and_schema_restored", Status: "passed", Reason: ReasonCheckPassed, Observed: len(publicTables) + 1, Expected: len(publicTables) + 1}, {Name: "identity_sequences_not_rewound", Status: "informational", Reason: "monotonic_sequences_preserved_use_backup_for_exact_restore"}}
 	if err = tx.Commit(ctx); err != nil {
 		return nil, err
 	}

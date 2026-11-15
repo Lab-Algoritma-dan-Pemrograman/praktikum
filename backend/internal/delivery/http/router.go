@@ -23,6 +23,7 @@ type Dependencies struct {
 	Practicum   *usecase.PracticumService
 	Learning    *usecase.LearningService
 	Academic    *usecase.AcademicService
+	Laporan     *usecase.LaporanService
 	Playground  *preview.Client
 }
 
@@ -70,10 +71,11 @@ func NewRouter(deps Dependencies) http.Handler {
 		registerPracticum(mux, auth, deps.Practicum, deps.Config.PracticumCronSecret)
 	}
 	if deps.Config.ElearningEnabled {
-		registerLearning(mux, auth, deps.Learning)
+		registerLearning(mux, auth, deps.Learning, deps.Config.PracticumCronSecret)
 	}
 	if deps.Config.SiakadEnabled {
 		registerAcademic(mux, auth, deps.Academic)
+		registerLaporan(mux, auth, deps.Laporan)
 	}
 	registerPlayground(mux, auth, deps.Playground)
 	mux.HandleFunc("/docs", docsHandler)

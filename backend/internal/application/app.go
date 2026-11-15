@@ -18,6 +18,7 @@ import (
 	"github.com/algohub/algohub-rewrite/backend/internal/platform/preview"
 	"github.com/algohub/algohub-rewrite/backend/internal/platform/returnto"
 	"github.com/algohub/algohub-rewrite/backend/internal/platform/runner"
+	"github.com/algohub/algohub-rewrite/backend/internal/platform/storage"
 	"github.com/algohub/algohub-rewrite/backend/internal/repository"
 	"github.com/algohub/algohub-rewrite/backend/internal/usecase"
 )
@@ -115,8 +116,13 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (App, erro
 	}
 	var learning *usecase.LearningService
 	if cfg.ElearningEnabled {
+		var hintGen usecase.RumpangGenerator
+		if openaiGrader, ok := grader.(*grading.OpenAI); ok {
+			hintGen = openaiGrader
+		}
 		learning = usecase.NewLearningService(usecase.LearningOptions{
 			Repository: learningRepo, IdentityRepository: repo, Runner: codeRunner, RunnerTimeout: budget,
+			HintGenerator: hintGen, HintTimeout: budget,
 			AllowSimulatedVerification: cfg.Environment == "local" && cfg.EnableFixtures,
 		})
 	}
@@ -126,9 +132,19 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (App, erro
 			Repository: academicRepo, IdentityRepository: repo,
 		})
 	}
+	var laporan *usecase.LaporanService
+	if cfg.SiakadEnabled {
+		var store storage.SignedStore = storage.Unconfigured{}
+		if cfg.SupabaseURL != "" && cfg.SupabaseServiceKey != "" {
+			store = storage.NewSupabase(cfg.SupabaseURL, cfg.SupabaseServiceKey, cfg.LaporanBucket)
+		}
+		laporan = usecase.NewLaporanService(usecase.LaporanOptions{
+			Repository: academicRepo, IdentityRepository: repo, Storage: store,
+		})
+	}
 	spec := openapi.Load(cfg.OpenAPIPath)
 	playground := preview.New(cfg.PlaygroundFallbackURL, cfg.PlaygroundFallbackToken)
-	handler := httpdelivery.NewRouter(httpdelivery.Dependencies{Config: cfg, Logger: logger, Readiness: usecase.NewReadinessService(readiness), OpenAPIYAML: spec.YAML, OpenAPIJSON: spec.JSON, Identity: identity, Repository: repo, Practicum: practicum, Learning: learning, Academic: academic, Playground: playground})
+	handler := httpdelivery.NewRouter(httpdelivery.Dependencies{Config: cfg, Logger: logger, Readiness: usecase.NewReadinessService(readiness), OpenAPIYAML: spec.YAML, OpenAPIJSON: spec.JSON, Identity: identity, Repository: repo, Practicum: practicum, Learning: learning, Academic: academic, Laporan: laporan, Playground: playground})
 	return App{Handler: handler, Close: closePool}, nil
 }
 

@@ -35,6 +35,8 @@ type Config struct {
 	GradingBaseURL          string
 	GradingModel            string
 	GradingAPIKey           string
+	SupabaseServiceKey      string
+	LaporanBucket           string
 }
 
 func Load() Config {
@@ -72,6 +74,8 @@ func Load() Config {
 		GradingBaseURL:          strings.TrimRight(strings.TrimSpace(os.Getenv("ALGOHUB_GRADING_BASE_URL")), "/"),
 		GradingModel:            strings.TrimSpace(os.Getenv("ALGOHUB_GRADING_MODEL")),
 		GradingAPIKey:           strings.TrimSpace(os.Getenv("ALGOHUB_GRADING_API_KEY")),
+		SupabaseServiceKey:      strings.TrimSpace(os.Getenv("SUPABASE_SERVICE_KEY")),
+		LaporanBucket:           envOr("ALGOHUB_LAPORAN_BUCKET", "laporan-besar"),
 	}
 }
 

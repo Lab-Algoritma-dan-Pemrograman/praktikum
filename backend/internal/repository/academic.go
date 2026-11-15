@@ -13,6 +13,9 @@ import (
 
 var ErrAcademicNotFound = errors.New("academic record not found")
 
+// ErrAcademicConflict reports a version or unique-key clash on an academic row.
+var ErrAcademicConflict = ErrConflict
+
 type AcademicKind string
 
 const (
@@ -24,6 +27,8 @@ const (
 	AcademicInventoryRentals   AcademicKind = "inventory_rentals"
 	AcademicNotifications      AcademicKind = "notifications"
 	AcademicOperations         AcademicKind = "operations"
+	AcademicLaporanBesar       AcademicKind = "laporan_besar"
+	AcademicLaporanPengumpulan AcademicKind = "laporan_pengumpulan"
 )
 
 type AcademicRecord struct {
@@ -257,7 +262,7 @@ func (tx *memoryAcademicTx) Audit(e entity.AuditEvent) error {
 
 func validAcademicKind(k AcademicKind) bool {
 	switch k {
-	case AcademicClasses, AcademicSchedules, AcademicAttendanceSessions, AcademicAttendanceRecords, AcademicInventoryItems, AcademicInventoryRentals, AcademicNotifications, AcademicOperations:
+	case AcademicClasses, AcademicSchedules, AcademicAttendanceSessions, AcademicAttendanceRecords, AcademicInventoryItems, AcademicInventoryRentals, AcademicNotifications, AcademicOperations, AcademicLaporanBesar, AcademicLaporanPengumpulan:
 		return true
 	}
 	return false
@@ -274,6 +279,8 @@ func validateAcademicRecord(k AcademicKind, r AcademicRecord, exists func(Academ
 		parent = AcademicAttendanceSessions
 	case AcademicInventoryRentals:
 		parent = AcademicInventoryItems
+	case AcademicLaporanPengumpulan:
+		parent = AcademicLaporanBesar
 	}
 	if parent != "" && !exists(parent, r.ParentID) {
 		return ErrConflict
@@ -297,6 +304,14 @@ func validateAcademicRecord(k AcademicKind, r AcademicRecord, exists func(Academ
 		}
 	case AcademicNotifications:
 		if r.Status != "unread" && r.Status != "read" {
+			return ErrConflict
+		}
+	case AcademicLaporanBesar:
+		if r.Status != "active" && r.Status != "inactive" {
+			return ErrConflict
+		}
+	case AcademicLaporanPengumpulan:
+		if r.Status != "belum" && r.Status != "terkumpul" {
 			return ErrConflict
 		}
 	}
