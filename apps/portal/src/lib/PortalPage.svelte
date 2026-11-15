@@ -17,7 +17,6 @@
     heroPoints?: string[];
     children: import('svelte').Snippet;
   } = $props();
-
 </script>
 
 <svelte:head>
@@ -93,23 +92,10 @@
     transform: none;
   }
 
-
   .main {
     width: min(var(--ah-content-max), calc(100% - 2.5rem));
     margin: 0 auto;
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
   .main {
     flex: 1;
@@ -387,8 +373,6 @@
   }
 
   @media (max-width: 760px) {
-
-
     .main :global(.section) {
       grid-template-columns: minmax(0, 1fr);
     }

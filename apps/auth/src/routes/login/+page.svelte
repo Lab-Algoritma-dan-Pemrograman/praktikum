@@ -35,8 +35,9 @@
           decoding="async"
         />
         <span class="wordmark"
-          ><span class="wordmark-algo">Algo</span
-          ><span class="wordmark-hub">Hub</span></span
+          ><span class="wordmark-algo">Algo</span><span class="wordmark-hub"
+            >Hub</span
+          ></span
         >
       </a>
 
@@ -52,9 +53,9 @@
                 fill="none"
                 stroke="currentColor"
                 stroke-width="1.6"
-                ><path d="M12 3.5 5 6.5v5c0 4.2 2.9 7.4 7 9 4.1-1.6 7-4.8 7-9v-5z" /><path
-                  d="m9 12 2.2 2.2L15.5 10"
-                /></svg
+                ><path
+                  d="M12 3.5 5 6.5v5c0 4.2 2.9 7.4 7 9 4.1-1.6 7-4.8 7-9v-5z"
+                /><path d="m9 12 2.2 2.2L15.5 10" /></svg
               >
             </span>
             Masuk dengan SSO kampus

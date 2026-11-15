@@ -22,8 +22,9 @@
         decoding="async"
       />
       <span class="site-footer-wordmark"
-        ><span class="site-footer-algo">Algo</span
-        ><span class="site-footer-hub">Hub</span></span
+        ><span class="site-footer-algo">Algo</span><span class="site-footer-hub"
+          >Hub</span
+        ></span
       >
     </a>
 

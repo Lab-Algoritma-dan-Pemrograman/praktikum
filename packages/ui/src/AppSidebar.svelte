@@ -11,17 +11,30 @@
 
   let open = false;
 
-  $: initial = initial || (userName ? userName.trim().charAt(0).toUpperCase() : 'A');
+  $: initial =
+    initial || (userName ? userName.trim().charAt(0).toUpperCase() : 'A');
 </script>
 
 <div class="console">
   <a class="console-skip" href="#content">Lewati ke konten</a>
 
-  <aside class="console-sidebar" class:is-open={open} aria-label="Navigasi aplikasi">
+  <aside
+    class="console-sidebar"
+    class:is-open={open}
+    aria-label="Navigasi aplikasi"
+  >
     <a class="console-brand" href="/" aria-label="Algohub beranda">
-      <img src="/logo-mark.png" alt="" width="55" height="96" decoding="async" />
+      <img
+        src="/logo-mark.png"
+        alt=""
+        width="55"
+        height="96"
+        decoding="async"
+      />
       <span class="console-wordmark"
-        ><span class="console-algo">Algo</span><span class="console-hub">Hub</span></span
+        ><span class="console-algo">Algo</span><span class="console-hub"
+          >Hub</span
+        ></span
       >
     </a>
 

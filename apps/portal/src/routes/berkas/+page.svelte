@@ -83,8 +83,8 @@
       <h2 id="daftar-berkas">Daftar berkas</h2>
       <div class="section-body">
         <p>
-          Setiap berkas mencantumkan versi dan tanggal pembaruan terakhir, supaya
-          mudah memastikan dokumen yang dipakai adalah yang terbaru.
+          Setiap berkas mencantumkan versi dan tanggal pembaruan terakhir,
+          supaya mudah memastikan dokumen yang dipakai adalah yang terbaru.
         </p>
       </div>
 
@@ -104,7 +104,9 @@
 
       <div class="berkas-table">
         <table>
-          <caption class="sr-only">Berkas publik beserta versi dan tautannya</caption>
+          <caption class="sr-only"
+            >Berkas publik beserta versi dan tautannya</caption
+          >
           <thead>
             <tr>
               <th scope="col">Nama berkas</th>
@@ -132,7 +134,11 @@
                 </td>
               </tr>
             {:else}
-              <tr><td class="empty" colspan="6">Belum ada berkas di kategori ini.</td></tr>
+              <tr
+                ><td class="empty" colspan="6"
+                  >Belum ada berkas di kategori ini.</td
+                ></tr
+              >
             {/each}
           </tbody>
         </table>

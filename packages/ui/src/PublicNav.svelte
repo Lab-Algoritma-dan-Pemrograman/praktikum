@@ -81,7 +81,9 @@
     }
 
     const sections = anchors
-      .map((link) => document.querySelector(link.getAttribute('href') as string))
+      .map((link) =>
+        document.querySelector(link.getAttribute('href') as string)
+      )
       .filter((section): section is Element => Boolean(section));
     const visible = new Map<Element, boolean>();
     const observer = sections.length
@@ -137,7 +139,12 @@
     const dxR = centre - (rBox.left + rBox.width / 2) + gap;
     const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
     const timing: KeyframeAnimationOptions = { duration: 1600, fill: 'both' };
-    const frame = (x: number, opacity: number, offset: number, move: boolean) => ({
+    const frame = (
+      x: number,
+      opacity: number,
+      offset: number,
+      move: boolean
+    ) => ({
       transform: `translateX(${x}px)`,
       opacity,
       offset,
@@ -169,20 +176,40 @@
       ),
       text.animate(
         [
-          { opacity: 0, transform: 'translateY(3px)', offset: 0, easing: 'linear' },
-          { opacity: 0, transform: 'translateY(3px)', offset: 0.28, easing: ease },
-          { opacity: 1, transform: 'translateY(0)', offset: 0.6, easing: 'linear' },
-          { opacity: 1, transform: 'translateY(0)', offset: 1, easing: 'linear' }
+          {
+            opacity: 0,
+            transform: 'translateY(3px)',
+            offset: 0,
+            easing: 'linear'
+          },
+          {
+            opacity: 0,
+            transform: 'translateY(3px)',
+            offset: 0.28,
+            easing: ease
+          },
+          {
+            opacity: 1,
+            transform: 'translateY(0)',
+            offset: 0.6,
+            easing: 'linear'
+          },
+          {
+            opacity: 1,
+            transform: 'translateY(0)',
+            offset: 1,
+            easing: 'linear'
+          }
         ],
         timing
       )
     ];
 
-    void Promise.all(runs.map((run) => run.finished.catch(() => undefined))).then(
-      () => {
-        for (const run of runs) run.cancel();
-      }
-    );
+    void Promise.all(
+      runs.map((run) => run.finished.catch(() => undefined))
+    ).then(() => {
+      for (const run of runs) run.cancel();
+    });
   });
 </script>
 
@@ -200,7 +227,8 @@
       <span class="brand-word wm" bind:this={wmEl}
         ><span class="wm-br wm-br-l" aria-hidden="true">&lt;</span><span
           class="wm-text"
-          ><span class="wm-algo">Algo</span><span class="wm-hub">Hub</span></span
+          ><span class="wm-algo">Algo</span><span class="wm-hub">Hub</span
+          ></span
         ><span class="wm-br wm-br-r" aria-hidden="true">&gt;</span></span
       >
     </a>
@@ -208,11 +236,7 @@
     <nav class="desktop-nav" aria-label="Navigasi utama" bind:this={navEl}>
       <span class="nav-indicator" aria-hidden="true" bind:this={railEl}></span>
       {#each items as item (item.href)}
-        <a
-          href={item.href}
-          aria-current={isCurrent(item.href)}
-          >{item.label}</a
-        >
+        <a href={item.href} aria-current={isCurrent(item.href)}>{item.label}</a>
       {/each}
     </nav>
 
@@ -220,9 +244,16 @@
       {#if !signedIn}
         <a class="text-link" href={loginHref}>Masuk</a>
       {/if}
-      <a class="button button-small" href={signedIn ? workspaceHref : loginHref}>
+      <a
+        class="button button-small"
+        href={signedIn ? workspaceHref : loginHref}
+      >
         <span class="button-label"
-          >{signedIn ? 'Buka ruang kerja' : mode === 'landing' ? 'Mulai sekarang' : 'Masuk'}</span
+          >{signedIn
+            ? 'Buka ruang kerja'
+            : mode === 'landing'
+              ? 'Mulai sekarang'
+              : 'Masuk'}</span
         >
       </a>
     </div>
@@ -231,7 +262,9 @@
       <summary>Menu</summary>
       <nav aria-label="Navigasi mobile">
         {#each items as item (item.href)}
-          <a href={item.href} aria-current={isCurrent(item.href)}>{item.label}</a>
+          <a href={item.href} aria-current={isCurrent(item.href)}
+            >{item.label}</a
+          >
         {/each}
         <a href={signedIn ? workspaceHref : loginHref}>
           {signedIn ? 'Buka ruang kerja' : 'Masuk ke Algohub'}

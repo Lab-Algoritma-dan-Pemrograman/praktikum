@@ -76,7 +76,6 @@
     }
   }
 
-
   onMount(() => {
     if (data.principal) void load();
   });
@@ -119,12 +118,16 @@
     <li>
       <span class="stat-label">Kelas aktif</span>
       <strong>{classes.length}</strong>
-      <small>{classPage.hasMore ? 'sebagian ditampilkan' : 'semua tampil'}</small>
+      <small
+        >{classPage.hasMore ? 'sebagian ditampilkan' : 'semua tampil'}</small
+      >
     </li>
     <li>
       <span class="stat-label">Jadwal terdaftar</span>
       <strong>{schedules.length}</strong>
-      <small>{schedulePage.hasMore ? 'sebagian ditampilkan' : 'semua tampil'}</small>
+      <small
+        >{schedulePage.hasMore ? 'sebagian ditampilkan' : 'semua tampil'}</small
+      >
     </li>
     <li class:sessions={sessionsOpen > 0}>
       <span class="stat-label">Sesi presensi</span>
@@ -165,19 +168,22 @@
       <ul class="mini-list">
         {#each schedules.slice(0, 4) as item (item.schedule.id)}
           <li>
-            <span class="mini-day">{item.schedule.day_of_week.slice(0, 3)}</span>
+            <span class="mini-day">{item.schedule.day_of_week.slice(0, 3)}</span
+            >
             <span class="mini-copy">
               <strong>{item.schedule.course_name}</strong>
               <small
-                >{item.schedule.starts_at}–{item.schedule.ends_at} · {item.schedule
-                  .room}</small
+                >{item.schedule.starts_at}–{item.schedule.ends_at} · {item
+                  .schedule.room}</small
               >
             </span>
             {#if item.open_session}<span class="dot" aria-label="Sesi terbuka"
               ></span>{/if}
           </li>
         {:else}
-          <li class="mini-empty">{loading ? 'Memuat…' : 'Belum ada jadwal.'}</li>
+          <li class="mini-empty">
+            {loading ? 'Memuat…' : 'Belum ada jadwal.'}
+          </li>
         {/each}
       </ul>
     </article>
@@ -194,9 +200,9 @@
             <small>{jakarta(notif.created_at)}</small>
           </li>
         {:else}
-          <li class="mini-empty"
-            >{loading ? 'Memuat…' : 'Belum ada notifikasi.'}</li
-          >
+          <li class="mini-empty">
+            {loading ? 'Memuat…' : 'Belum ada notifikasi.'}
+          </li>
         {/each}
       </ul>
     </article>
@@ -227,18 +233,22 @@
               <td>{cls.shift}</td>
             </tr>
           {:else}
-            <tr><td class="empty-cell" colspan="4"
+            <tr
+              ><td class="empty-cell" colspan="4"
                 >{loading
                   ? 'Memuat kelas…'
                   : 'Tidak ada kelas aktif. Menu Inventaris & sewa tetap bisa dipakai.'}</td
-              ></tr>
+              ></tr
+            >
           {/each}
         </tbody>
       </table>
     </div>
     {#if classPage.hasMore}
-      <button class="btn-ghost" disabled={loading} onclick={() => load('classes')}
-        >Muat kelas lainnya</button
+      <button
+        class="btn-ghost"
+        disabled={loading}
+        onclick={() => load('classes')}>Muat kelas lainnya</button
       >
     {/if}
   </section>
@@ -250,7 +260,8 @@
     </div>
     <div class="table-wrap">
       <table>
-        <caption class="sr-only">Jadwal laboratorium per hari dan shift</caption>
+        <caption class="sr-only">Jadwal laboratorium per hari dan shift</caption
+        >
         <thead>
           <tr>
             <th scope="col">Hari</th>
@@ -281,11 +292,13 @@
               </td>
             </tr>
           {:else}
-            <tr><td class="empty-cell" colspan="5"
+            <tr
+              ><td class="empty-cell" colspan="5"
                 >{loading
                   ? 'Memuat jadwal…'
                   : 'Belum ada jadwal laboratorium untuk akun ini.'}</td
-              ></tr>
+              ></tr
+            >
           {/each}
         </tbody>
       </table>
@@ -305,10 +318,7 @@
       <span>Pinjam alat laboratorium untuk praktikum.</span>
     </a>
     {#if canAdmin && adminApp}
-      <a
-        class="quick-link"
-        href={`${adminApp.origin}/login?return_to=/siakad`}
-      >
+      <a class="quick-link" href={`${adminApp.origin}/login?return_to=/siakad`}>
         <strong>Admin Siakad</strong>
         <span>Kelola kelas, jadwal, dan notifikasi.</span>
       </a>
