@@ -57,7 +57,7 @@ func VerifyLocalTarget(ctx context.Context, pool *pgxpool.Pool, target LocalTarg
 var publicTables = []string{
 	"academic_attendance_records", "academic_attendance_sessions", "academic_classes", "academic_inventory_items", "academic_inventory_rentals", "academic_laporan_besar", "academic_laporan_pengumpulan", "academic_notifications", "academic_operations", "academic_schedules",
 	"audit_logs", "auth_rate_limits", "auth_sessions", "division_permissions", "divisions",
-	"learning_bug_hunt", "learning_game_history", "learning_lessons", "learning_levels", "learning_modules", "learning_operations", "learning_profiles", "learning_progress", "learning_runner_leases",
+	"learning_achievements", "learning_bug_hunt", "learning_game_history", "learning_lessons", "learning_levels", "learning_modules", "learning_operations", "learning_prestige", "learning_profiles", "learning_progress", "learning_runner_leases", "learning_standings",
 	"permissions", "practicum_activations", "practicum_attempts", "practicum_courses", "practicum_grading_jobs", "practicum_operations", "practicum_questions", "practicum_runner_leases", "practicum_sessions",
 	"role_permissions", "roles", "schema_migrations", "sso_handshakes", "user_permission_grants", "user_role_assignments", "users",
 }

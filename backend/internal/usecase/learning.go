@@ -25,12 +25,15 @@ var (
 	ErrLearningBusy            = errors.New("learning execution concurrency limit")
 	ErrLearningUnavailable     = errors.New("learning runner unavailable")
 	ErrLearningCodeNotVerified = errors.New("current lesson code has no passing server verification")
+	ErrLearningHintGenerator   = errors.New("learning hint generator unavailable")
+	ErrLearningHintFailed      = errors.New("learning hint generation failed")
 )
 
 const (
 	learningRead        = "learning.content.read"
 	learningManage      = "learning.content.manage"
 	learningMonitor     = "learning.monitor"
+	learningXPManage    = "learning.xp.manage"
 	bugHuntWeeklyMax    = 3
 	learningHintPerMin  = 10
 	learningRunnerQuota = 30
@@ -40,9 +43,11 @@ type LearningOptions struct {
 	Repository         repository.LearningRepository
 	IdentityRepository repository.IdentityRepository
 	Runner             PracticumRunner
+	HintGenerator      RumpangGenerator
 	RunnerGlobalLimit  int
 	RunnerUserLimit    int
 	RunnerTimeout      time.Duration
+	HintTimeout        time.Duration
 	// Only isolated local fixture applications/tests may trust simulated runs.
 	AllowSimulatedVerification bool
 }
@@ -64,6 +69,9 @@ func NewLearningService(o LearningOptions) *LearningService {
 	}
 	if o.RunnerTimeout <= 0 || o.RunnerTimeout > 30*time.Second {
 		o.RunnerTimeout = 15 * time.Second
+	}
+	if o.HintTimeout <= 0 || o.HintTimeout > 30*time.Second {
+		o.HintTimeout = 15 * time.Second
 	}
 	if r, ok := o.Repository.(*repository.MemoryLearningRepository); ok {
 		if identity, ok := o.IdentityRepository.(*repository.MemoryIdentityRepository); ok {

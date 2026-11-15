@@ -37,10 +37,22 @@ type LearningProfile struct {
 	CompletedLessons     int                           `json:"completed_lessons"`
 	GamesPlayed          int                           `json:"games_played"`
 	PerfectGames         int                           `json:"perfect_games"`
+	Prestige             int                           `json:"prestige"`
+	PrestigeCount        int                           `json:"prestige_count"`
 	UnlockedAchievements []LearningUnlockedAchievement `json:"unlocked_achievements"`
 	Timezone             string                        `json:"timezone"`
 	TimezoneOffset       string                        `json:"timezone_offset"`
 	UpdatedAt            time.Time                     `json:"updated_at"`
+}
+
+type LearningPrestigeEntry struct {
+	ID        string         `json:"id"`
+	UserID    int64          `json:"user_id"`
+	Source    string         `json:"source"`
+	Amount    int            `json:"amount"`
+	Reason    string         `json:"reason"`
+	Meta      map[string]any `json:"meta,omitempty"`
+	CreatedAt time.Time      `json:"created_at"`
 }
 
 type LearningLesson struct {
@@ -149,6 +161,24 @@ type LearningHintResponse struct {
 	Hint           string `json:"hint"`
 	RemainingQuota int    `json:"remaining_quota"`
 	Simulated      bool   `json:"simulated"`
+}
+
+type LearningAchievementCatalogItem struct {
+	ID               string `json:"id"`
+	Title            string `json:"title"`
+	Description      string `json:"description"`
+	RequirementType  string `json:"requirement_type"`
+	RequirementValue string `json:"requirement_value"`
+	XPReward         int    `json:"xp_reward"`
+	Active           bool   `json:"active"`
+	Scope            Scope  `json:"scope"`
+	Version          int64  `json:"version"`
+}
+
+type LearningWeeklySnapshot struct {
+	WeekStart   string                   `json:"week_start"`
+	GeneratedAt time.Time                `json:"generated_at"`
+	Rows        []LearningLeaderboardRow `json:"rows"`
 }
 
 type LearningAchievementsView struct {

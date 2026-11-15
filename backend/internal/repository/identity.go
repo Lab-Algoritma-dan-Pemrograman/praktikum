@@ -144,6 +144,7 @@ func (r *MemoryIdentityRepository) seedDefinitions() {
 		{Code: "learning.content.read", App: "elearning", Description: "Membaca konten pembelajaran"},
 		{Code: "learning.content.manage", App: "elearning", Description: "Mengelola konten pembelajaran"},
 		{Code: "learning.monitor", App: "elearning", Description: "Memantau pembelajaran"},
+		{Code: "learning.xp.manage", App: "elearning", Description: "Mengelola XP dan prestige mahasiswa"},
 		{Code: "practicum.session.manage", App: "praktikum", Description: "Mengelola sesi praktikum"},
 		{Code: "question.manage", App: "praktikum", Description: "Mengelola bank soal"},
 		{Code: "practicum.grade.write", App: "praktikum", Description: "Mengubah penilaian"},
@@ -153,7 +154,7 @@ func (r *MemoryIdentityRepository) seedDefinitions() {
 	} {
 		r.state.definitions[definition.Code] = definition
 	}
-	for _, permission := range []string{"admin.overview.read", "user.read", "user.write", "class.manage", "schedule.write", "attendance.read", "inventory.manage", "rental.approve", "finance.manage", "learning.content.read", "learning.content.manage", "learning.monitor", "practicum.session.manage", "question.manage", "practicum.grade.write", "audit.read", "settings.manage", "identity.access.manage"} {
+	for _, permission := range []string{"admin.overview.read", "user.read", "user.write", "class.manage", "schedule.write", "attendance.read", "inventory.manage", "rental.approve", "finance.manage", "learning.content.read", "learning.content.manage", "learning.monitor", "learning.xp.manage", "practicum.session.manage", "question.manage", "practicum.grade.write", "audit.read", "settings.manage", "identity.access.manage"} {
 		scope := entity.Scope{Domain: "*"}
 		if permission == "admin.overview.read" {
 			scope = entity.Scope{}

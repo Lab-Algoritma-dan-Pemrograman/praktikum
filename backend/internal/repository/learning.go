@@ -16,15 +16,18 @@ var ErrLearningNotFound = errors.New("learning record not found")
 type LearningKind string
 
 const (
-	LearningLevels     LearningKind = "levels"
-	LearningModules    LearningKind = "modules"
-	LearningLessons    LearningKind = "lessons"
-	LearningProgress   LearningKind = "progress"
-	LearningProfiles   LearningKind = "profiles"
-	LearningBugHunt    LearningKind = "bug_hunt"
-	LearningGames      LearningKind = "game_history"
-	LearningOperations LearningKind = "operations"
-	LearningRuns       LearningKind = "runner_leases"
+	LearningLevels       LearningKind = "levels"
+	LearningModules      LearningKind = "modules"
+	LearningLessons      LearningKind = "lessons"
+	LearningProgress     LearningKind = "progress"
+	LearningProfiles     LearningKind = "profiles"
+	LearningBugHunt      LearningKind = "bug_hunt"
+	LearningGames        LearningKind = "game_history"
+	LearningOperations   LearningKind = "operations"
+	LearningRuns         LearningKind = "runner_leases"
+	LearningPrestige     LearningKind = "prestige"
+	LearningAchievements LearningKind = "achievements"
+	LearningStandings    LearningKind = "standings"
 )
 
 type LearningRecord struct {
@@ -256,7 +259,8 @@ func (tx *memoryLearningTx) Audit(e entity.AuditEvent) error {
 
 func validLearningKind(k LearningKind) bool {
 	switch k {
-	case LearningLevels, LearningModules, LearningLessons, LearningProgress, LearningProfiles, LearningBugHunt, LearningGames, LearningOperations, LearningRuns:
+	case LearningLevels, LearningModules, LearningLessons, LearningProgress, LearningProfiles, LearningBugHunt, LearningGames, LearningOperations, LearningRuns,
+		LearningPrestige, LearningAchievements, LearningStandings:
 		return true
 	}
 	return false

@@ -1,8 +1,11 @@
 package httpdelivery
 
 import (
+	"crypto/subtle"
 	"errors"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/algohub/algohub-rewrite/backend/internal/entity"
 	"github.com/algohub/algohub-rewrite/backend/internal/repository"
@@ -29,6 +32,10 @@ func writeLearningError(w http.ResponseWriter, err error) {
 		writeError(w, 429, "RUNNER_QUOTA_EXCEEDED", "Batas eksekusi tercapai. Coba lagi nanti.")
 	case errors.Is(err, usecase.ErrLearningUnavailable):
 		writeError(w, 503, "LEARNING_PROVIDER_UNAVAILABLE", "Runner belum tersedia.")
+	case errors.Is(err, usecase.ErrLearningHintGenerator):
+		writeError(w, 503, "PROVIDER_UNAVAILABLE", "Layanan hint AI belum tersedia.")
+	case errors.Is(err, usecase.ErrLearningHintFailed):
+		writeError(w, 502, "HINT_GENERATION_FAILED", "Gagal membuat hint. Coba lagi nanti.")
 	default:
 		writeAuthError(w, err)
 	}
@@ -36,7 +43,7 @@ func writeLearningError(w http.ResponseWriter, err error) {
 
 type learningHTTP func(http.ResponseWriter, *http.Request, *entity.Principal, usecase.LearningCommand) (any, error)
 
-func registerLearning(mux *http.ServeMux, auth authHandlers, service *usecase.LearningService) {
+func registerLearning(mux *http.ServeMux, auth authHandlers, service *usecase.LearningService, cronSecret string) {
 	route := func(method, path, operation string, status int, fn learningHTTP) {
 		mux.HandleFunc(method+" "+path, auth.endpoint(method, operation, func(w http.ResponseWriter, r *http.Request) {
 			if service == nil {
@@ -183,5 +190,95 @@ func registerLearning(mux *http.ServeMux, auth authHandlers, service *usecase.Le
 			return nil, err
 		}
 		return service.Monitoring(r.Context(), p, page)
+	})
+	route("GET", "/v1/admin/elearning/achievements", "learning.admin.achievements.list", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		return service.AdminAchievements(r.Context(), p)
+	})
+	route("POST", "/v1/admin/elearning/achievements", "learning.admin.achievements.create", 201, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		var in usecase.LearningAchievementInput
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.SaveAchievement(r.Context(), p, c, "", usecase.LearningAchievementUpdate{LearningAchievementInput: in})
+	})
+	route("PATCH", "/v1/admin/elearning/achievements/{id}", "learning.admin.achievements.update", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		var in usecase.LearningAchievementUpdate
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.SaveAchievement(r.Context(), p, c, r.PathValue("id"), in)
+	})
+	route("POST", "/v1/admin/elearning/xp/set", "learning.admin.xp.set", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		var in usecase.LearningXPSetInput
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.SetXP(r.Context(), p, c, in)
+	})
+	route("POST", "/v1/admin/elearning/xp/reset", "learning.admin.xp.reset", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		var in struct {
+			UserID int64  `json:"user_id"`
+			Reason string `json:"reason"`
+		}
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.ResetXP(r.Context(), p, c, in.UserID, in.Reason)
+	})
+	route("POST", "/v1/admin/elearning/prestige", "learning.admin.prestige.grant", 201, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		var in usecase.LearningPrestigeGrantInput
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.GrantPrestige(r.Context(), p, c, in)
+	})
+	route("GET", "/v1/learning/prestige", "learning.prestige.list", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		userID := p.User.ID
+		if raw := r.URL.Query().Get("user_id"); raw != "" {
+			parsed, err := strconv.ParseInt(raw, 10, 64)
+			if err != nil || parsed < 1 {
+				return nil, usecase.ErrValidation
+			}
+			userID = parsed
+		}
+		return service.Prestige(r.Context(), p, userID)
+	})
+	route("GET", "/v1/learning/leaderboard/weekly", "learning.leaderboard.weekly", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		page, err := practicumPage(r)
+		if err != nil {
+			return nil, err
+		}
+		return service.WeeklyStandings(r.Context(), p, page)
+	})
+	route("POST", "/v1/learning/hint", "learning.hint.ai", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.LearningCommand) (any, error) {
+		var in usecase.LearningHintRequest
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.RequestAIHint(r.Context(), p, c, in)
+	})
+	mux.HandleFunc("/v1/internal/learning/standings", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Operation-ID", "learning.internal.standings")
+		w.Header().Set("Cache-Control", "private, no-store")
+		if r.Method != "POST" {
+			w.Header().Set("Allow", "POST")
+			writeError(w, 405, "METHOD_NOT_ALLOWED", "Method tidak didukung.")
+			return
+		}
+		authorization := r.Header.Get("Authorization")
+		if cronSecret == "" || !strings.HasPrefix(authorization, "Bearer ") || subtle.ConstantTimeCompare([]byte(strings.TrimPrefix(authorization, "Bearer ")), []byte(cronSecret)) != 1 {
+			writeError(w, 401, "UNAUTHENTICATED", "Cron credential tidak valid.")
+			return
+		}
+		if service == nil {
+			writeError(w, 503, "SERVICE_UNAVAILABLE", "E-learning belum dikonfigurasi.")
+			return
+		}
+		result, err := service.ReconcileWeeklyStandings(r.Context(), usecase.LearningCommand{RequestID: requestID(r), OperationID: "learning.internal.standings"})
+		if err != nil {
+			writeLearningError(w, err)
+			return
+		}
+		writeSuccess(w, 200, result)
 	})
 }
