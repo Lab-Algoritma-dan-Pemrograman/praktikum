@@ -148,6 +148,7 @@
   }
   async function saveQuestion() {
     if (!canQuestions || !rubricValid) return;
+
     await mutate(
       `/admin/praktikum/questions${questionId ? `/${encodeURIComponent(questionId)}` : ''}`,
       questionId ? 'PATCH' : 'POST',
@@ -170,6 +171,32 @@
         chooseQuestion(value.id);
       }
     );
+  }
+  async function generateRumpang() {
+    if (!questionId || questionType !== 'coding' || starterCode.trim()) return;
+    busy = true;
+    issue = '';
+    notice = '';
+    pending = reusableCommand(
+      pending,
+      `/admin/praktikum/questions/${encodeURIComponent(questionId)}/rumpang`,
+      'POST',
+      {}
+    );
+    try {
+      const value = await client.execute<Question>(pending);
+      pending = null;
+      await refresh();
+      await loadQuestions();
+      chooseQuestion(value.id);
+      notice =
+        'Kode rumpang dibuat dari kunci jawaban. Periksa sebelum menyimpan soal.';
+    } catch (error) {
+      issue = errorMessage(error);
+      pending = null;
+    } finally {
+      busy = false;
+    }
   }
 </script>
 
@@ -372,7 +399,17 @@
               ><option value="c">C</option><option value="python">Python</option
               ></select
             ></label
-          ><label
+          >{#if questionId && !starterCode.trim()}<div class="actions">
+              <button
+                type="button"
+                class="secondary"
+                onclick={() => void generateRumpang()}
+                disabled={busy || conflict}
+                >{busy
+                  ? 'Menyusun kode rumpang…'
+                  : 'Generate kode rumpang dari kunci'}</button
+              >
+            </div>{/if}<label
             >Kode awal<textarea
               class="code"
               rows="6"

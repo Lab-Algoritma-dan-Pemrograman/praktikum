@@ -14,6 +14,7 @@
   import Authoring from './Authoring.svelte';
   import Activations from './Activations.svelte';
   import Monitoring from './Monitoring.svelte';
+  import Rekap from './Rekap.svelte';
   export let data: AppIdentityData;
   const client = new PracticumClient();
   let sessions: Session[] = [];
@@ -115,6 +116,11 @@
   onMount(() => {
     void load();
   });
+  $: canRekap =
+    !!detail &&
+    detail.activations.some((a) =>
+      permitted(data.principal, 'practicum.grade.write', a.scope)
+    );
 </script>
 
 <svelte:head><title>Admin Praktikum — Algohub</title></svelte:head>
@@ -214,6 +220,10 @@
           class:secondary={tab !== 'authoring'}
           aria-pressed={tab === 'authoring'}
           onclick={() => (tab = 'authoring')}>Definisi dan soal</button
+        >{/if}{#if canRekap}<button
+          class:secondary={tab !== 'rekap'}
+          aria-pressed={tab === 'rekap'}
+          onclick={() => (tab = 'rekap')}>Rekap nilai</button
         >{/if}{#if canAudit}<a href="/auditlog">Audit sesuai scope</a>{/if}
     </nav>
     {#key detail.session.id}
@@ -223,6 +233,10 @@
           {refresh}
         />
       {:else if tab === 'monitoring'}<Monitoring
+          {detail}
+          principal={data.principal}
+        />
+      {:else if tab === 'rekap' && canRekap}<Rekap
           {detail}
           principal={data.principal}
         />

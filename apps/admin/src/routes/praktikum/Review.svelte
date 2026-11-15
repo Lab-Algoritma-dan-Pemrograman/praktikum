@@ -16,11 +16,15 @@
   let revision = 0;
   let reason = '';
   let publish = false;
+  let keaktifan: number | null = null;
   let busy = false;
   let issue = '';
   let notice = '';
   let conflict = false;
   let pending: Command | null = null;
+  $: keaktifanValid =
+    keaktifan === null ||
+    (Number.isInteger(keaktifan) && keaktifan >= 0 && keaktifan <= 100);
   $: valid =
     !!review &&
     grades.length === review.questions.length &&
@@ -32,6 +36,7 @@
           (review?.questions.find((q) => q.id === grade.question_id)?.points ??
             0)
     ) &&
+    keaktifanValid &&
     reason.trim().length > 0;
   function serverGrades() {
     grades =
@@ -45,6 +50,8 @@
             ?.feedback ?? ''
       })) ?? [];
     revision = review?.attempt.grade_revision ?? 0;
+    keaktifan =
+      (review as { keaktifan?: number | null } | null)?.keaktifan ?? null;
   }
   async function load(preserve = false) {
     busy = true;
@@ -100,7 +107,13 @@
       pending,
       `/admin/praktikum/penilaian/${encodeURIComponent(id)}/manual`,
       'PUT',
-      { grade_revision: revision, grades, publish, reason }
+      {
+        grade_revision: revision,
+        grades,
+        publish,
+        reason,
+        ...(keaktifan === null ? {} : { keaktifan })
+      }
     );
     try {
       review = await client.execute<AttemptReview>(pending);
@@ -230,6 +243,16 @@
             >{/if}
         </section>
       {/each}
+      <label
+        >Keaktifan (0–100, opsional)<input
+          type="number"
+          min="0"
+          max="100"
+          step="1"
+          bind:value={keaktifan}
+          disabled={busy || conflict}
+        /></label
+      >
       <label
         >Alasan penilaian / perubahan (audit)<textarea
           bind:value={reason}
