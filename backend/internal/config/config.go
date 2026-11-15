@@ -32,6 +32,9 @@ type Config struct {
 	SiakadEnabled           bool
 	PlaygroundFallbackURL   string
 	PlaygroundFallbackToken string
+	GradingBaseURL          string
+	GradingModel            string
+	GradingAPIKey           string
 }
 
 func Load() Config {
@@ -66,6 +69,9 @@ func Load() Config {
 			"ALGOHUB_PLAYGROUND_GLOT_URL", "https://glot.io/api/mux",
 		)),
 		PlaygroundFallbackToken: strings.TrimSpace(os.Getenv("ALGOHUB_PLAYGROUND_GLOT_TOKEN")),
+		GradingBaseURL:          strings.TrimRight(strings.TrimSpace(os.Getenv("ALGOHUB_GRADING_BASE_URL")), "/"),
+		GradingModel:            strings.TrimSpace(os.Getenv("ALGOHUB_GRADING_MODEL")),
+		GradingAPIKey:           strings.TrimSpace(os.Getenv("ALGOHUB_GRADING_API_KEY")),
 	}
 }
 
@@ -121,6 +127,21 @@ func (c Config) Validate() error {
 			return errors.New("fixtures require an isolated loopback-only local API without Supabase or a database")
 		}
 		return nil
+	}
+	if c.GradingBaseURL != "" {
+		endpoint, err := url.Parse(c.GradingBaseURL)
+		if err != nil || endpoint.Host == "" || endpoint.User != nil || endpoint.Fragment != "" ||
+			(endpoint.Scheme != "https" && !(c.Environment == "local" && endpoint.Scheme == "http" && loopbackHost(endpoint.Hostname()))) {
+			return errors.New("grading base URL must use HTTPS or a local loopback fixture")
+		}
+		if c.GradingModel == "" {
+			return errors.New("grading base URL requires ALGOHUB_GRADING_MODEL")
+		}
+		if c.GradingAPIKey != "" && (len(c.GradingAPIKey) > 512 || strings.ContainsFunc(c.GradingAPIKey, func(ch rune) bool { return ch <= ' ' || ch == 0x7f })) {
+			return errors.New("grading API key must be printable characters without whitespace")
+		}
+	} else if c.GradingModel != "" || c.GradingAPIKey != "" {
+		return errors.New("grading model or API key set without ALGOHUB_GRADING_BASE_URL")
 	}
 	if c.DatabaseURL == "" || c.SupabaseURL == "" || c.SupabaseAnonKey == "" {
 		return errors.New("database and Supabase credentials are required; local fixtures must be explicitly enabled")

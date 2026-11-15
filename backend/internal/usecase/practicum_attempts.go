@@ -446,7 +446,7 @@ func (s *PracticumService) Grades(ctx context.Context, p *entity.Principal, page
 				return err
 			}
 			v := practicumAttemptView(a, time.Time{})
-			out = append(out, entity.PracticumGradeSummary{Status: v.Status, CanOpen: v.Status != "in_progress" || practicumEligible(p, activation), AttemptID: v.AttemptID, SessionID: activation.Activation.SessionID, SessionTitle: session.Title, CourseTitle: activation.Course.Title, CourseKind: activation.Course.Kind, GradingStatus: v.GradingStatus, Score: v.Score, MaxScore: v.MaxScore, Percentage: v.Percentage, SubmittedAt: v.SubmittedAt})
+			out = append(out, entity.PracticumGradeSummary{Status: v.Status, CanOpen: v.Status != "in_progress" || practicumEligible(p, activation), AttemptID: v.AttemptID, SessionID: activation.Activation.SessionID, SessionTitle: session.Title, CourseTitle: activation.Course.Title, CourseKind: activation.Course.Kind, GradingStatus: v.GradingStatus, Score: v.Score, MaxScore: v.MaxScore, Percentage: v.Percentage, SubmittedAt: v.SubmittedAt, Keaktifan: a.Keaktifan})
 		}
 		return nil
 	})
@@ -458,4 +458,45 @@ func practicumJob(tx repository.PracticumTx, id string) (*entity.PracticumGradin
 		return nil, nil
 	}
 	return &j, err
+}
+
+// Rekap lists every terminal attempt for one course, scoped to the caller.
+// Legacy parity: admin/rekap-nilai (project_ap rekap_handler.go).
+func (s *PracticumService) Rekap(ctx context.Context, p *entity.Principal, courseID string, page PracticumPage) ([]entity.PracticumRekapRow, error) {
+	out := []entity.PracticumRekapRow{}
+	if err := practicumAuthenticated(p); err != nil {
+		return nil, err
+	}
+	if !page.valid() || courseID == "" {
+		return nil, ErrValidation
+	}
+	err := s.options.Repository.Transaction(ctx, func(tx repository.PracticumTx) error {
+		course, err := practicumRead[entity.PracticumCourse](tx, repository.PracticumCourses, courseID, false)
+		if err != nil {
+			return err
+		}
+		session, err := practicumRead[entity.PracticumSession](tx, repository.PracticumSessions, course.SessionID, false)
+		if err != nil {
+			return err
+		}
+		if err = practicumRequire(p, practicumGrade, session.Scope); err != nil {
+			return err
+		}
+		rows, err := tx.List(repository.PracticumAttempts, repository.PracticumFilter{Scopes: practicumScopes(p, practicumGrade), ActivationScope: true, Limit: page.Limit, Offset: page.Offset})
+		if err != nil {
+			return err
+		}
+		for _, r := range rows {
+			a, activation, err := practicumLockAttempt(tx, r.ID)
+			if err != nil {
+				return err
+			}
+			if activation.Course.ID != courseID || a.Attempt.Status == "in_progress" {
+				continue
+			}
+			out = append(out, entity.PracticumRekapRow{AttemptID: a.Attempt.AttemptID, UserID: a.Attempt.UserID, UserName: a.UserName, Status: a.Attempt.Status, Score: a.Attempt.Score, MaxScore: a.Attempt.MaxScore, Percentage: a.Attempt.Percentage, Keaktifan: a.Keaktifan, SubmittedAt: a.Attempt.SubmittedAt})
+		}
+		return nil
+	})
+	return out, err
 }

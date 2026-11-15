@@ -42,6 +42,7 @@ type PracticumOptions struct {
 	IdentityRepository repository.IdentityRepository
 	Runner             PracticumRunner
 	Grader             PracticumGrader
+	Rumpang            RumpangGenerator
 	RunnerGlobalLimit  int
 	RunnerUserLimit    int
 	RunnerTimeout      time.Duration
@@ -150,6 +151,8 @@ type PracticumManualInput struct {
 	Grades        []entity.PracticumManualGrade `json:"grades"`
 	Publish       bool                          `json:"publish"`
 	Reason        string                        `json:"reason"`
+	// Keaktifan: optional participation score 0..100, stored per attempt.
+	Keaktifan *int `json:"keaktifan,omitempty"`
 }
 type PracticumRunInput struct {
 	QuestionID string `json:"question_id"`

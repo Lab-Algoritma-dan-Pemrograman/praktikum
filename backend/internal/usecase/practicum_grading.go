@@ -22,7 +22,7 @@ func practicumReview(tx repository.PracticumTx, a entity.PracticumAttemptRecord,
 	if err != nil {
 		return entity.PracticumAttemptReview{}, err
 	}
-	out := entity.PracticumAttemptReview{Attempt: practicumAttemptView(a, now), Questions: append([]entity.PracticumQuestion{}, a.Attempt.Questions...), Suggestions: []entity.SuggestedGrade{}}
+	out := entity.PracticumAttemptReview{Attempt: practicumAttemptView(a, now), Questions: append([]entity.PracticumQuestion{}, a.Attempt.Questions...), Suggestions: []entity.SuggestedGrade{}, Keaktifan: a.Keaktifan}
 	out.Attempt.SessionID = activation.ParentID
 	for _, grade := range a.ManualGrades {
 		found := false
@@ -80,6 +80,9 @@ func (s *PracticumService) ManualGrade(ctx context.Context, p *entity.Principal,
 	if in.GradeRevision < 0 || len(in.Grades) < 1 || len(in.Grades) > 20 || len(strings.TrimSpace(in.Reason)) < 1 || len(in.Reason) > 500 {
 		return entity.PracticumAttemptReview{}, ErrValidation
 	}
+	if in.Keaktifan != nil && (*in.Keaktifan < 0 || *in.Keaktifan > 100) {
+		return entity.PracticumAttemptReview{}, ErrValidation
+	}
 	return practicumMutate(s, ctx, p, c, "practicum.grade.manual", id, in, func(tx repository.PracticumTx, replay string) (out entity.PracticumAttemptReview, target string, scope entity.Scope, err error) {
 		a, activation, e := practicumLockAttempt(tx, id)
 		if e != nil {
@@ -128,6 +131,9 @@ func (s *PracticumService) ManualGrade(ctx context.Context, p *entity.Principal,
 		}
 		a.ManualGrades = append([]entity.PracticumManualGrade{}, in.Grades...)
 		a.GradeReason = in.Reason
+		if in.Keaktifan != nil {
+			a.Keaktifan = in.Keaktifan
+		}
 		a.Attempt.GradeRevision++
 		a.Attempt.GradingStatus = "needs_manual"
 		if in.Publish {

@@ -193,6 +193,13 @@ func registerPracticum(mux *http.ServeMux, auth authHandlers, service *usecase.P
 		}
 		return service.SaveQuestion(r.Context(), p, c, r.PathValue("id"), in)
 	})
+	route("POST", "/v1/admin/praktikum/questions/{id}/rumpang", "practicum.admin.questions.rumpang", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.PracticumCommand) (any, error) {
+		var in struct{}
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.GenerateRumpang(r.Context(), p, c, r.PathValue("id"))
+	})
 	route("POST", "/v1/admin/praktikum/sesi/{id}/activate", "practicum.admin.activations.create", 201, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.PracticumCommand) (any, error) {
 		var in usecase.PracticumActivationInput
 		if err := decodePracticumJSON(w, r, &in); err != nil {
@@ -215,6 +222,13 @@ func registerPracticum(mux *http.ServeMux, auth authHandlers, service *usecase.P
 			return nil, err
 		}
 		return service.Monitoring(r.Context(), p, r.URL.Query().Get("session_id"), r.URL.Query().Get("activation_id"), page)
+	})
+	route("GET", "/v1/admin/praktikum/rekap", "practicum.admin.rekap", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.PracticumCommand) (any, error) {
+		page, err := practicumPage(r)
+		if err != nil {
+			return nil, err
+		}
+		return service.Rekap(r.Context(), p, r.URL.Query().Get("course_id"), page)
 	})
 	route("GET", "/v1/admin/praktikum/penilaian/{attemptId}", "practicum.admin.grades.review", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.PracticumCommand) (any, error) {
 		return service.Review(r.Context(), p, r.PathValue("attemptId"), c)

@@ -39,6 +39,9 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (App, erro
 	var academicRepo repository.AcademicRepository
 	var codeRunner usecase.PracticumRunner = runner.Unconfigured{}
 	var grader usecase.PracticumGrader = grading.Unconfigured{}
+	if cfg.GradingBaseURL != "" && !cfg.EnableFixtures {
+		grader = grading.NewOpenAI(cfg.GradingBaseURL, cfg.GradingModel, cfg.GradingAPIKey)
+	}
 	closePool := func() {}
 	if cfg.EnableFixtures {
 		repo, provider, readiness = repository.NewMemoryIdentityRepository(), auth.NewFixtureProvider(), fixtureReadiness{}
@@ -98,12 +101,16 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (App, erro
 	}
 	identity := usecase.NewIdentityService(usecase.IdentityOptions{Repository: repo, Provider: provider, Allowlist: returnto.FromOrigins(cfg.SSOAllowedOrigins), SessionTTL: cfg.SessionTTL})
 	budget := min(15*time.Second, cfg.RequestTimeout/2)
+	var rumpangGen usecase.RumpangGenerator
+	if openaiGrader, ok := grader.(*grading.OpenAI); ok {
+		rumpangGen = openaiGrader
+	}
 	var practicum *usecase.PracticumService
 	if cfg.PracticumEnabled {
 		// Leave time for admission and finalization around bounded provider calls.
 		practicum = usecase.NewPracticumService(usecase.PracticumOptions{
 			Repository: practicumRepo, IdentityRepository: repo, Runner: codeRunner,
-			Grader: grader, RunnerTimeout: budget, GradingTimeout: budget,
+			Grader: grader, Rumpang: rumpangGen, RunnerTimeout: budget, GradingTimeout: budget,
 		})
 	}
 	var learning *usecase.LearningService

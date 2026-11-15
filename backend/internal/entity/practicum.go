@@ -99,6 +99,8 @@ type PracticumAttemptRecord struct {
 	SubmittedAnswers []PracticumAnswer      `json:"submitted_answers"`
 	ManualGrades     []PracticumManualGrade `json:"manual_grades"`
 	GradeReason      string                 `json:"grade_reason"`
+	// Keaktifan: participation score (0..100) set by graders, published with grades.
+	Keaktifan *int `json:"keaktifan,omitempty"`
 }
 type PracticumManualGrade struct {
 	QuestionID string `json:"question_id"`
@@ -122,6 +124,7 @@ type PracticumAttemptReview struct {
 	Questions   []PracticumQuestion  `json:"questions"`
 	Suggestions []SuggestedGrade     `json:"suggestions"`
 	GradingJob  *PracticumGradingJob `json:"grading_job"`
+	Keaktifan   *int                 `json:"keaktifan,omitempty"`
 }
 type PracticumSessionDetail struct {
 	Session     PracticumSession      `json:"session"`
@@ -155,4 +158,18 @@ type PracticumGradeSummary struct {
 	MaxScore      int        `json:"max_score"`
 	Percentage    *float64   `json:"percentage"`
 	SubmittedAt   *time.Time `json:"submitted_at"`
+	Keaktifan     *int       `json:"keaktifan,omitempty"`
+}
+
+// PracticumRekapRow is one graded attempt in a per-course recap (admin).
+type PracticumRekapRow struct {
+	AttemptID   string     `json:"attempt_id"`
+	UserID      int64      `json:"user_id"`
+	UserName    string     `json:"user_name"`
+	Status      string     `json:"status"`
+	Score       *int       `json:"score"`
+	MaxScore    int        `json:"max_score"`
+	Percentage  *float64   `json:"percentage"`
+	Keaktifan   *int       `json:"keaktifan,omitempty"`
+	SubmittedAt *time.Time `json:"submitted_at"`
 }
