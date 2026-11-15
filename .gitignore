@@ -26,4 +26,3 @@ docs/ux-visual/
 
 # Local tooling configuration (not part of the application)
 .claude/
-opencode.jsonc
