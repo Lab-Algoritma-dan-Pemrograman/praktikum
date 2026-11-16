@@ -36,3 +36,4 @@ tools-rekap-nilai/
 package-lock.json
 
 .vercel
+.env*
