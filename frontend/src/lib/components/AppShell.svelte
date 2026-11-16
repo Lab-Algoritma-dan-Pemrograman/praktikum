@@ -147,13 +147,12 @@
 	{/if}
 
 	<!-- Main Area -->
-	<div class="main-area">
+	<div class="main-area" class:main-full={inSession}>
+		{#if !inSession}
 		<header class="topbar">
-			{#if !inSession}
 			<button class="hamburger" onclick={toggleSidebar} aria-label="Buka/tutup menu">
 				<Menu size={22} />
 			</button>
-			{/if}
 			<a href="/praktikum/profil" class="topbar-user">
 				<div class="topbar-avatar">{initials($user?.nama)}</div>
 				<div class="topbar-id">
@@ -162,6 +161,7 @@
 				</div>
 			</a>
 		</header>
+		{/if}
 		<main class="content-area" class:content-full={inSession}>
 			{#key $page.url.pathname}
 				<div in:fly={{ y: 8, duration: 240, easing: cubicOut }}>
@@ -312,8 +312,10 @@
 	.content-area { flex: 1; padding: 1.25rem; overflow-x: hidden; }
 	@media (min-width: 768px) { .content-area { padding: 2rem; } }
 
-	/* Mode pengerjaan sesi: sidebar sudah disembunyikan, padding dipangkas
+	/* Mode pengerjaan sesi: sidebar sudah disembunyikan, margin & padding dipangkas
 	   agar editor & soal memakai lebar penuh. */
+	.main-area.main-full { margin-left: 0; }
+	@media (min-width: 768px) { .main-area.main-full { margin-left: 0; transition: none; } }
 	.content-area.content-full { padding: 1rem; }
 	@media (min-width: 768px) { .content-area.content-full { padding: 1.25rem 1.5rem; } }
 

@@ -6,8 +6,9 @@
 	import { sanitizeSoal } from '$lib/sanitize';
 	import CodeEditor from './CodeEditor.svelte';
 	import Countdown from './Countdown.svelte';
-	import { Save, ChevronLeft, ChevronRight, Lock } from 'lucide-svelte';
+	import { Save, ChevronLeft, ChevronRight, Lock, Sparkles } from 'lucide-svelte';
 	import { confirmAction } from '$lib/stores/confirm';
+	import { user } from '$lib/stores/auth';
 	import type { RuangCourse } from '$lib/types';
 
 	let { aktivasiSesiId, courseId }: { aktivasiSesiId: number; courseId: number } = $props();
@@ -172,10 +173,19 @@
 
 		<!-- Ucapan Motivasi Ujian -->
 		<div class="mb-3 rounded-xl border border-primary/10 bg-gradient-to-r from-primary/5 to-transparent px-4 py-2.5 flex items-center gap-2">
-			<span class="text-lg">✨</span>
-			<p class="text-sm font-semibold text-slate-800 leading-snug">
-				Selamat Mengerjakan 🔥💪, Semoga Dilancarkan dan Mendapatkan Nilai Terbaik 🥳🤗🤩
+			<Sparkles size={18} class="flex-shrink-0 text-primary" aria-hidden="true" />
+			<p class="text-sm font-semibold text-slate-800 leading-snug flex-1">
+				Selamat Mengerjakan, Semoga Dilancarkan dan Mendapatkan Nilai Terbaik!
 			</p>
+			<div class="hidden sm:flex items-center gap-2 flex-shrink-0">
+				<div class="w-8 h-8 rounded-full bg-primary text-white grid place-items-center text-xs font-bold">
+					{($user?.nama ?? '?').trim().split(/\s+/).map((n) => n[0]).join('').substring(0, 2).toUpperCase()}
+				</div>
+				<div class="leading-tight text-right">
+					<p class="text-xs font-bold text-slate-800">{$user?.nama ?? ''}</p>
+					<p class="text-[10px] text-primary font-bold uppercase tracking-wider">{$user?.role ?? ''}</p>
+				</div>
+			</div>
 		</div>
 
 		{#if err}<p class="mb-3 rounded-lg bg-state-error-bg p-3 text-sm text-state-error">{err}</p>{/if}
