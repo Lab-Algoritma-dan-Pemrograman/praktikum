@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import {
     SiakadClient,
     reusableCommand,
@@ -8,10 +8,13 @@
     mergeResources,
     errorMessage,
     jakarta,
+    permitted,
     type AcademicAttendanceRecord,
     type AcademicScheduleView,
     type Command
   } from '@algohub/siakad-client';
+  import type { AppIdentityData } from '@algohub/auth-client';
+  export let data: AppIdentityData;
   const client = new SiakadClient();
   let schedules: AcademicScheduleView[] = [];
   let records: AcademicAttendanceRecord[] = [];
@@ -25,9 +28,32 @@
   let notice = '';
   let pending: Command | null = null;
 
+  // Camera scan state. BarcodeDetector is the default path; manual entry is
+  // always available as the fallback so no dependency is required.
+  let canScan = false;
+  let scanning = false;
+  let scanError = '';
+  let video: HTMLVideoElement | null = null;
+  let videoStream: MediaStream | null = null;
+  let scanFrame = 0;
+  let scanTimer: ReturnType<typeof setInterval> | null = null;
+  // ponytail: BarcodeDetector has no DOM lib type yet; local shape below.
+  type BarcodeScanner = {
+    detect(source: HTMLVideoElement): Promise<{ rawValue: string }[]>;
+  };
+  const scannerCtor = () =>
+    (
+      window as unknown as {
+        BarcodeDetector?: new (o: { formats: string[] }) => BarcodeScanner;
+      }
+    ).BarcodeDetector;
+
   $: openSessions = schedules
     .map((s) => s.open_session)
     .filter((s): s is NonNullable<typeof s> => !!s);
+  $: canManage =
+    permitted(data.principal, 'schedule.write', { domain: 'siakad' }) ||
+    permitted(data.principal, 'attendance.read', { domain: 'siakad' });
 
   async function load(kind: 'all' | 'schedules' | 'records' = 'all') {
     if (loading) return;
@@ -73,6 +99,68 @@
     }
   }
 
+  async function stopScan() {
+    scanning = false;
+    scanError = '';
+    if (scanTimer !== null) {
+      clearInterval(scanTimer);
+      scanTimer = null;
+    }
+    cancelAnimationFrame(scanFrame);
+    videoStream?.getTracks().forEach((track) => track.stop());
+    videoStream = null;
+    if (video) video.srcObject = null;
+  }
+
+  async function submitToken(token: string) {
+    if (!sessionId || !token.trim()) return;
+    qrToken = token;
+    await checkIn();
+  }
+
+  async function startScan() {
+    if (scanning) return;
+    scanError = '';
+    const Detector = scannerCtor();
+    if (!Detector || !navigator.mediaDevices?.getUserMedia) {
+      scanError =
+        'Kamera atau pemindai QR tidak tersedia di browser ini. Gunakan input token manual.';
+      return;
+    }
+    try {
+      videoStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
+      });
+    } catch {
+      scanError = 'Gagal mengakses kamera. Gunakan input token manual.';
+      return;
+    }
+    canScan = true;
+    scanning = true;
+    await tick();
+    if (!video) {
+      scanError = 'Elemen kamera belum siap. Gunakan input token manual.';
+      await stopScan();
+      return;
+    }
+    video.srcObject = videoStream;
+    await video.play().catch(() => undefined);
+    const scanner = new Detector({ formats: ['qr_code'] });
+    scanTimer = setInterval(async () => {
+      if (!video || !scanning) return;
+      try {
+        const found = await scanner.detect(video);
+        const value = found[0]?.rawValue;
+        if (value) {
+          await stopScan();
+          await submitToken(value);
+        }
+      } catch {
+        // Keep scanning; a single failed frame is not fatal.
+      }
+    }, 400);
+  }
+
   async function checkIn() {
     if (busy || loading || !sessionId || !qrToken.trim()) return;
     busy = true;
@@ -97,7 +185,11 @@
   }
 
   onMount(() => {
+    canScan = !!scannerCtor();
     void load();
+    return () => {
+      void stopScan();
+    };
   });
 </script>
 
@@ -148,6 +240,31 @@
         disabled={busy || loading}
         onclick={() => load('schedules')}>Muat sesi presensi lainnya</button
       >
+    {/if}
+    <div class="grid">
+      <button
+        type="button"
+        class="secondary"
+        disabled={busy || loading || scanning}
+        onclick={() => void startScan()}
+        >{scanning ? 'Memindai…' : 'Pindai QR lewat kamera'}</button
+      >
+      {#if scanning}
+        <button type="button" class="secondary" onclick={() => void stopScan()}
+          >Hentikan pemindai</button
+        >
+      {/if}
+    </div>
+    {#if scanError}<p class="notice error" role="alert">{scanError}</p>{/if}
+    {#if canScan}
+      <video
+        bind:this={video}
+        class="scanner"
+        autoplay
+        muted
+        playsinline
+        hidden={!scanning}
+      ></video>
     {/if}
     <label
       >Token QR presensi<input

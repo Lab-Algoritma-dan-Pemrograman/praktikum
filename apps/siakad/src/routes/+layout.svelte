@@ -12,8 +12,11 @@
 
   const navItems = [
     { href: '/', label: 'Ringkasan', hint: 'Kelas & jadwal' },
+    { href: '/jadwal', label: 'Jadwal Saya', hint: 'Agenda kelas' },
     { href: '/absensi', label: 'Presensi QR', hint: 'Isi kehadiran' },
-    { href: '/penyewaan', label: 'Inventaris & sewa', hint: 'Peminjaman alat' }
+    { href: '/izin', label: 'Izin & Reschedule', hint: 'Ajukan keterangan' },
+    { href: '/penyewaan', label: 'Inventaris & sewa', hint: 'Peminjaman alat' },
+    { href: '/keuangan', label: 'Keuangan', hint: 'Saldo & mutasi' }
   ];
 
   let logoutPending = false;

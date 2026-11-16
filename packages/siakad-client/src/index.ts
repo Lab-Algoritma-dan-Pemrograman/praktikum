@@ -132,6 +132,48 @@ export interface AcademicNotification {
   created_at: string;
 }
 
+export interface AcademicLeaveRequest {
+  id: string;
+  user_id: number;
+  user_name: string;
+  schedule_id: string;
+  class_id: string;
+  kind: 'izin' | 'sakit' | 'reschedule';
+  reason: string;
+  original_at: string;
+  status: 'pending' | 'approved' | 'rejected' | 'rescheduled';
+  reschedule_at?: string | null;
+  decided_at?: string | null;
+  decided_by?: number | null;
+  scope: Scope;
+  version: number;
+}
+
+export interface AcademicFinanceMutation {
+  id: string;
+  user_id: number;
+  user_name: string;
+  type: 'income' | 'expense' | 'adjustment';
+  note: string;
+  amount: number;
+  category: string;
+  rental_id?: string;
+  created_at: string;
+  scope: Scope;
+  version: number;
+}
+
+export interface AcademicFinanceBalance {
+  user_id: number;
+  user_name: string;
+  saldo: number;
+  income: number;
+  expense: number;
+  adjustment: number;
+  mutations: AcademicFinanceMutation[];
+  timezone: string;
+}
+
 export interface AcademicReportSummary {
   classes_count: number;
   schedules_count: number;
@@ -284,7 +326,6 @@ export interface RentalDraft {
   purpose: string;
   due_days: number;
 }
-
 export interface RentalCommand extends Command {
   draft: string;
 }
@@ -304,6 +345,47 @@ export function rentalCommand(
     }),
     draft
   };
+}
+
+export interface LeaveDraft {
+  schedule_id: string;
+  kind: 'izin' | 'sakit' | 'reschedule';
+  reason: string;
+  original_at: string;
+}
+
+// Leave and finance posts reuse the generic command helper so every mutation
+// still carries an Idempotency-Key.
+export function leaveCommand(
+  previous: Command | null,
+  input: LeaveDraft
+): Command {
+  return reusableCommand(previous, '/academic/izin', 'POST', input);
+}
+
+export function leaveDecisionCommand(
+  previous: Command | null,
+  id: string,
+  body: { version: number; action: string; reschedule_at?: string }
+): Command {
+  return versionedCommand(
+    previous,
+    `/admin/siakad/izin/${encodeURIComponent(id)}`,
+    body
+  );
+}
+
+export function financeCommand(
+  previous: Command | null,
+  input: {
+    target_user_id: number;
+    type: 'income' | 'expense' | 'adjustment';
+    note: string;
+    amount: number;
+    category?: string;
+  }
+): Command {
+  return reusableCommand(previous, '/admin/siakad/keuangan', 'POST', input);
 }
 
 // Shared SIAKAD resources have empty division; a division-scoped grant (sekretaris, k3, labops, bendahara)
