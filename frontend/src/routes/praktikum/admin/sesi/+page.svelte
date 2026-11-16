@@ -418,8 +418,7 @@
 						<option value="">— Pilih —</option>
 						<option value="modul_1">Modul 1</option>
 						<option value="modul_2">Modul 2</option>
-						<option value="modul_3">Modul 3</option>
-						<option value="modul_4_5">Modul 4 dan 5</option>
+						<option value="modul_3_4">Modul 3 dan 4</option>
 						<option value="modul_6">Modul 6</option>
 						<option value="flowchart">Flowchart</option>
 					</select>

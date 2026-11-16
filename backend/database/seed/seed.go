@@ -209,16 +209,16 @@ func seedSesiSoal(db *gorm.DB) {
 
 		kat1 := entity.KatModul1
 		kat2 := entity.KatModul2
-		kat3 := entity.KatModul3
-		kat45 := entity.KatModul45
+		kat34 := entity.KatModul34
+		kat5 := entity.KatModul5
 		kat6 := entity.KatModul6
 		katF := entity.KatFlowchart
 
 		ujianSoal := []entity.Soal{
 			{CourseID: courseUjian.ID, JenisSoal: entity.SoalEssay, KategoriUjian: &kat1, TeksSoal: "<p>Ini soal Nomor 1 dengan contoh LaTeX: <span data-type=\"inlineMath\" data-latex=\"\\frac{1}{2}\">$\\frac{1}{2}$</span></p><p>Buatkan <code>#include &lt;stdio.h&gt;</code> gitu aja sih.</p>", Poin: 15},
 			{CourseID: courseUjian.ID, JenisSoal: entity.SoalEssay, KategoriUjian: &kat2, TeksSoal: "Soal Ujian Praktik - Modul 2", Poin: 15},
-			{CourseID: courseUjian.ID, JenisSoal: entity.SoalEssay, KategoriUjian: &kat3, TeksSoal: "Soal Ujian Praktik - Modul 3", Poin: 15},
-			{CourseID: courseUjian.ID, JenisSoal: entity.SoalCoding, KategoriUjian: &kat45, TeksSoal: "Soal Ujian Praktik - Modul 4 & 5", Poin: 20},
+			{CourseID: courseUjian.ID, JenisSoal: entity.SoalEssay, KategoriUjian: &kat34, TeksSoal: "Soal Ujian Praktik - Modul 3 & 4", Poin: 15},
+			{CourseID: courseUjian.ID, JenisSoal: entity.SoalCoding, KategoriUjian: &kat5, TeksSoal: "Soal Ujian Praktik - Modul 5", Poin: 20},
 			{CourseID: courseUjian.ID, JenisSoal: entity.SoalCoding, KategoriUjian: &kat6, TeksSoal: "Soal Ujian Praktik - Modul 6", Poin: 20},
 			{CourseID: courseUjian.ID, JenisSoal: entity.SoalEssay, KategoriUjian: &katF, TeksSoal: "Soal Ujian Praktik - Flowchart", Poin: 15},
 		}
@@ -236,38 +236,38 @@ func seedSesiSoal(db *gorm.DB) {
 		var mhs1, mhs2 entity.User
 		db.Where("nim = ?", "2021001").First(&mhs1)
 		db.Where("nim = ?", "2021003").First(&mhs2)
-		
+
 		var sesi1, sesi2 entity.SesiPraktikum
 		db.Where("judul_sesi = ?", "Modul 1 - Pengenalan Dasar Bahasa C").First(&sesi1)
 		db.Where("judul_sesi = ?", "Modul 2 - Percabangan (If-Else & Switch Case)").First(&sesi2)
-		
+
 		if sesi1.ID != 0 {
-			aks1 := entity.AktivasiSesi{ SesiPraktikumID: sesi1.ID, KelasID: *mhs1.KelasID, Shift: *mhs1.Shift, IsActive: true }
+			aks1 := entity.AktivasiSesi{SesiPraktikumID: sesi1.ID, KelasID: *mhs1.KelasID, Shift: *mhs1.Shift, IsActive: true}
 			db.Create(&aks1)
-			
+
 			var courses []entity.Course
 			db.Where("sesi_praktikum_id = ?", sesi1.ID).Find(&courses)
-			
+
 			for _, c := range courses {
 				// Mhs 1 Modul 1
 				nilai1 := float64(85 + c.ID%5)
-				db.Create(&entity.PengerjaanCourse{ MahasiswaID: mhs1.ID, AktivasiSesiID: aks1.ID, CourseID: c.ID, Status: entity.StatusSelesai, TotalNilai: &nilai1 })
-				
+				db.Create(&entity.PengerjaanCourse{MahasiswaID: mhs1.ID, AktivasiSesiID: aks1.ID, CourseID: c.ID, Status: entity.StatusSelesai, TotalNilai: &nilai1})
+
 				// Mhs 2 Modul 1
 				nilai2 := float64(70 + c.ID%5)
-				db.Create(&entity.PengerjaanCourse{ MahasiswaID: mhs2.ID, AktivasiSesiID: aks1.ID, CourseID: c.ID, Status: entity.StatusSelesai, TotalNilai: &nilai2 })
+				db.Create(&entity.PengerjaanCourse{MahasiswaID: mhs2.ID, AktivasiSesiID: aks1.ID, CourseID: c.ID, Status: entity.StatusSelesai, TotalNilai: &nilai2})
 			}
 		}
 
 		if sesi2.ID != 0 {
-			aks2 := entity.AktivasiSesi{ SesiPraktikumID: sesi2.ID, KelasID: *mhs1.KelasID, Shift: *mhs1.Shift, IsActive: true }
+			aks2 := entity.AktivasiSesi{SesiPraktikumID: sesi2.ID, KelasID: *mhs1.KelasID, Shift: *mhs1.Shift, IsActive: true}
 			db.Create(&aks2)
 
 			var courses2 []entity.Course
 			db.Where("sesi_praktikum_id = ?", sesi2.ID).Find(&courses2)
 			for _, c := range courses2 {
 				nilai1 := float64(90)
-				db.Create(&entity.PengerjaanCourse{ MahasiswaID: mhs1.ID, AktivasiSesiID: aks2.ID, CourseID: c.ID, Status: entity.StatusSelesai, TotalNilai: &nilai1 })
+				db.Create(&entity.PengerjaanCourse{MahasiswaID: mhs1.ID, AktivasiSesiID: aks2.ID, CourseID: c.ID, Status: entity.StatusSelesai, TotalNilai: &nilai1})
 			}
 		}
 		log.Println("  + dummy nilai untuk mhs 2021001 & 2021003 di Modul 1 dan 2")
@@ -349,7 +349,7 @@ func seedAIGradingSim(db *gorm.DB) {
 	var mhs []entity.User
 	db.Where("kelas_id = ? AND shift = ?", kelasA.ID, 1).Find(&mhs)
 
-	// Skenario: 
+	// Skenario:
 	// Mhs 1: Benar semua
 	// Mhs 2: Salah semua
 	// Mhs 3: Setengah benar

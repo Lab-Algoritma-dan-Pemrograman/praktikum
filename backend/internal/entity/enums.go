@@ -48,15 +48,15 @@ type KategoriUjian string
 const (
 	KatModul1    KategoriUjian = "modul_1"
 	KatModul2    KategoriUjian = "modul_2"
-	KatModul3    KategoriUjian = "modul_3"
-	KatModul45   KategoriUjian = "modul_4_5"
+	KatModul34   KategoriUjian = "modul_3_4"
+	KatModul5    KategoriUjian = "modul_5"
 	KatModul6    KategoriUjian = "modul_6"
 	KatFlowchart KategoriUjian = "flowchart"
 )
 
 // SemuaKategoriUjian dipakai saat mengacak 1 soal per kategori.
 var SemuaKategoriUjian = []KategoriUjian{
-	KatModul1, KatModul2, KatModul3, KatModul45, KatModul6, KatFlowchart,
+	KatModul1, KatModul2, KatModul34, KatModul5, KatModul6, KatFlowchart,
 }
 
 type StatusPengerjaan string
