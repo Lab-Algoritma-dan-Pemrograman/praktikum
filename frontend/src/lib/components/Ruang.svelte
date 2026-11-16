@@ -171,9 +171,9 @@
 		</div>
 
 		<!-- Ucapan Motivasi Ujian -->
-		<div class="mb-4 rounded-2xl border border-primary/10 bg-gradient-to-r from-primary/5 to-transparent p-4 flex items-center gap-3">
-			<span class="text-xl">✨</span>
-			<p class="text-sm font-semibold text-slate-800 leading-relaxed">
+		<div class="mb-3 rounded-xl border border-primary/10 bg-gradient-to-r from-primary/5 to-transparent px-4 py-2.5 flex items-center gap-2">
+			<span class="text-lg">✨</span>
+			<p class="text-sm font-semibold text-slate-800 leading-snug">
 				Selamat Mengerjakan 🔥💪, Semoga Dilancarkan dan Mendapatkan Nilai Terbaik 🥳🤗🤩
 			</p>
 		</div>
@@ -183,9 +183,9 @@
 		<!-- Jelaskan kenapa editor terkunci. Tanpa ini mahasiswa hanya melihat
 		     editor yang tidak bisa diketik tanpa alasan (terjadi 2026-09-28 di PK). -->
 		{#if locked}
-			<div class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
-				<Lock size={18} class="mt-0.5 flex-shrink-0 text-amber-600" />
-				<div class="text-sm leading-relaxed text-amber-900">
+			<div class="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-3.5 flex items-start gap-3">
+				<Lock size={16} class="mt-0.5 flex-shrink-0 text-amber-600" />
+				<div class="text-sm leading-snug text-amber-900">
 					{#if ruang.status === 'selesai'}
 						<p class="font-bold">Jawaban Anda sudah terkumpul (submit sendiri atau auto-submit saat waktu habis).</p>
 						<p class="mt-1">Karena itu editor dikunci dan tidak bisa diketik. Jika asisten membuka kembali sesi ini, muat ulang halaman untuk mengerjakan lagi.</p>
@@ -197,9 +197,9 @@
 			</div>
 		{/if}
 		{#if info}
-			<p class="mb-3 rounded-xl border p-3.5 text-xs font-semibold flex items-center gap-2
-				{info.includes('Tersimpan otomatis') 
-					? 'bg-emerald-50 border-emerald-100 text-emerald-700' 
+			<p class="mb-3 rounded-xl border p-3 text-xs font-semibold flex items-center gap-2
+				{info.includes('Tersimpan otomatis')
+					? 'bg-emerald-50 border-emerald-100 text-emerald-700'
 					: 'bg-state-info-bg border-state-info/10 text-state-info'}">
 				{#if info.includes('Tersimpan otomatis')}
 					<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
@@ -208,32 +208,32 @@
 			</p>
 		{/if}
 
-	<!-- Progress Bar -->
+	<!-- Progress + Navigasi nomor soal (digabung 1 card biar hemat ruang vertikal) -->
 	{@const answeredCount = ruang.soal.filter((s) => answers[s.soal_terpilih_id]).length}
 	{@const progressPct = ruang.soal.length > 0 ? Math.round((answeredCount / ruang.soal.length) * 100) : 0}
-	<div class="mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-		<div class="flex items-center justify-between mb-2">
-			<span class="text-xs font-bold text-ink-caption uppercase tracking-wider">Progress Jawaban</span>
-			<span class="text-xs font-bold text-primary">{answeredCount} / {ruang.soal.length} terjawab ({progressPct}%)</span>
+	<div class="mb-4 rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+		<div class="flex items-center justify-between mb-2 gap-3">
+			<span class="text-xs font-bold text-ink-caption uppercase tracking-wider flex-shrink-0">Progress Jawaban</span>
+			<div class="flex items-center gap-2 flex-1">
+				<div class="h-2 flex-1 rounded-full bg-gray-100 overflow-hidden">
+					<div class="h-full rounded-full bg-primary transition-all duration-300" style="width: {progressPct}%"></div>
+				</div>
+				<span class="text-xs font-bold text-primary flex-shrink-0">{answeredCount} / {ruang.soal.length} ({progressPct}%)</span>
+			</div>
 		</div>
-		<div class="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
-			<div class="h-full rounded-full bg-primary transition-all duration-300" style="width: {progressPct}%"></div>
-		</div>
-	</div>
-
-	<!-- Navigasi nomor soal (scrollable) -->
-	<div class="mb-4 overflow-x-auto pb-2 -mx-1 px-1">
-		<div class="flex gap-2 min-w-max">
-			{#each ruang.soal as s, i}
-				<button
-					class="grid h-10 w-10 flex-shrink-0 place-items-center rounded-lg text-sm font-bold transition-all duration-200
-					{i === activeIndex ? 'bg-primary text-white shadow-lg scale-110' : 'bg-surface-soft text-ink-body hover:bg-primary/10'}
-					{answers[s.soal_terpilih_id] ? 'ring-2 ring-state-success ring-offset-1' : ''}"
-					onclick={() => goToSoal(i)}
-				>
-					{i + 1}
-				</button>
-			{/each}
+		<div class="overflow-x-auto pb-1 -mx-1 px-1">
+			<div class="flex gap-2 min-w-max">
+				{#each ruang.soal as s, i}
+					<button
+						class="grid h-9 w-9 flex-shrink-0 place-items-center rounded-lg text-sm font-bold transition-all duration-200
+						{i === activeIndex ? 'bg-primary text-white shadow-lg scale-105' : 'bg-surface-soft text-ink-body hover:bg-primary/10'}
+						{answers[s.soal_terpilih_id] ? 'ring-2 ring-state-success ring-offset-1' : ''}"
+						onclick={() => goToSoal(i)}
+					>
+						{i + 1}
+					</button>
+				{/each}
+			</div>
 		</div>
 	</div>
 
@@ -241,8 +241,8 @@
 	{#if currentSoal}
 	{@const s = currentSoal}
 	<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-		<div class="lg:col-span-5 flex flex-col">
-			<div class="flex-grow flex flex-col overflow-hidden lg:h-[650px] rounded-2xl border-y border-r border-slate-200 border-l-4 border-l-primary bg-white text-slate-800 shadow-sm p-6">
+		<div class="lg:col-span-4 flex flex-col">
+			<div class="flex-grow flex flex-col overflow-hidden lg:h-[calc(100vh-320px)] lg:min-h-[500px] rounded-2xl border-y border-r border-slate-200 border-l-4 border-l-primary bg-white text-slate-800 shadow-sm p-6">
 				<!-- Header Soal (Title, Kategori, Jenis, Poin) -->
 				<div class="mb-4 flex items-center justify-between pb-3 border-b border-slate-100 flex-shrink-0">
 					<div class="flex flex-wrap items-center gap-2">
@@ -270,8 +270,8 @@
 		</div>
 
 		<!-- Jendela Kanan: Code Editor / Jawaban Essay -->
-		<div class="lg:col-span-7 flex flex-col">
-			<div class="flex-grow flex flex-col lg:h-[650px] text-left">
+		<div class="lg:col-span-8 flex flex-col">
+			<div class="flex-grow flex flex-col lg:h-[calc(100vh-320px)] lg:min-h-[500px] text-left">
 				{#key s.soal_terpilih_id}
 					{#if s.jenis_soal === 'coding'}
 						<div class="flex-grow flex flex-col min-h-0">
@@ -280,7 +280,7 @@
 								readonly={locked}
 								language="c"
 								runnable={true}
-								height="300px"
+								height="calc(100vh - 460px)"
 								oninput={() => markDirty(s.soal_terpilih_id)}
 							/>
 						</div>

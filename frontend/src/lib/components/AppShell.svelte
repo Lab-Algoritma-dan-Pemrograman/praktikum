@@ -162,7 +162,7 @@
 				</div>
 			</a>
 		</header>
-		<main class="content-area">
+		<main class="content-area" class:content-full={inSession}>
 			{#key $page.url.pathname}
 				<div in:fly={{ y: 8, duration: 240, easing: cubicOut }}>
 					{@render children()}
@@ -311,6 +311,11 @@
 
 	.content-area { flex: 1; padding: 1.25rem; overflow-x: hidden; }
 	@media (min-width: 768px) { .content-area { padding: 2rem; } }
+
+	/* Mode pengerjaan sesi: sidebar sudah disembunyikan, padding dipangkas
+	   agar editor & soal memakai lebar penuh. */
+	.content-area.content-full { padding: 1rem; }
+	@media (min-width: 768px) { .content-area.content-full { padding: 1.25rem 1.5rem; } }
 
 	@media (prefers-reduced-motion: reduce) {
 		.sidebar, .main-area { transition: none; }
