@@ -17,6 +17,18 @@ type UserBulkRequest struct {
 	Users []UserRequest `json:"users" binding:"required,dive"`
 }
 
+// UserBulkAttrsRequest: ubah atribut massal (gelombang/shift/kelas/kelompok) by NIM.
+// Pointer nil = field tidak diubah; non-nil = set nilai (pakai SetGelombangNull untuk NULL).
+type UserBulkAttrsRequest struct {
+	NIMs              []string `json:"nims" binding:"required,min=1,dive,required"`
+	Gelombang         *int     `json:"gelombang" binding:"omitempty,oneof=1 2"`
+	SetGelombangNull  bool     `json:"set_gelombang_null"`
+	Shift             *int     `json:"shift" binding:"omitempty,oneof=1 2"`
+	KelasID           *int     `json:"kelas_id"`
+	SetKelasNull      bool     `json:"set_kelas_null"`
+	Kelompok          *string  `json:"kelompok"`
+}
+
 // BulkResponse: hasil dari operasi import/upsert masal.
 type BulkResponse struct {
 	TotalProcessed int `json:"total_processed"`

@@ -33,6 +33,31 @@ func (_m *UserRepository) BulkUpsert(users []entity.User) error {
 	return r0
 }
 
+// BulkUpdateAttrs provides a mock function with given fields: nims, attrs
+func (_m *UserRepository) BulkUpdateAttrs(nims []string, attrs map[string]interface{}) (int64, error) {
+	ret := _m.Called(nims, attrs)
+
+	if len(ret) == 0 {
+		panic("no return value specified for BulkUpdateAttrs")
+	}
+
+	var r0 int64
+	if rf, ok := ret.Get(0).(func([]string, map[string]interface{}) int64); ok {
+		r0 = rf(nims, attrs)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func([]string, map[string]interface{}) error); ok {
+		r1 = rf(nims, attrs)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ClaimRoster provides a mock function with given fields: userID, supabaseUID, email, passwordHash
 func (_m *UserRepository) ClaimRoster(userID int, supabaseUID string, email *string, passwordHash string) error {
 	ret := _m.Called(userID, supabaseUID, email, passwordHash)

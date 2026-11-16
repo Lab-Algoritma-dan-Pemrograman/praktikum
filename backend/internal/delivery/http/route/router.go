@@ -48,12 +48,13 @@ type Handlers struct {
 }
 
 // HealthCheck GET /api/health
-// @Summary Health Check
-// @Description Mengecek status service backend
-// @Tags Info
-// @Produce json
-// @Success 200 {object} map[string]string
-// @Router /health [get]
+//
+//	@Summary		Health Check
+//	@Description	Mengecek status service backend
+//	@Tags			Info
+//	@Produce		json
+//	@Success		200	{object}	map[string]string
+//	@Router			/health [get]
 func HealthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok", "service": "lab-ap"})
 }
@@ -176,6 +177,7 @@ func Setup(cfg *config.Config, jm *jwt.Manager, userRepo repository.UserReposito
 		admin.GET("/users", h.User.ListMahasiswa)
 		admin.POST("/users", middleware.RequirePermission(konfRepo, "users", "write"), h.User.CreateMahasiswa)
 		admin.POST("/users/bulk", middleware.RequirePermission(konfRepo, "users", "write"), h.User.BulkUpsertMahasiswa)
+		admin.PUT("/users/bulk-attrs", middleware.RequirePermission(konfRepo, "users", "write"), h.User.BulkAttrsMahasiswa)
 		admin.PUT("/users/:id", middleware.RequirePermission(konfRepo, "users", "write"), h.User.UpdateMahasiswa)
 		admin.DELETE("/users/:id", middleware.RequirePermission(konfRepo, "users", "write"), h.User.Delete)
 		admin.POST("/users/:id/reset-password", middleware.RequirePermission(konfRepo, "users", "write"), h.User.ResetPassword)

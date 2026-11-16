@@ -23,6 +23,7 @@ type UserRepository interface {
 	UpdatePasswordByEmail(email, hash string) (int64, error)
 	List(role string, kelasID *int, shift *int) ([]entity.User, error)
 	BulkUpsert(users []entity.User) error
+	BulkUpdateAttrs(nims []string, attrs map[string]any) (int64, error)
 	ListAsisten() ([]entity.User, error)
 	CountByRole(role entity.RoleType) (int64, error)
 	CountRegistered(registered bool) (int64, error)
@@ -54,6 +55,18 @@ func (r *userRepository) BulkUpsert(users []entity.User) error {
 		Columns:   []clause.Column{{Name: "nim"}},
 		DoUpdates: clause.AssignmentColumns([]string{"nama", "kelas_id", "shift", "gelombang", "kelompok"}),
 	}).CreateInBatches(users, 100).Error
+}
+
+// BulkUpdateAttrs mengubah atribut (gelombang/shift/kelas_id/kelompok) massal by NIM.
+// attrs hanya berisi kolom yang mau diubah; pakai gorm expr agar NULL pun bisa diset.
+func (r *userRepository) BulkUpdateAttrs(nims []string, attrs map[string]any) (int64, error) {
+	if len(nims) == 0 || len(attrs) == 0 {
+		return 0, nil
+	}
+	res := r.db.Model(&entity.User{}).
+		Where("nim IN ?", nims).
+		Updates(attrs)
+	return res.RowsAffected, res.Error
 }
 
 func (r *userRepository) FindByID(id int) (*entity.User, error) {

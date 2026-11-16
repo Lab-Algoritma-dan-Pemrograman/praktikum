@@ -41,6 +41,40 @@
 	let selectedIds = $state<Set<number>>(new Set());
 	let bulkBusy = $state(false);
 
+	// Bulk set atribut (gelombang/shift/kelas/kelompok)
+	let bulkForm = $state<{ gelombang: string; shift: string; kelas_id: string; kelompok: string }>({ gelombang: '', shift: '', kelas_id: '', kelompok: '' });
+
+	function selectedNims(): string[] {
+		const idSet = selectedIds;
+		return users.filter((u) => idSet.has(u.id)).map((u) => u.nim);
+	}
+
+	async function bulkSetAttrs() {
+		const nims = selectedNims();
+		if (nims.length === 0) return;
+		const body: Record<string, unknown> = { nims };
+		if (bulkForm.gelombang === '__null__') body.set_gelombang_null = true;
+		else if (bulkForm.gelombang) body.gelombang = Number(bulkForm.gelombang);
+		if (bulkForm.shift) body.shift = Number(bulkForm.shift);
+		if (bulkForm.kelas_id === '__null__') body.set_kelas_null = true;
+		else if (bulkForm.kelas_id) body.kelas_id = Number(bulkForm.kelas_id);
+		if (bulkForm.kelompok.trim()) body.kelompok = bulkForm.kelompok.trim();
+		const count = nims.length;
+		if (!await confirmAction({
+			title: `Ubah atribut ${count} mahasiswa?`,
+			message: `Aksi ini akan mengubah atribut (gelombang/shift/kelas/kelompok) untuk ${count} mahasiswa terpilih. Hanya field yang diisi yang diubah.`
+		})) return;
+		bulkBusy = true; err = ''; msg = '';
+		try {
+			const res = await api.put<{ total_processed: number; total_updated: number }>('/api/admin/users/bulk-attrs', body);
+			msg = `Berhasil mengubah ${res?.total_updated ?? count} mahasiswa.`;
+			selectedIds = new Set();
+			bulkForm = { gelombang: '', shift: '', kelas_id: '', kelompok: '' };
+			await load();
+		} catch (e) { err = (e as Error).message; }
+		finally { bulkBusy = false; }
+	}
+
 	async function load() {
 		try {
 			users = (await api.get<User[]>('/api/admin/users')) ?? [];
@@ -244,16 +278,51 @@
 <!-- Main Table Card - Full Width -->
 <div class="card w-full text-left space-y-4">
 	{#if selectedIds.size > 0}
-		<div class="flex flex-wrap items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-3 shadow-sm">
-			<span class="text-sm font-semibold text-primary"><strong>{selectedIds.size}</strong> terpilih</span>
-			<div class="ml-auto flex flex-wrap gap-2">
-				<button class="btn-outline inline-flex items-center gap-1 border-state-warning py-1.5 text-state-warning hover:bg-state-warning hover:text-white" disabled={bulkBusy} onclick={() => bulkAction('reset_pw')}>
-					<KeyRound size={14} /> Reset PW
-				</button>
-				<button class="btn-outline inline-flex items-center gap-1 border-state-error py-1.5 text-state-error hover:bg-state-error hover:text-white" disabled={bulkBusy} onclick={() => bulkAction('delete')}>
-					<Trash2 size={14} /> Hapus
-				</button>
-				<button class="btn-outline py-1.5" disabled={bulkBusy} onclick={() => (selectedIds = new Set())}>Batal</button>
+		<div class="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-3 shadow-sm">
+			<div class="flex flex-wrap items-center gap-3">
+				<span class="text-sm font-semibold text-primary"><strong>{selectedIds.size}</strong> terpilih</span>
+				<div class="ml-auto flex flex-wrap gap-2">
+					<button class="btn-outline inline-flex items-center gap-1 border-state-warning py-1.5 text-state-warning hover:bg-state-warning hover:text-white" disabled={bulkBusy} onclick={() => bulkAction('reset_pw')}>
+						<KeyRound size={14} /> Reset PW
+					</button>
+					<button class="btn-outline inline-flex items-center gap-1 border-state-error py-1.5 text-state-error hover:bg-state-error hover:text-white" disabled={bulkBusy} onclick={() => bulkAction('delete')}>
+						<Trash2 size={14} /> Hapus
+					</button>
+					<button class="btn-outline py-1.5" disabled={bulkBusy} onclick={() => (selectedIds = new Set())}>Batal</button>
+				</div>
+			</div>
+			<!-- Bulk Set Atribut -->
+			<div class="flex flex-wrap items-end gap-2 border-t border-primary/20 pt-3">
+				<span class="text-xs font-semibold text-ink-caption self-center">Set Atribut:</span>
+				<div>
+					<label class="label text-[10px]" for="b_gel">Gelombang</label>
+					<select id="b_gel" class="input w-auto text-xs" bind:value={bulkForm.gelombang}>
+						<option value="">(tidak diubah)</option>
+						<option value="1">Gelombang 1</option>
+						<option value="2">Gelombang 2</option>
+						<option value="__null__">(kosongkan)</option>
+					</select>
+				</div>
+				<div>
+					<label class="label text-[10px]" for="b_shift">Shift</label>
+					<select id="b_shift" class="input w-auto text-xs" bind:value={bulkForm.shift}>
+						<option value="">(tidak diubah)</option>
+						<option value="1">Shift 1</option>
+						<option value="2">Shift 2</option>
+					</select>
+				</div>
+				<div>
+					<label class="label text-[10px]" for="b_kelas">Kelas</label>
+					<select id="b_kelas" class="input w-auto text-xs" bind:value={bulkForm.kelas_id}>
+						<option value="">(tidak diubah)</option>
+						{#each kelas as k}<option value={String(k.id)}>{k.nama_kelas}</option>{/each}
+					</select>
+				</div>
+				<div>
+					<label class="label text-[10px]" for="b_kel">Kelompok</label>
+					<input id="b_kel" type="text" placeholder="(tidak diubah)" class="input w-28 text-xs" bind:value={bulkForm.kelompok} />
+				</div>
+				<button class="btn-primary py-1.5 text-xs" disabled={bulkBusy} onclick={bulkSetAttrs}>Terapkan</button>
 			</div>
 		</div>
 	{/if}

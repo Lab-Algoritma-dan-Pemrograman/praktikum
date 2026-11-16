@@ -73,6 +73,35 @@ func (uc *UserUsecase) BulkUpsertMahasiswa(req dto.UserBulkRequest) (*dto.BulkRe
 	}, nil
 }
 
+// BulkAttrsMahasiswa mengubah atribut massal (gelombang/shift/kelas/kelompok) by NIM.
+func (uc *UserUsecase) BulkAttrsMahasiswa(req dto.UserBulkAttrsRequest) (*dto.BulkResponse, error) {
+	attrs := map[string]any{}
+	if req.Gelombang != nil {
+		attrs["gelombang"] = *req.Gelombang
+	} else if req.SetGelombangNull {
+		attrs["gelombang"] = nil
+	}
+	if req.Shift != nil {
+		attrs["shift"] = *req.Shift
+	}
+	if req.KelasID != nil {
+		attrs["kelas_id"] = *req.KelasID
+	} else if req.SetKelasNull {
+		attrs["kelas_id"] = nil
+	}
+	if req.Kelompok != nil {
+		attrs["kelompok"] = *req.Kelompok
+	}
+	if len(attrs) == 0 {
+		return nil, errors.Join(ErrBadRequest, errors.New("tidak ada atribut untuk diubah"))
+	}
+	n, err := uc.users.BulkUpdateAttrs(req.NIMs, attrs)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.BulkResponse{TotalProcessed: int(n), TotalUpdated: int(n)}, nil
+}
+
 func (uc *UserUsecase) UpdateMahasiswa(id int, req dto.UserRequest) (*entity.User, error) {
 	u, err := uc.users.FindByID(id)
 	if err != nil {
