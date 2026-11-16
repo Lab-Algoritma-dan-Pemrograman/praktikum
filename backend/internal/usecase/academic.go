@@ -27,6 +27,7 @@ const (
 	academicAttendanceRead  = "attendance.read"
 	academicInventoryManage = "inventory.manage"
 	academicRentalApprove   = "rental.approve"
+	academicLeaveDecide     = "leave.decide"
 	academicFinanceManage   = "finance.manage"
 )
 
@@ -129,6 +130,28 @@ type InventoryRentalCreateInput struct {
 type InventoryRentalDecideInput struct {
 	Version int64  `json:"version"`
 	Action  string `json:"action"`
+}
+
+type AcademicLeaveCreateInput struct {
+	ScheduleID string    `json:"schedule_id"`
+	Kind       string    `json:"kind"`
+	Reason     string    `json:"reason"`
+	OriginalAt time.Time `json:"original_at"`
+}
+
+type AcademicLeaveDecideInput struct {
+	Version      int64      `json:"version"`
+	Action       string     `json:"action"`
+	RescheduleAt *time.Time `json:"reschedule_at,omitempty"`
+}
+
+type AcademicFinanceMutationInput struct {
+	TargetUserID int64  `json:"target_user_id"`
+	Type         string `json:"type"`
+	Note         string `json:"note"`
+	Amount       int64  `json:"amount"`
+	Category     string `json:"category"`
+	RentalID     string `json:"rental_id,omitempty"`
 }
 
 type academicOperation struct {

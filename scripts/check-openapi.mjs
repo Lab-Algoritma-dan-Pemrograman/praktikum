@@ -190,12 +190,12 @@ for (const file of [
   }
 }
 assert.equal([...ids].filter((id) => id.startsWith('practicum.')).length, 28);
-assert.equal([...ids].filter((id) => id.startsWith('learning.')).length, 21);
+assert.equal([...ids].filter((id) => id.startsWith('learning.')).length, 30);
 assert.equal(
   [...ids].filter(
     (id) => id.startsWith('academic.') || id.startsWith('inventory.')
   ).length,
-  22
+  29
 );
 
 const temp = await mkdtemp(join(tmpdir(), 'algohub-contract-'));

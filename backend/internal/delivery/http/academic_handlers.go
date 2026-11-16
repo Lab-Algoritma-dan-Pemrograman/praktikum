@@ -17,7 +17,7 @@ func writeAcademicError(w http.ResponseWriter, err error) {
 		writeError(w, 409, "ATTENDANCE_CLOSED", "Sesi presensi sudah ditutup atau melewati batas waktu.")
 	case errors.Is(err, usecase.ErrInsufficientStock):
 		writeError(w, 409, "INSUFFICIENT_STOCK", "Stok alat tersedia tidak mencukupi untuk jumlah yang diminta.")
-	case errors.Is(err, usecase.ErrRentalInvalid):
+	case errors.Is(err, usecase.ErrRentalInvalid), errors.Is(err, usecase.ErrLeaveInvalid):
 		writeError(w, 409, "CONFLICT", "Transisi status penyewaan tidak valid.")
 	default:
 		writeAuthError(w, err)
@@ -200,5 +200,54 @@ func registerAcademic(mux *http.ServeMux, auth authHandlers, service *usecase.Ac
 	})
 	route("GET", "/v1/admin/siakad/laporan", "academic.admin.reports.get", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
 		return service.Reports(r.Context(), p)
+	})
+	route("POST", "/v1/academic/izin", "academic.leave.create", 201, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
+		var in usecase.AcademicLeaveCreateInput
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.CreateLeave(r.Context(), p, c, in)
+	})
+	route("GET", "/v1/academic/izin", "academic.leave.list", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
+		page, err := practicumPage(r)
+		if err != nil {
+			return nil, err
+		}
+		return service.MyLeaves(r.Context(), p, page)
+	})
+	route("GET", "/v1/academic/keuangan", "academic.finance.balance", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
+		page, err := practicumPage(r)
+		if err != nil {
+			return nil, err
+		}
+		return service.FinanceBalance(r.Context(), p, page)
+	})
+	route("GET", "/v1/admin/siakad/izin", "academic.admin.leave.list", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
+		page, err := practicumPage(r)
+		if err != nil {
+			return nil, err
+		}
+		return service.LeaveRequests(r.Context(), p, page)
+	})
+	route("PATCH", "/v1/admin/siakad/izin/{id}", "academic.admin.leave.decide", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
+		var in usecase.AcademicLeaveDecideInput
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.DecideLeave(r.Context(), p, c, r.PathValue("id"), in)
+	})
+	route("GET", "/v1/admin/siakad/keuangan", "academic.admin.finance.list", 200, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
+		page, err := practicumPage(r)
+		if err != nil {
+			return nil, err
+		}
+		return service.FinanceMutations(r.Context(), p, true, page)
+	})
+	route("POST", "/v1/admin/siakad/keuangan", "academic.admin.finance.create", 201, func(w http.ResponseWriter, r *http.Request, p *entity.Principal, c usecase.AcademicCommand) (any, error) {
+		var in usecase.AcademicFinanceMutationInput
+		if err := decodePracticumJSON(w, r, &in); err != nil {
+			return nil, err
+		}
+		return service.PostFinanceMutation(r.Context(), p, c, in)
 	})
 }

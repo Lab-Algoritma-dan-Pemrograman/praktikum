@@ -29,6 +29,8 @@ const (
 	AcademicOperations         AcademicKind = "operations"
 	AcademicLaporanBesar       AcademicKind = "laporan_besar"
 	AcademicLaporanPengumpulan AcademicKind = "laporan_pengumpulan"
+	AcademicLeaveRequests      AcademicKind = "leave_requests"
+	AcademicFinanceMutations   AcademicKind = "finance_mutations"
 )
 
 type AcademicRecord struct {
@@ -262,7 +264,7 @@ func (tx *memoryAcademicTx) Audit(e entity.AuditEvent) error {
 
 func validAcademicKind(k AcademicKind) bool {
 	switch k {
-	case AcademicClasses, AcademicSchedules, AcademicAttendanceSessions, AcademicAttendanceRecords, AcademicInventoryItems, AcademicInventoryRentals, AcademicNotifications, AcademicOperations, AcademicLaporanBesar, AcademicLaporanPengumpulan:
+	case AcademicClasses, AcademicSchedules, AcademicAttendanceSessions, AcademicAttendanceRecords, AcademicInventoryItems, AcademicInventoryRentals, AcademicNotifications, AcademicOperations, AcademicLaporanBesar, AcademicLaporanPengumpulan, AcademicLeaveRequests, AcademicFinanceMutations:
 		return true
 	}
 	return false
@@ -312,6 +314,14 @@ func validateAcademicRecord(k AcademicKind, r AcademicRecord, exists func(Academ
 		}
 	case AcademicLaporanPengumpulan:
 		if r.Status != "belum" && r.Status != "terkumpul" {
+			return ErrConflict
+		}
+	case AcademicLeaveRequests:
+		if r.Status != "pending" && r.Status != "approved" && r.Status != "rejected" && r.Status != "rescheduled" {
+			return ErrConflict
+		}
+	case AcademicFinanceMutations:
+		if r.Status != "posted" {
 			return ErrConflict
 		}
 	}

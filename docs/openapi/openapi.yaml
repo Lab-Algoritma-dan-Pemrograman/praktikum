@@ -2895,6 +2895,68 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AcademicNotificationsResponse"
+  /v1/academic/izin:
+    parameters:
+      - $ref: "#/components/parameters/Origin"
+    get:
+      operationId: academic.leave.list
+      tags: [academic]
+      summary: List the caller's own leave and reschedule requests
+      parameters:
+        - $ref: "#/components/parameters/PracticumLimit"
+        - $ref: "#/components/parameters/PracticumOffset"
+      responses:
+        <<: *errors
+        "200":
+          description: Owned leave requests
+          headers: *headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcademicLeaveRequestsResponse"
+    post:
+      operationId: academic.leave.create
+      tags: [academic]
+      summary: File an izin, sick note or reschedule request for one of the caller's class schedules
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+        - $ref: "#/components/parameters/PracticumIdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 262144
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcademicLeaveCreateRequest"
+      responses:
+        <<: *errors
+        "201":
+          description: Created leave request awaiting a staff decision
+          headers: *headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcademicLeaveRequestResponse"
+  /v1/academic/keuangan:
+    parameters:
+      - $ref: "#/components/parameters/Origin"
+    get:
+      operationId: academic.finance.balance
+      tags: [academic]
+      summary: Read the caller's own finance saldo and mutation history
+      description: Saldo is the signed sum of posted ledger mutations owned by the caller (Asia/Jakarta display).
+      parameters:
+        - $ref: "#/components/parameters/PracticumLimit"
+        - $ref: "#/components/parameters/PracticumOffset"
+      responses:
+        <<: *errors
+        "200":
+          description: Caller saldo and mutations
+          headers: *headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcademicFinanceBalanceResponse"
   /v1/admin/siakad/kelas:
     parameters:
       - $ref: "#/components/parameters/Origin"
@@ -3262,6 +3324,105 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InventoryRentalResponse"
+  /v1/admin/siakad/izin:
+    parameters:
+      - $ref: "#/components/parameters/Origin"
+    get:
+      operationId: academic.admin.leave.list
+      tags: [academic-admin]
+      summary: List scoped student leave and reschedule requests
+      x-permissions: [leave.decide, attendance.read, schedule.write]
+      x-permission-match: any
+      parameters:
+        - $ref: "#/components/parameters/PracticumLimit"
+        - $ref: "#/components/parameters/PracticumOffset"
+      responses:
+        <<: *errors
+        "200":
+          description: Scoped leave requests, pending first
+          headers: *headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcademicLeaveRequestsResponse"
+  /v1/admin/siakad/izin/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Origin"
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 128
+    patch:
+      operationId: academic.admin.leave.decide
+      tags: [academic-admin]
+      summary: Approve, reject or reschedule a pending leave request
+      x-permissions: [leave.decide]
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+        - $ref: "#/components/parameters/PracticumIdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 262144
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcademicLeaveDecideRequest"
+      responses:
+        <<: *errors
+        "200":
+          description: Decided leave request
+          headers: *headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcademicLeaveRequestResponse"
+  /v1/admin/siakad/keuangan:
+    parameters:
+      - $ref: "#/components/parameters/Origin"
+    get:
+      operationId: academic.admin.finance.list
+      tags: [academic-admin]
+      summary: List scoped finance ledger mutations
+      x-permissions: [finance.manage]
+      parameters:
+        - $ref: "#/components/parameters/PracticumLimit"
+        - $ref: "#/components/parameters/PracticumOffset"
+      responses:
+        <<: *errors
+        "200":
+          description: Scoped finance mutations
+          headers: *headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcademicFinanceMutationsResponse"
+    post:
+      operationId: academic.admin.finance.create
+      tags: [academic-admin]
+      summary: Post an income, expense or balance adjustment for a student ledger
+      x-permissions: [finance.manage]
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+        - $ref: "#/components/parameters/PracticumIdempotencyKey"
+      requestBody:
+        required: true
+        x-max-bytes: 262144
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcademicFinanceMutationInput"
+      responses:
+        <<: *errors
+        "201":
+          description: Posted finance mutation
+          headers: *headers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AcademicFinanceMutationResponse"
   /v1/admin/siakad/laporan:
     parameters:
       - $ref: "#/components/parameters/Origin"
@@ -7213,6 +7374,129 @@ components:
           maxItems: 100
           items: { $ref: '#/components/schemas/AcademicNotification' }
         meta: { $ref: '#/components/schemas/Meta' }
+    AcademicLeaveCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [schedule_id, kind, reason, original_at]
+      properties:
+        schedule_id: { type: string, minLength: 1, maxLength: 128 }
+        kind: { type: string, enum: [izin, sakit, reschedule] }
+        reason: { type: string, minLength: 1, maxLength: 500 }
+        original_at: { type: string, format: date-time }
+    AcademicLeaveDecideRequest:
+      type: object
+      additionalProperties: false
+      required: [version, action]
+      properties:
+        version: { type: integer, minimum: 1 }
+        action: { type: string, enum: [approve, reject, reschedule] }
+        reschedule_at:
+          type: string
+          format: date-time
+          description: Required when action is reschedule.
+    AcademicLeaveRequestsResponse:
+      type: object
+      additionalProperties: false
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          maxItems: 100
+          items: { $ref: '#/components/schemas/AcademicLeaveRequest' }
+        meta: { $ref: '#/components/schemas/Meta' }
+    AcademicLeaveRequestResponse:
+      type: object
+      additionalProperties: false
+      required: [data, meta]
+      properties:
+        data: { $ref: '#/components/schemas/AcademicLeaveRequest' }
+        meta: { $ref: '#/components/schemas/Meta' }
+    AcademicFinanceMutationInput:
+      type: object
+      additionalProperties: false
+      required: [target_user_id, type, note, amount]
+      properties:
+        target_user_id: { type: integer, minimum: 1 }
+        type: { type: string, enum: [income, expense, adjustment] }
+        note: { type: string, minLength: 1, maxLength: 500 }
+        amount: { type: integer, minimum: 0, maximum: 100000000000 }
+        category: { type: string, maxLength: 64 }
+        rental_id: { type: string, maxLength: 128 }
+    AcademicFinanceMutationsResponse:
+      type: object
+      additionalProperties: false
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          maxItems: 100
+          items: { $ref: '#/components/schemas/AcademicFinanceMutation' }
+        meta: { $ref: '#/components/schemas/Meta' }
+    AcademicFinanceMutationResponse:
+      type: object
+      additionalProperties: false
+      required: [data, meta]
+      properties:
+        data: { $ref: '#/components/schemas/AcademicFinanceMutation' }
+        meta: { $ref: '#/components/schemas/Meta' }
+    AcademicFinanceBalanceResponse:
+      type: object
+      additionalProperties: false
+      required: [data, meta]
+      properties:
+        data: { $ref: '#/components/schemas/AcademicFinanceBalance' }
+        meta: { $ref: '#/components/schemas/Meta' }
+    AcademicLeaveRequest:
+      type: object
+      additionalProperties: false
+      required: [id, user_id, user_name, schedule_id, class_id, kind, reason, original_at, status, scope, version]
+      properties:
+        id: { type: string }
+        user_id: { type: integer }
+        user_name: { type: string }
+        schedule_id: { type: string }
+        class_id: { type: string }
+        kind: { type: string, enum: [izin, sakit, reschedule] }
+        reason: { type: string }
+        original_at: { type: string, format: date-time }
+        status: { type: string, enum: [pending, approved, rejected, rescheduled] }
+        reschedule_at: { type: string, format: date-time, nullable: true }
+        decided_at: { type: string, format: date-time, nullable: true }
+        decided_by: { type: integer, nullable: true }
+        scope: { $ref: '#/components/schemas/Scope' }
+        version: { type: integer }
+    AcademicFinanceMutation:
+      type: object
+      additionalProperties: false
+      required: [id, user_id, user_name, type, note, amount, category, created_at, scope, version]
+      properties:
+        id: { type: string }
+        user_id: { type: integer }
+        user_name: { type: string }
+        type: { type: string, enum: [income, expense, adjustment] }
+        note: { type: string }
+        amount: { type: integer }
+        category: { type: string }
+        rental_id: { type: string }
+        created_at: { type: string, format: date-time }
+        scope: { $ref: '#/components/schemas/Scope' }
+        version: { type: integer }
+    AcademicFinanceBalance:
+      type: object
+      additionalProperties: false
+      required: [user_id, user_name, saldo, income, expense, adjustment, mutations, timezone]
+      properties:
+        user_id: { type: integer }
+        user_name: { type: string }
+        saldo: { type: integer }
+        income: { type: integer }
+        expense: { type: integer }
+        adjustment: { type: integer }
+        mutations:
+          type: array
+          maxItems: 100
+          items: { $ref: '#/components/schemas/AcademicFinanceMutation' }
+        timezone: { type: string }
     AcademicReportSummaryResponse:
       type: object
       additionalProperties: false

@@ -140,6 +140,7 @@ func (r *MemoryIdentityRepository) seedDefinitions() {
 		{Code: "attendance.read", App: "siakad", Description: "Membaca absensi"},
 		{Code: "inventory.manage", App: "siakad", Description: "Mengelola inventaris"},
 		{Code: "rental.approve", App: "siakad", Description: "Menyetujui penyewaan"},
+		{Code: "leave.decide", App: "siakad", Description: "Memutuskan pengajuan izin dan reschedule"},
 		{Code: "finance.manage", App: "siakad", Description: "Mengelola data keuangan"},
 		{Code: "learning.content.read", App: "elearning", Description: "Membaca konten pembelajaran"},
 		{Code: "learning.content.manage", App: "elearning", Description: "Mengelola konten pembelajaran"},
@@ -154,7 +155,7 @@ func (r *MemoryIdentityRepository) seedDefinitions() {
 	} {
 		r.state.definitions[definition.Code] = definition
 	}
-	for _, permission := range []string{"admin.overview.read", "user.read", "user.write", "class.manage", "schedule.write", "attendance.read", "inventory.manage", "rental.approve", "finance.manage", "learning.content.read", "learning.content.manage", "learning.monitor", "learning.xp.manage", "practicum.session.manage", "question.manage", "practicum.grade.write", "audit.read", "settings.manage", "identity.access.manage"} {
+	for _, permission := range []string{"admin.overview.read", "user.read", "user.write", "class.manage", "schedule.write", "attendance.read", "inventory.manage", "rental.approve", "leave.decide", "finance.manage", "learning.content.read", "learning.content.manage", "learning.monitor", "learning.xp.manage", "practicum.session.manage", "question.manage", "practicum.grade.write", "audit.read", "settings.manage", "identity.access.manage"} {
 		scope := entity.Scope{Domain: "*"}
 		if permission == "admin.overview.read" {
 			scope = entity.Scope{}
@@ -162,7 +163,7 @@ func (r *MemoryIdentityRepository) seedDefinitions() {
 			scope = entity.Scope{Domain: "praktikum"}
 		} else if permission == "learning.content.read" || permission == "learning.content.manage" {
 			scope = entity.Scope{Domain: "elearning"}
-		} else if permission == "schedule.write" || permission == "attendance.read" || permission == "inventory.manage" || permission == "rental.approve" || permission == "finance.manage" {
+		} else if permission == "schedule.write" || permission == "attendance.read" || permission == "inventory.manage" || permission == "rental.approve" || permission == "leave.decide" || permission == "finance.manage" {
 			scope = entity.Scope{Domain: "siakad"}
 		}
 		r.state.roleDefaults[entity.RoleKoordinator] = append(r.state.roleDefaults[entity.RoleKoordinator], permissionDefault{Permission: permission, Scope: scope})

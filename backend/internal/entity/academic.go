@@ -119,6 +119,49 @@ type AcademicNotification struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type AcademicLeaveRequest struct {
+	ID             string     `json:"id"`
+	UserID         int64      `json:"user_id"`
+	UserName       string     `json:"user_name"`
+	ScheduleID     string     `json:"schedule_id"`
+	ClassID        string     `json:"class_id"`
+	Kind           string     `json:"kind"`
+	Reason         string     `json:"reason"`
+	OriginalAt     time.Time  `json:"original_at"`
+	Status         string     `json:"status"`
+	RescheduleAt   *time.Time `json:"reschedule_at,omitempty"`
+	RescheduledBy  *int64     `json:"rescheduled_by,omitempty"`
+	DecidedAt      *time.Time `json:"decided_at,omitempty"`
+	DecidedBy      *int64     `json:"decided_by,omitempty"`
+	Scope          Scope      `json:"scope"`
+	Version        int64      `json:"version"`
+}
+
+type AcademicFinanceMutation struct {
+	ID        string    `json:"id"`
+	UserID    int64     `json:"user_id"`
+	UserName  string    `json:"user_name"`
+	Type      string    `json:"type"`
+	Note      string    `json:"note"`
+	Amount    int64     `json:"amount"`
+	Category  string    `json:"category"`
+	RentalID  string    `json:"rental_id,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+	Scope     Scope     `json:"scope"`
+	Version   int64     `json:"version"`
+}
+
+type AcademicFinanceBalance struct {
+	UserID    int64              `json:"user_id"`
+	UserName  string             `json:"user_name"`
+	Saldo     int64              `json:"saldo"`
+	Income    int64              `json:"income"`
+	Expense   int64              `json:"expense"`
+	Adjust    int64              `json:"adjustment"`
+	Mutations []AcademicFinanceMutation `json:"mutations"`
+	Timezone  string             `json:"timezone"`
+}
+
 type AcademicReportSummary struct {
 	ClassesCount           int            `json:"classes_count"`
 	SchedulesCount         int            `json:"schedules_count"`
