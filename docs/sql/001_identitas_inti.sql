@@ -1,7 +1,7 @@
 -- ============================================================
 -- AlgoHub — 001_identitas_inti.sql
 -- Inti identitas & izin: users, izin, divisi_izin, kelas,
--- keanggotaan, audit_log. Sesuai docs/ERD-gabungan.md.
+-- keanggotaan, audit_log. Sesuai _docs.old/ERD-gabungan.md (root project_ap).
 -- Status: rancangan, diuji di Postgres lokal (container uji).
 -- RLS menyusul saat diterapkan di Supabase (ERD §8).
 -- ============================================================
