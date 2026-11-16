@@ -22,15 +22,16 @@ func NewJawabanHandler(uc *usecase.JawabanUsecase, al *usecase.AuditLogUsecase) 
 }
 
 // GetRuang GET /api/praktikum/ruang
-// @Summary Masuk Ruang Ujian/Course
-// @Description Memuat soal-soal dan state timer untuk suatu course
-// @Tags Praktikum - Pengerjaan
-// @Security bearerAuth
-// @Produce json
-// @Param aktivasi_sesi_id query int true "ID Aktivasi Sesi"
-// @Param course_id query int true "ID Course"
-// @Success 200 {object} response.Envelope{data=dto.RuangCourseResponse}
-// @Router /praktikum/ruang [get]
+//
+//	@Summary		Masuk Ruang Ujian/Course
+//	@Description	Memuat soal-soal dan state timer untuk suatu course
+//	@Tags			Praktikum - Pengerjaan
+//	@Security		bearerAuth
+//	@Produce		json
+//	@Param			aktivasi_sesi_id	query		int	true	"ID Aktivasi Sesi"
+//	@Param			course_id			query		int	true	"ID Course"
+//	@Success		200					{object}	response.Envelope{data=dto.RuangCourseResponse}
+//	@Router			/praktikum/ruang [get]
 func (h *JawabanHandler) GetRuang(c *gin.Context) {
 	aks := queryIntPtr(c, "aktivasi_sesi_id")
 	cid := queryIntPtr(c, "course_id")
@@ -47,15 +48,16 @@ func (h *JawabanHandler) GetRuang(c *gin.Context) {
 }
 
 // Mulai POST /api/praktikum/mulai
-// @Summary Mulai Ujian
-// @Description Memulai pengerjaan (mencatat waktu mulai di server)
-// @Tags Praktikum - Pengerjaan
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.MulaiCourseRequest true "Payload Mulai"
-// @Success 200 {object} response.Envelope
-// @Router /praktikum/mulai [post]
+//
+//	@Summary		Mulai Ujian
+//	@Description	Memulai pengerjaan (mencatat waktu mulai di server)
+//	@Tags			Praktikum - Pengerjaan
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.MulaiCourseRequest	true	"Payload Mulai"
+//	@Success		200		{object}	response.Envelope
+//	@Router			/praktikum/mulai [post]
 func (h *JawabanHandler) Mulai(c *gin.Context) {
 	var req dto.MulaiCourseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -71,15 +73,16 @@ func (h *JawabanHandler) Mulai(c *gin.Context) {
 }
 
 // AutoSave POST /api/praktikum/autosave
-// @Summary Auto-Save Jawaban
-// @Description Menyimpan jawaban untuk satu soal (dipanggil berkala oleh frontend)
-// @Tags Praktikum - Pengerjaan
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.AutoSaveRequest true "Payload Autosave"
-// @Success 200 {object} response.Envelope
-// @Router /praktikum/autosave [post]
+//
+//	@Summary		Auto-Save Jawaban
+//	@Description	Menyimpan jawaban untuk satu soal (dipanggil berkala oleh frontend)
+//	@Tags			Praktikum - Pengerjaan
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.AutoSaveRequest	true	"Payload Autosave"
+//	@Success		200		{object}	response.Envelope
+//	@Router			/praktikum/autosave [post]
 func (h *JawabanHandler) AutoSave(c *gin.Context) {
 	var req dto.AutoSaveRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -94,15 +97,16 @@ func (h *JawabanHandler) AutoSave(c *gin.Context) {
 }
 
 // Submit POST /api/praktikum/submit
-// @Summary Kumpulkan Ujian
-// @Description Mengumpulkan seluruh jawaban dan menutup course (Manual Submit)
-// @Tags Praktikum - Pengerjaan
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.SubmitRequest true "Payload Submit"
-// @Success 200 {object} response.Envelope
-// @Router /praktikum/submit [post]
+//
+//	@Summary		Kumpulkan Ujian
+//	@Description	Mengumpulkan seluruh jawaban dan menutup course (Manual Submit)
+//	@Tags			Praktikum - Pengerjaan
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.SubmitRequest	true	"Payload Submit"
+//	@Success		200		{object}	response.Envelope
+//	@Router			/praktikum/submit [post]
 func (h *JawabanHandler) Submit(c *gin.Context) {
 	var req dto.SubmitRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -117,15 +121,16 @@ func (h *JawabanHandler) Submit(c *gin.Context) {
 }
 
 // AdminInjectJawaban POST /api/admin/jawaban/inject
-// @Summary Admin Inject/Edit Jawaban
-// @Description Admin menginject jawaban baru atau mengedit jawaban existing untuk mahasiswa tertentu
-// @Tags Admin - Jawaban
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.AdminInjectJawabanRequest true "Payload Inject"
-// @Success 200 {object} response.Envelope
-// @Router /admin/jawaban/inject [post]
+//
+//	@Summary		Admin Inject/Edit Jawaban
+//	@Description	Admin menginject jawaban baru atau mengedit jawaban existing untuk mahasiswa tertentu
+//	@Tags			Admin - Jawaban
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.AdminInjectJawabanRequest	true	"Payload Inject"
+//	@Success		200		{object}	response.Envelope
+//	@Router			/admin/jawaban/inject [post]
 func (h *JawabanHandler) AdminInjectJawaban(c *gin.Context) {
 	var req dto.AdminInjectJawabanRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

@@ -21,15 +21,16 @@ type CompileHandler struct {
 func NewCompileHandler(cc *cwasm.Compiler) *CompileHandler { return &CompileHandler{cc: cc} }
 
 // CompileC POST /api/praktikum/compile-c
-// @Summary Kompilasi kode C ke WebAssembly (wasm32-wasi)
-// @Description Mengompilasi sumber C menjadi wasm untuk dijalankan interaktif di browser. Gagal kompilasi dikembalikan sebagai data (stderr), bukan HTTP error.
-// @Tags Praktikum - Pengerjaan
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.CompileRequest true "Payload Compile"
-// @Success 200 {object} response.Envelope{data=dto.CompileResponse}
-// @Router /praktikum/compile-c [post]
+//
+//	@Summary		Kompilasi kode C ke WebAssembly (wasm32-wasi)
+//	@Description	Mengompilasi sumber C menjadi wasm untuk dijalankan interaktif di browser. Gagal kompilasi dikembalikan sebagai data (stderr), bukan HTTP error.
+//	@Tags			Praktikum - Pengerjaan
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.CompileRequest	true	"Payload Compile"
+//	@Success		200		{object}	response.Envelope{data=dto.CompileResponse}
+//	@Router			/praktikum/compile-c [post]
 func (h *CompileHandler) CompileC(c *gin.Context) {
 	if !h.cc.Enabled() {
 		response.Fail(c, http.StatusServiceUnavailable, "Fitur compile C belum dikonfigurasi", nil)

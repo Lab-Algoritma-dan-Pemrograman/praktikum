@@ -3,10 +3,12 @@
 // lalu recalc total_nilai semua pengerjaan (TERMASUK arsip shift=0).
 //
 // Pakai:
-//   go run ./cmd/regrade -backup            # snapshot nilai sekarang (selalu disarankan)
-//   go run ./cmd/regrade -reset -grade -recalc           # dari awal: kosongkan -> grade -> recalc
-//   go run ./cmd/regrade -grade -recalc                  # lanjut (resume) yang belum dinilai
-//   go run ./cmd/regrade -grade -limit 20                # uji coba 20 dulu
+//
+//	go run ./cmd/regrade -backup            # snapshot nilai sekarang (selalu disarankan)
+//	go run ./cmd/regrade -reset -grade -recalc           # dari awal: kosongkan -> grade -> recalc
+//	go run ./cmd/regrade -grade -recalc                  # lanjut (resume) yang belum dinilai
+//	go run ./cmd/regrade -grade -limit 20                # uji coba 20 dulu
+//
 // Flag: -arsip=false untuk hanya jawaban aktif (non-arsip).
 package main
 

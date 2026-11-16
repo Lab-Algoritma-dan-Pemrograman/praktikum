@@ -20,13 +20,14 @@ func NewAIGradingHandler(ai usecase.AIGradingUsecase) *AIGradingHandler {
 }
 
 // ListTargets GET /api/admin/penilaian/ai-grade/targets?aktivasi_sesi_id=&course_id=
-// @Summary Daftar jawaban yang perlu dinilai AI
-// @Description Mengembalikan daftar jawaban_id (submitted, belum dinilai) untuk satu course
-// @Tags Admin - Penilaian
-// @Security bearerAuth
-// @Produce json
-// @Success 200 {object} response.Envelope{data=dto.AIGradeTargetsResponse}
-// @Router /admin/penilaian/ai-grade/targets [get]
+//
+//	@Summary		Daftar jawaban yang perlu dinilai AI
+//	@Description	Mengembalikan daftar jawaban_id (submitted, belum dinilai) untuk satu course
+//	@Tags			Admin - Penilaian
+//	@Security		bearerAuth
+//	@Produce		json
+//	@Success		200	{object}	response.Envelope{data=dto.AIGradeTargetsResponse}
+//	@Router			/admin/penilaian/ai-grade/targets [get]
 func (h *AIGradingHandler) ListTargets(c *gin.Context) {
 	aks, _ := strconv.Atoi(c.Query("aktivasi_sesi_id"))
 	cid, _ := strconv.Atoi(c.Query("course_id"))
@@ -43,15 +44,16 @@ func (h *AIGradingHandler) ListTargets(c *gin.Context) {
 }
 
 // GradeOne POST /api/admin/penilaian/ai-grade/one
-// @Summary Nilai satu jawaban dengan AI (sinkron)
-// @Description Menilai SATU jawaban memakai AI lalu menyimpan hasilnya. Frontend memanggil ini berulang.
-// @Tags Admin - Penilaian
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.AIGradeOneRequest true "ID Jawaban"
-// @Success 200 {object} response.Envelope{data=dto.AIGradeOneResponse}
-// @Router /admin/penilaian/ai-grade/one [post]
+//
+//	@Summary		Nilai satu jawaban dengan AI (sinkron)
+//	@Description	Menilai SATU jawaban memakai AI lalu menyimpan hasilnya. Frontend memanggil ini berulang.
+//	@Tags			Admin - Penilaian
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.AIGradeOneRequest	true	"ID Jawaban"
+//	@Success		200		{object}	response.Envelope{data=dto.AIGradeOneResponse}
+//	@Router			/admin/penilaian/ai-grade/one [post]
 func (h *AIGradingHandler) GradeOne(c *gin.Context) {
 	var req dto.AIGradeOneRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

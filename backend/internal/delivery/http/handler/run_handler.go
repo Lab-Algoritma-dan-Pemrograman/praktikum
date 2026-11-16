@@ -20,15 +20,16 @@ type RunHandler struct {
 func NewRunHandler(g *glot.Client) *RunHandler { return &RunHandler{glot: g} }
 
 // Execute POST /api/praktikum/run
-// @Summary Jalankan kode (C/Python)
-// @Description Menjalankan kode mahasiswa di sandbox eksternal (Glot.io) dan mengembalikan output.
-// @Tags Praktikum - Pengerjaan
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.RunRequest true "Payload Run"
-// @Success 200 {object} response.Envelope{data=dto.RunResponse}
-// @Router /praktikum/run [post]
+//
+//	@Summary		Jalankan kode (C/Python)
+//	@Description	Menjalankan kode mahasiswa di sandbox eksternal (Glot.io) dan mengembalikan output.
+//	@Tags			Praktikum - Pengerjaan
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.RunRequest	true	"Payload Run"
+//	@Success		200		{object}	response.Envelope{data=dto.RunResponse}
+//	@Router			/praktikum/run [post]
 func (h *RunHandler) Execute(c *gin.Context) {
 	if !h.glot.Enabled() {
 		response.Fail(c, http.StatusServiceUnavailable, "Fitur run code belum dikonfigurasi", nil)

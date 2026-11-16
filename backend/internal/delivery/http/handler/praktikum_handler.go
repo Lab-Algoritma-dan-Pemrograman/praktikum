@@ -21,13 +21,14 @@ func NewPraktikumHandler(uc *usecase.PraktikumUsecase) *PraktikumHandler {
 }
 
 // Dashboard GET /api/praktikum/dashboard
-// @Summary Dashboard Mahasiswa
-// @Description Mengambil data statistik dashboard khusus mahasiswa
-// @Tags Praktikum
-// @Security bearerAuth
-// @Produce json
-// @Success 200 {object} response.Envelope{data=dto.DashboardUserResponse}
-// @Router /praktikum/dashboard [get]
+//
+//	@Summary		Dashboard Mahasiswa
+//	@Description	Mengambil data statistik dashboard khusus mahasiswa
+//	@Tags			Praktikum
+//	@Security		bearerAuth
+//	@Produce		json
+//	@Success		200	{object}	response.Envelope{data=dto.DashboardUserResponse}
+//	@Router			/praktikum/dashboard [get]
 func (h *PraktikumHandler) Dashboard(c *gin.Context) {
 	res, err := h.uc.Dashboard(middleware.UserID(c))
 	if err != nil {
@@ -38,13 +39,14 @@ func (h *PraktikumHandler) Dashboard(c *gin.Context) {
 }
 
 // ListSesi GET /api/praktikum/sesi
-// @Summary Daftar Sesi Mahasiswa
-// @Description Mengambil daftar sesi praktikum yang tersedia untuk mahasiswa terkait
-// @Tags Praktikum
-// @Security bearerAuth
-// @Produce json
-// @Success 200 {object} response.Envelope{data=[]dto.SesiUserItem}
-// @Router /praktikum/sesi [get]
+//
+//	@Summary		Daftar Sesi Mahasiswa
+//	@Description	Mengambil daftar sesi praktikum yang tersedia untuk mahasiswa terkait
+//	@Tags			Praktikum
+//	@Security		bearerAuth
+//	@Produce		json
+//	@Success		200	{object}	response.Envelope{data=[]dto.SesiUserItem}
+//	@Router			/praktikum/sesi [get]
 func (h *PraktikumHandler) ListSesi(c *gin.Context) {
 	res, err := h.uc.ListSesi(middleware.UserID(c))
 	if err != nil {

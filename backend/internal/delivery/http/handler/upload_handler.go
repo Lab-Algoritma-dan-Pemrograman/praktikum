@@ -41,16 +41,17 @@ type UploadHandler struct {
 func NewUploadHandler(sb *supabase.Client) *UploadHandler { return &UploadHandler{sb: sb} }
 
 // Upload POST /api/admin/upload (multipart: file, folder)
-// @Summary Upload File
-// @Description Mengunggah file ke Supabase Storage (gambar soal, dll)
-// @Tags Admin - Upload
-// @Security bearerAuth
-// @Accept multipart/form-data
-// @Produce json
-// @Param file formData file true "File yang diupload"
-// @Param folder formData string false "Nama folder tujuan"
-// @Success 201 {object} response.Envelope
-// @Router /admin/upload [post]
+//
+//	@Summary		Upload File
+//	@Description	Mengunggah file ke Supabase Storage (gambar soal, dll)
+//	@Tags			Admin - Upload
+//	@Security		bearerAuth
+//	@Accept			multipart/form-data
+//	@Produce		json
+//	@Param			file	formData	file	true	"File yang diupload"
+//	@Param			folder	formData	string	false	"Nama folder tujuan"
+//	@Success		201		{object}	response.Envelope
+//	@Router			/admin/upload [post]
 func (h *UploadHandler) Upload(c *gin.Context) {
 	if !h.sb.Enabled() {
 		response.Fail(c, http.StatusServiceUnavailable, "Supabase Storage belum dikonfigurasi", nil)

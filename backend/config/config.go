@@ -40,9 +40,9 @@ type Config struct {
 	OnlineTTL       time.Duration
 	SweeperInterval time.Duration
 
-	SupabaseURL           string
-	SupabaseServiceKey    string
-	SupabaseBucket        string
+	SupabaseURL        string
+	SupabaseServiceKey string
+	SupabaseBucket     string
 	// SupabaseBucketLaporan: bucket privat khusus berkas laporan besar (baca via signed URL).
 	SupabaseBucketLaporan string
 

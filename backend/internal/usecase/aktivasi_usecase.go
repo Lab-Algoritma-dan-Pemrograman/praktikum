@@ -282,6 +282,7 @@ func (uc *AktivasiUsecase) BukaTutupCourse(req dto.BukaTutupCourseRequest) (*ent
 //     nil, is_submitted jawaban -> false (isi jawaban tidak dihapus).
 //   - "submit": tutup — status -> selesai, waktu_selesai NOW, auto-submit
 //     jawaban peserta tsb.
+//
 // Mengembalikan jumlah peserta yang berhasil diproses.
 func (uc *AktivasiUsecase) BukaTutupPeserta(req dto.BukaTutupPesertaRequest) (int, error) {
 	ac, err := uc.aktivasi.FindCourseByID(req.AktivasiCourseID)

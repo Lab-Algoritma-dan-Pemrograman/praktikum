@@ -18,13 +18,14 @@ type PedomanHandler struct {
 func NewPedomanHandler(uc *usecase.PedomanUsecase) *PedomanHandler { return &PedomanHandler{uc: uc} }
 
 // List GET /api/info/laporan & /api/admin/pedoman
-// @Summary Daftar Pedoman Laporan
-// @Description Mengambil daftar pedoman laporan (Admin dan Publik)
-// @Tags Info, Admin - Pedoman
-// @Produce json
-// @Success 200 {object} response.Envelope{data=[]entity.PedomanLaporan}
-// @Router /info/laporan [get]
-// @Router /admin/pedoman [get]
+//
+//	@Summary		Daftar Pedoman Laporan
+//	@Description	Mengambil daftar pedoman laporan (Admin dan Publik)
+//	@Tags			Info, Admin - Pedoman
+//	@Produce		json
+//	@Success		200	{object}	response.Envelope{data=[]entity.PedomanLaporan}
+//	@Router			/info/laporan [get]
+//	@Router			/admin/pedoman [get]
 func (h *PedomanHandler) List(c *gin.Context) {
 	res, err := h.uc.List()
 	if err != nil {
@@ -35,15 +36,16 @@ func (h *PedomanHandler) List(c *gin.Context) {
 }
 
 // Create POST /api/admin/pedoman
-// @Summary Tambah Pedoman
-// @Description Menambahkan pedoman laporan baru
-// @Tags Admin - Pedoman
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.PedomanRequest true "Payload Pedoman"
-// @Success 201 {object} response.Envelope{data=entity.PedomanLaporan}
-// @Router /admin/pedoman [post]
+//
+//	@Summary		Tambah Pedoman
+//	@Description	Menambahkan pedoman laporan baru
+//	@Tags			Admin - Pedoman
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.PedomanRequest	true	"Payload Pedoman"
+//	@Success		201		{object}	response.Envelope{data=entity.PedomanLaporan}
+//	@Router			/admin/pedoman [post]
 func (h *PedomanHandler) Create(c *gin.Context) {
 	var req dto.PedomanRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -59,16 +61,17 @@ func (h *PedomanHandler) Create(c *gin.Context) {
 }
 
 // Update PUT /api/admin/pedoman/:id
-// @Summary Perbarui Pedoman
-// @Description Mengubah pedoman laporan
-// @Tags Admin - Pedoman
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param id path int true "ID Pedoman"
-// @Param request body dto.PedomanRequest true "Payload Pedoman"
-// @Success 200 {object} response.Envelope{data=entity.PedomanLaporan}
-// @Router /admin/pedoman/{id} [put]
+//
+//	@Summary		Perbarui Pedoman
+//	@Description	Mengubah pedoman laporan
+//	@Tags			Admin - Pedoman
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"ID Pedoman"
+//	@Param			request	body		dto.PedomanRequest	true	"Payload Pedoman"
+//	@Success		200		{object}	response.Envelope{data=entity.PedomanLaporan}
+//	@Router			/admin/pedoman/{id} [put]
 func (h *PedomanHandler) Update(c *gin.Context) {
 	id, ok := idParam(c, "id")
 	if !ok {
@@ -88,14 +91,15 @@ func (h *PedomanHandler) Update(c *gin.Context) {
 }
 
 // Delete DELETE /api/admin/pedoman/:id
-// @Summary Hapus Pedoman
-// @Description Menghapus pedoman laporan
-// @Tags Admin - Pedoman
-// @Security bearerAuth
-// @Produce json
-// @Param id path int true "ID Pedoman"
-// @Success 200 {object} response.Envelope
-// @Router /admin/pedoman/{id} [delete]
+//
+//	@Summary		Hapus Pedoman
+//	@Description	Menghapus pedoman laporan
+//	@Tags			Admin - Pedoman
+//	@Security		bearerAuth
+//	@Produce		json
+//	@Param			id	path		int	true	"ID Pedoman"
+//	@Success		200	{object}	response.Envelope
+//	@Router			/admin/pedoman/{id} [delete]
 func (h *PedomanHandler) Delete(c *gin.Context) {
 	id, ok := idParam(c, "id")
 	if !ok {

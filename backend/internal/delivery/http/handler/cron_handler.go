@@ -22,12 +22,13 @@ func NewCronHandler(j *usecase.JawabanUsecase, r *usecase.RumpangUsecase, secret
 }
 
 // AutoSubmit POST /api/cron/auto-submit
-// @Summary Auto-submit pengerjaan kedaluwarsa (cron)
-// @Description Dipicu cron eksternal tiap ~1 menit. Wajib header X-Cron-Secret.
-// @Tags Cron
-// @Produce json
-// @Success 200 {object} response.Envelope
-// @Router /cron/auto-submit [post]
+//
+//	@Summary		Auto-submit pengerjaan kedaluwarsa (cron)
+//	@Description	Dipicu cron eksternal tiap ~1 menit. Wajib header X-Cron-Secret.
+//	@Tags			Cron
+//	@Produce		json
+//	@Success		200	{object}	response.Envelope
+//	@Router			/cron/auto-submit [post]
 func (h *CronHandler) AutoSubmit(c *gin.Context) {
 	// Tolak bila secret kosong (salah konfigurasi) atau tidak cocok.
 	if h.secret == "" || c.GetHeader("X-Cron-Secret") != h.secret {
@@ -43,12 +44,13 @@ func (h *CronHandler) AutoSubmit(c *gin.Context) {
 }
 
 // Rumpang POST /api/cron/rumpang
-// @Summary Buatkan kode rumpang yang belum ada (cron)
-// @Description Dipicu cron eksternal tiap ~30 menit. Menyapu soal coding keterampilan yang punya kunci tapi belum punya kode_rumpang. Wajib header X-Cron-Secret.
-// @Tags Cron
-// @Produce json
-// @Success 200 {object} response.Envelope
-// @Router /cron/rumpang [post]
+//
+//	@Summary		Buatkan kode rumpang yang belum ada (cron)
+//	@Description	Dipicu cron eksternal tiap ~30 menit. Menyapu soal coding keterampilan yang punya kunci tapi belum punya kode_rumpang. Wajib header X-Cron-Secret.
+//	@Tags			Cron
+//	@Produce		json
+//	@Success		200	{object}	response.Envelope
+//	@Router			/cron/rumpang [post]
 func (h *CronHandler) Rumpang(c *gin.Context) {
 	// Tolak bila secret kosong (salah konfigurasi) atau tidak cocok.
 	if h.secret == "" || c.GetHeader("X-Cron-Secret") != h.secret {

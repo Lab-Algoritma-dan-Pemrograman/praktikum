@@ -110,7 +110,9 @@ func (s *Admin) VerifyRecoveryOTP(email, token, newPassword string) error {
 		return fmt.Errorf("otp_invalid")
 	}
 	var out struct {
-		User struct{ ID string `json:"id"` } `json:"user"`
+		User struct {
+			ID string `json:"id"`
+		} `json:"user"`
 	}
 	if err := json.Unmarshal(body, &out); err != nil || out.User.ID == "" {
 		return fmt.Errorf("otp_invalid")

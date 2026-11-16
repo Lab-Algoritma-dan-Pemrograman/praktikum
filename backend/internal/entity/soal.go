@@ -16,9 +16,9 @@ type Soal struct {
 	// KodeRumpang: kerangka kode ber-blank __ / ____ untuk soal coding
 	// keterampilan kelas karyawan. Tampil sebagai jawaban awal (prefill)
 	// di editor mahasiswa; NULL = tanpa rumpang (editor kosongan).
-	KodeRumpang *string `gorm:"type:text" json:"kode_rumpang,omitempty"`
-	IsArsip       bool           `gorm:"column:is_arsip;not null;default:false" json:"is_arsip"`
-	CreatedAt     time.Time      `json:"created_at"`
+	KodeRumpang *string   `gorm:"type:text" json:"kode_rumpang,omitempty"`
+	IsArsip     bool      `gorm:"column:is_arsip;not null;default:false" json:"is_arsip"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 func (Soal) TableName() string { return "soal" }

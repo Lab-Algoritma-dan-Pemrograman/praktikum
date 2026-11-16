@@ -18,13 +18,14 @@ type KelasHandler struct {
 func NewKelasHandler(uc *usecase.KelasUsecase) *KelasHandler { return &KelasHandler{uc: uc} }
 
 // List GET /api/admin/kelas
-// @Summary Daftar Kelas
-// @Description Mengambil daftar kelas yang tersedia
-// @Tags Admin - Kelas
-// @Security bearerAuth
-// @Produce json
-// @Success 200 {object} response.Envelope{data=[]entity.Kelas}
-// @Router /admin/kelas [get]
+//
+//	@Summary		Daftar Kelas
+//	@Description	Mengambil daftar kelas yang tersedia
+//	@Tags			Admin - Kelas
+//	@Security		bearerAuth
+//	@Produce		json
+//	@Success		200	{object}	response.Envelope{data=[]entity.Kelas}
+//	@Router			/admin/kelas [get]
 func (h *KelasHandler) List(c *gin.Context) {
 	res, err := h.uc.List()
 	if err != nil {
@@ -35,15 +36,16 @@ func (h *KelasHandler) List(c *gin.Context) {
 }
 
 // Create POST /api/admin/kelas
-// @Summary Tambah Kelas
-// @Description Menambahkan kelas baru
-// @Tags Admin - Kelas
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param request body dto.KelasRequest true "Payload"
-// @Success 201 {object} response.Envelope{data=entity.Kelas}
-// @Router /admin/kelas [post]
+//
+//	@Summary		Tambah Kelas
+//	@Description	Menambahkan kelas baru
+//	@Tags			Admin - Kelas
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.KelasRequest	true	"Payload"
+//	@Success		201		{object}	response.Envelope{data=entity.Kelas}
+//	@Router			/admin/kelas [post]
 func (h *KelasHandler) Create(c *gin.Context) {
 	var req dto.KelasRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -59,16 +61,17 @@ func (h *KelasHandler) Create(c *gin.Context) {
 }
 
 // Update PUT /api/admin/kelas/:id
-// @Summary Perbarui Kelas
-// @Description Mengubah data kelas
-// @Tags Admin - Kelas
-// @Security bearerAuth
-// @Accept json
-// @Produce json
-// @Param id path int true "ID Kelas"
-// @Param request body dto.KelasRequest true "Payload"
-// @Success 200 {object} response.Envelope{data=entity.Kelas}
-// @Router /admin/kelas/{id} [put]
+//
+//	@Summary		Perbarui Kelas
+//	@Description	Mengubah data kelas
+//	@Tags			Admin - Kelas
+//	@Security		bearerAuth
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int					true	"ID Kelas"
+//	@Param			request	body		dto.KelasRequest	true	"Payload"
+//	@Success		200		{object}	response.Envelope{data=entity.Kelas}
+//	@Router			/admin/kelas/{id} [put]
 func (h *KelasHandler) Update(c *gin.Context) {
 	id, ok := idParam(c, "id")
 	if !ok {
@@ -88,14 +91,15 @@ func (h *KelasHandler) Update(c *gin.Context) {
 }
 
 // Delete DELETE /api/admin/kelas/:id
-// @Summary Hapus Kelas
-// @Description Menghapus kelas
-// @Tags Admin - Kelas
-// @Security bearerAuth
-// @Produce json
-// @Param id path int true "ID Kelas"
-// @Success 200 {object} response.Envelope
-// @Router /admin/kelas/{id} [delete]
+//
+//	@Summary		Hapus Kelas
+//	@Description	Menghapus kelas
+//	@Tags			Admin - Kelas
+//	@Security		bearerAuth
+//	@Produce		json
+//	@Param			id	path		int	true	"ID Kelas"
+//	@Success		200	{object}	response.Envelope
+//	@Router			/admin/kelas/{id} [delete]
 func (h *KelasHandler) Delete(c *gin.Context) {
 	id, ok := idParam(c, "id")
 	if !ok {

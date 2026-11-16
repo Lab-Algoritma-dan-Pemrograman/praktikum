@@ -16,19 +16,19 @@ import (
 	"lab-ap/internal/usecase"
 )
 
-// @title           Lab-AP API
-// @version         1.0
-// @description     REST API Documentation for Web Lab-AP v3
-// @termsOfService  http://swagger.io/terms/
+//	@title			Lab-AP API
+//	@version		1.0
+//	@description	REST API Documentation for Web Lab-AP v3
+//	@termsOfService	http://swagger.io/terms/
 
-// @contact.name   Developer
-// @contact.email  naufalraihans@example.com
+//	@contact.name	Developer
+//	@contact.email	naufalraihans@example.com
 
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      localhost:8080
-// @BasePath  /api
+// @host		localhost:8080
+// @BasePath	/api
 func main() {
 	cfg := config.Load()
 

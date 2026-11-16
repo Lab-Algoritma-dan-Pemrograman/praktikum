@@ -22,15 +22,16 @@ func NewAuthHandler(a *usecase.AuthUsecase, p *usecase.ProfileUsecase, al *useca
 }
 
 // CekNIM POST /api/auth/cek-nim
-// @Summary Cek status NIM
-// @Description Memeriksa apakah NIM sudah terdaftar (langkah 1 first-time login)
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param request body dto.CekNIMRequest true "Payload NIM"
-// @Success 200 {object} response.Envelope{data=dto.CekNIMResponse}
-// @Failure 400 {object} response.Envelope
-// @Router /auth/cek-nim [post]
+//
+//	@Summary		Cek status NIM
+//	@Description	Memeriksa apakah NIM sudah terdaftar (langkah 1 first-time login)
+//	@Tags			Auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.CekNIMRequest	true	"Payload NIM"
+//	@Success		200		{object}	response.Envelope{data=dto.CekNIMResponse}
+//	@Failure		400		{object}	response.Envelope
+//	@Router			/auth/cek-nim [post]
 func (h *AuthHandler) CekNIM(c *gin.Context) {
 	var req dto.CekNIMRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -46,15 +47,16 @@ func (h *AuthHandler) CekNIM(c *gin.Context) {
 }
 
 // Login POST /api/auth/login
-// @Summary Login Pengguna
-// @Description Login menggunakan NIM dan Password
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param request body dto.LoginRequest true "Payload Login"
-// @Success 200 {object} response.Envelope{data=dto.AuthResponse}
-// @Failure 400 {object} response.Envelope
-// @Router /auth/login [post]
+//
+//	@Summary		Login Pengguna
+//	@Description	Login menggunakan NIM dan Password
+//	@Tags			Auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.LoginRequest	true	"Payload Login"
+//	@Success		200		{object}	response.Envelope{data=dto.AuthResponse}
+//	@Failure		400		{object}	response.Envelope
+//	@Router			/auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req dto.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -74,15 +76,16 @@ func (h *AuthHandler) Login(c *gin.Context) {
 }
 
 // Register POST /api/auth/register
-// @Summary Registrasi Mahasiswa
-// @Description Mendaftarkan password untuk pertama kali bagi mahasiswa yang sudah memiliki NIM terdaftar
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param request body dto.RegisterRequest true "Payload Register"
-// @Success 201 {object} response.Envelope{data=dto.AuthResponse}
-// @Failure 400 {object} response.Envelope
-// @Router /auth/register [post]
+//
+//	@Summary		Registrasi Mahasiswa
+//	@Description	Mendaftarkan password untuk pertama kali bagi mahasiswa yang sudah memiliki NIM terdaftar
+//	@Tags			Auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body		dto.RegisterRequest	true	"Payload Register"
+//	@Success		201		{object}	response.Envelope{data=dto.AuthResponse}
+//	@Failure		400		{object}	response.Envelope
+//	@Router			/auth/register [post]
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req dto.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
